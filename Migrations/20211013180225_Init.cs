@@ -31,18 +31,11 @@ namespace Rentals.Migrations
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Img = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    State = table.Column<int>(type: "int", nullable: false),
-                    ItemId = table.Column<int>(type: "int", nullable: true)
+                    State = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Items", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Items_Items_ItemId",
-                        column: x => x.ItemId,
-                        principalTable: "Items",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -60,6 +53,30 @@ namespace Rentals.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AccessoryItems",
+                columns: table => new
+                {
+                    ItemId = table.Column<int>(type: "int", nullable: false),
+                    AccessoryId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccessoryItems", x => new { x.ItemId, x.AccessoryId });
+                    table.ForeignKey(
+                        name: "FK_AccessoryItems_Items_AccessoryId",
+                        column: x => x.AccessoryId,
+                        principalTable: "Items",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AccessoryItems_Items_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "Items",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -223,12 +240,12 @@ namespace Rentals.Migrations
 
             migrationBuilder.InsertData(
                 table: "Items",
-                columns: new[] { "Id", "Description", "Img", "IsDeleted", "ItemId", "Name", "Note", "State" },
+                columns: new[] { "Id", "Description", "Img", "IsDeleted", "Name", "Note", "State" },
                 values: new object[,]
                 {
-                    { 1, "Popis", null, true, null, "Jméno", "Poznámka", 2 },
-                    { 2, "Popis", null, false, null, "Jméno2", "Poznámka", 1 },
-                    { 3, "Popis", null, false, null, "Jméno3", "Poznámka", 0 }
+                    { 1, "Popis", null, true, "Jméno", "Poznámka", 2 },
+                    { 2, "Popis", null, false, "Jméno2", "Poznámka", 1 },
+                    { 3, "Popis", null, false, "Jméno3", "Poznámka", 0 }
                 });
 
             migrationBuilder.InsertData(
@@ -243,12 +260,17 @@ namespace Rentals.Migrations
             migrationBuilder.InsertData(
                 table: "Rentings",
                 columns: new[] { "Id", "ApproverId", "End", "Note", "OwnerId", "Start", "State" },
-                values: new object[] { 1, 1, new DateTime(2021, 10, 17, 18, 18, 51, 157, DateTimeKind.Local).AddTicks(7048), null, 2, new DateTime(2021, 10, 12, 18, 18, 51, 161, DateTimeKind.Local).AddTicks(2812), 0 });
+                values: new object[] { 1, 1, new DateTime(2021, 10, 18, 20, 2, 24, 764, DateTimeKind.Local).AddTicks(4703), null, 2, new DateTime(2021, 10, 13, 20, 2, 24, 767, DateTimeKind.Local).AddTicks(1315), 0 });
 
             migrationBuilder.InsertData(
                 table: "RentingItems",
                 columns: new[] { "ItemId", "RentingId" },
                 values: new object[] { 2, 1 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AccessoryItems_AccessoryId",
+                table: "AccessoryItems",
+                column: "AccessoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CartItems_UserId",
@@ -271,11 +293,6 @@ namespace Rentals.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Items_ItemId",
-                table: "Items",
-                column: "ItemId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_RentingItems_RentingId",
                 table: "RentingItems",
                 column: "RentingId");
@@ -293,6 +310,9 @@ namespace Rentals.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AccessoryItems");
+
             migrationBuilder.DropTable(
                 name: "CartItems");
 

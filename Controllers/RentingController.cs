@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Rentals.Context;
 using Rentals.Models.DatabaseModel;
+using Rentals.Models.InputModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,121 +21,109 @@ namespace Rentals.Controllers
         {
             _context = context;
         }
+        
         // *** znamená testováno a funkční
 
 
         //Přidat Výpůjčku
-        [HttpPost("AddNewRenting")]
-        public async Task<ActionResult<Renting>> AddNewRenting(
-            [BindRequired] string owner,
-            [BindRequired] string approver,
-            [BindRequired] List<int> items,
-            [BindRequired] DateTime start,
-            [BindRequired] DateTime end,
-            string note = null)
+        [HttpPost("Renting")]
+        public async Task<ActionResult<Renting>> AddNewRenting(RentingRequest renting)
         {
             var error = 0;
-            Renting renting = new Renting
+            if (_context.Users.Any(x => x.OauthId == renting.Owner) && _context.Users.Any(x => x.OauthId == renting.Approver))
             {
-                Start = start,
-                End = end,
-                OwnerId = owner,
-                ApproverId = approver,
-                Note = note,
-            };
-
-            //Stav
-            if ((DateTime.Compare(start, DateTime.Now) > 0))
-            {
-                renting.State = RentingState.WillStart;
-            }
-            else
-            {
-                renting.State = RentingState.InProgress;
-            }
-
-            _context.Rentings.Add(renting);
-            await _context.SaveChangesAsync();
-
-            //Přidání itemů
-            foreach (var item in items)
-            {
-                if (_context.Items.Find(item).State == ItemState.Available && _context.Items.Find(item).IsDeleted == false)
+                User owner = _context.Users.SingleOrDefault(x => x.OauthId == renting.Owner);
+                User approver = _context.Users.SingleOrDefault(x => x.OauthId == renting.Approver);
+                Renting newRenting = new Renting
                 {
-                    var rentingItem = new RentingItem { ItemId = item, RentingId = renting.Id };
-                    _context.RentingItems.Add(rentingItem);
+                    Start = renting.Start,
+                    End = renting.End,
+                    OwnerId = owner.Id,
+                    ApproverId = approver.Id,
+                    Note = renting.Note,
+                };
 
-                    //Vložení itemu do uživatelova inventáře
-                    var inventoryitem = new InventoryItem { ItemId = item, UserId = owner };
-                    _context.InventoryItems.Add(inventoryitem);
-
-                    //Nastavení stavu itemu na půjčený
-                    var rentedItem = _context.Items.Find(item);
-                    rentedItem.State = ItemState.Rented;
-                    _context.Entry(rentedItem).State = EntityState.Modified;
+                //Stav
+                if ((DateTime.Compare(renting.Start, DateTime.Now) > 0))
+                {
+                    newRenting.State = RentingState.WillStart;
                 }
                 else
                 {
-                    error++;
+                    newRenting.State = RentingState.InProgress;
                 }
 
-            }
+                _context.Rentings.Add(newRenting);
+                //await _context.SaveChangesAsync();
 
-            if (error == 0)
-            {
-                await _context.SaveChangesAsync();
-                return Ok();
+                //Přidání itemů
+                foreach (var item in renting.Items)
+                {
+                    if (_context.Items.Any(x => x.Id == item) && _context.Items.Find(item).State == ItemState.Available && _context.Items.Find(item).IsDeleted == false)
+                    {
+                        var rentingItem = new RentingItem { ItemId = item, RentingId = newRenting.Id }; // dostane se sem id i bez řádku 57?
+                        _context.RentingItems.Add(rentingItem);
+
+                        //Vložení itemu do uživatelova inventáře
+                        var inventoryitem = new InventoryItem { ItemId = item, UserId = owner.Id };
+                        _context.InventoryItems.Add(inventoryitem);
+
+                        //Nastavení stavu itemu na půjčený
+                        var rentedItem = _context.Items.Find(item);
+                        rentedItem.State = ItemState.Rented;
+                        _context.Entry(rentedItem).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        error++;
+                    }
+
+                }
+
+                if (error == 0)
+                {
+                    await _context.SaveChangesAsync();
+                    return Ok(newRenting);
+                }
+                else
+                {
+                    //{error} itemů nelze vypůjčit
+                    return Forbid($"Vyskytlo se {error} chyb");
+                }
             }
             else
             {
-                //{error} itemů nelze vypůjčit
-                return Forbid(error.ToString());
+                return NotFound("Tento uživatel neexistuje");
             }
-
         }
 
         //Úprava výpůjčky
-        [HttpPut("ChangeRenting/{id}")]
-        public async Task<ActionResult<Renting>> ChangeRenting(
-            int id, 
-            DateTime end = default(DateTime),
-            string note = null, 
-            RentingState state = 0,
-            [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] List<int> itemsReturned = null)
+        [HttpPut("Renting")]
+        public async Task<ActionResult<Renting>> ChangeRenting(ChangeRentingRequest request)
         {
             var errors = 0;
-            if (RentingExists(id))
+            if (RentingExists(request.Id))
             {
-                Renting renting = _context.Rentings.Find(id);
-                if (end != default(DateTime))
-                {
-                    renting.End = end;
-                }
-                if (note != null)
-                {
-                    renting.Note = note;
-                }
-                if (state != 0)
-                {
-                    renting.State = state;
-                }
+                Renting renting = _context.Rentings.Find(request.Id);
+                renting.End = request.End;
+                renting.Note = request.Note;
 
-                if (itemsReturned != null)
+                if (request.ReturnedItems != null)
                 {
-                    foreach (var item in itemsReturned)
+                    foreach (var item in request.ReturnedItems)
                     {
                         //Pokud se ve výpůjčce nachází - vrácení itemu
-                        if (_context.RentingItems.Any(x => x.RentingId == id && x.ItemId == item))
+                        if (_context.RentingItems.Any(x => x.RentingId == request.Id && x.ItemId == item) && _context.InventoryItems.Any(x => x.UserId == renting.OwnerId && x.ItemId == item))
                         {
-                            _context.RentingItems.Remove(_context.RentingItems.Single(x => x.RentingId == id && x.ItemId == item));
+                            _context.RentingItems.Remove(_context.RentingItems.Single(x => x.RentingId == request.Id && x.ItemId == item));
 
                             //Odebrání itemu z uživatelova inventáře
                             _context.InventoryItems.Remove(_context.InventoryItems.Single(x => x.UserId == renting.OwnerId && x.ItemId == item));
 
-
-                            if (!_context.RentingItems.Any(x => x.RentingId == id))
+                            if (!_context.RentingItems.Any(x => x.RentingId == request.Id))
                             {
                                 renting.State = RentingState.Ended;
+                                renting.End = DateTime.Now;
                             }
 
                             //Změna stavu itemu
@@ -151,22 +140,22 @@ namespace Rentals.Controllers
                 if (errors == 0)
                 {
                     await _context.SaveChangesAsync();
-                    return Ok();
+                    return Ok(renting);
                 }
                 else
                 {
                     //Špatné itemy? počet: {errors}
-                    return Forbid(errors.ToString());
+                    return Forbid($"Vyskytlo se {errors} chyb");
                 }
             }
             else
             {
-                return NotFound();
+                return NotFound("Tato výpůjčka neexistuje");
             }
         }
 
         //Zrušení výpůjčky
-        [HttpDelete("CancelRenting/{id}")]
+        [HttpDelete("Renting/{id}")]
         public async Task<ActionResult<Renting>> CancelRenting(int id)
         {
             if (RentingExists(id))
@@ -178,7 +167,7 @@ namespace Rentals.Controllers
                 {
                     item.Item.State = ItemState.Available;
                     _context.Entry(item).State = EntityState.Modified;
-                    //_context.RentingItems.Remove(item);
+                    _context.RentingItems.Remove(item);
 
                     //odebrání z inventáře
                     _context.InventoryItems.Remove(_context.InventoryItems.Single(y => y.ItemId == item.ItemId && y.UserId == renting.OwnerId));
@@ -188,71 +177,45 @@ namespace Rentals.Controllers
                 _context.Entry(renting).State = EntityState.Modified;
 
                 await _context.SaveChangesAsync();
-                return Ok();
+                return Ok(renting);
             }
             else
             {
-                return NotFound();
+                return NotFound("Tato výpůjčka neexistuje");
             }
         }
 
-        //Všechny výpůjčky + filtrace dle stavu + hledání dle půjčujícího       ***
-        [HttpPost("GetAllRentings")]
-        public ActionResult GetAllRentings([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] List<RentingState> states = null, string term = null)
+        //Všechny výpůjčky + filtrace dle stavu
+        [HttpGet("Renting")]
+        public async Task<ActionResult<IEnumerable<Renting>>> GetAllRentings(RentingState? state)
         {
-            List<Renting> rentings = new();
-            //Pokud jsou vybrané filtrace
-            if (states != null)
+            IEnumerable<Renting> rentings = Enumerable.Empty<Renting>();
+            if (state != null)
             {
-                //pro každou v seznamu
-                foreach (var state in states)
-                {
-                    //přidá item s daným filtrem, pokud zde již není 
-                    foreach (var item in _context.Rentings.Include(o => o.Owner).Where(x => x.State == state))
-                    {
-                        if (!rentings.Contains(item))
-                        {
-                            rentings.Add(item);
-                        }
-                    }
-                }
+                 rentings = _context.Rentings.Include(o => o.Owner).Where(x => x.State == state).AsEnumerable();
             }
-            //Jinak všechny
             else
             {
-                rentings = _context.Rentings.Include(o => o.Owner).ToList();
-            }
-
-            //Vyhledávání ve jménu i příjmení
-            if (term != null)
-            {
-                rentings = rentings.Where(x => x.Owner.FirstName.ToLower().Contains(term.ToLower()) && x.Owner.LastName.ToLower().Contains(term.ToLower())).ToList();
+                 rentings = _context.Rentings.Include(o => o.Owner).AsEnumerable();
             }
             return Ok(rentings);
         }
 
-        //Všechny výpůjčky uživatele
-        [HttpGet("GetRentingsByUser/{id}")]
-        public ActionResult GetRentings(string id)
+        //Všechny výpůjčky uživatele 
+        [HttpGet("RentingsByUser/{id}")]
+        public async Task<ActionResult<IEnumerable<Renting>>> GetRentings(string id)
         {
-            if (_context.Users.Any(x => x.Id == id))
+            if (_context.Users.Any(x => x.OauthId == id))
             {
-                List<Renting> rentings = _context.Rentings.Where(y => y.OwnerId == id).ToList();
+                User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
+                IEnumerable<Renting> rentings = _context.Rentings.Where(y => y.OwnerId == user.Id).AsEnumerable();
                 return Ok(rentings);
             }
             else
             {
-                return NotFound();
+                return NotFound("Tento uživatel neexistuje");
             }
-        }
-
-        //Data všechn výpůjček
-        [HttpGet("GetRentingDates")]
-        public ActionResult GetRentingDates()
-        {
-            List<Renting> rentingDates = _context.Rentings.Select(x => new Renting { Start = x.Start, End = x.End }).ToList();
-            return Ok(rentingDates);
-        }        
+        }   
 
         private bool RentingExists(int id)
         {

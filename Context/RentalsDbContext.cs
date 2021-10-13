@@ -18,6 +18,7 @@ namespace Rentals.Context
         public DbSet<Item> Items { get; set; }
         public DbSet<Renting> Rentings { get; set; }
         public DbSet<RentingItem> RentingItems { get; set; }
+        public DbSet<AccessoryItem> AccessoryItems { get; set; }
         public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -33,6 +34,13 @@ namespace Rentals.Context
                 .HasOne(x => x.Renting)
                 .WithMany(x => x.Items)
                 .HasForeignKey(x => x.RentingId);
+
+            modelBuilder.Entity<AccessoryItem>().HasKey(sc => new { sc.ItemId, sc.AccessoryId });
+            modelBuilder.Entity<AccessoryItem>()
+                .HasOne(x => x.Item)
+                .WithMany(x => x.Accessories)
+                .HasForeignKey(x => x.ItemId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<InventoryItem>().HasKey(sc => new { sc.ItemId, sc.UserId });
             modelBuilder.Entity<InventoryItem>()

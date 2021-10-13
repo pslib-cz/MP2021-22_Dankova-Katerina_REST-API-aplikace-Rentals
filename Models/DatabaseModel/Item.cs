@@ -22,7 +22,7 @@ namespace Rentals.Models.DatabaseModel
         public ICollection<CategoryItem> Categories { get; set; }
         public ICollection<InventoryItem> Inventories { get; set; }
         public ICollection<FavouriteItem> Favourites { get; set; }
-        public ICollection<Item> AccessoryFor { get; set; }
+        public ICollection<AccessoryItem> Accessories { get; set; }
         public ICollection<CartItem> Carts { get; set; }
     }
 }

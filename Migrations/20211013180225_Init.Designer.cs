@@ -10,7 +10,7 @@ using Rentals.Context;
 namespace Rentals.Migrations
 {
     [DbContext(typeof(RentalsDbContext))]
-    [Migration("20211012161851_Init")]
+    [Migration("20211013180225_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,21 @@ namespace Rentals.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Rentals.Models.DatabaseModel.AccessoryItem", b =>
+                {
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AccessoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ItemId", "AccessoryId");
+
+                    b.HasIndex("AccessoryId");
+
+                    b.ToTable("AccessoryItems");
+                });
 
             modelBuilder.Entity("Rentals.Models.DatabaseModel.CartItem", b =>
                 {
@@ -124,9 +139,6 @@ namespace Rentals.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("ItemId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -137,8 +149,6 @@ namespace Rentals.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ItemId");
 
                     b.ToTable("Items");
 
@@ -210,9 +220,9 @@ namespace Rentals.Migrations
                         {
                             Id = 1,
                             ApproverId = 1,
-                            End = new DateTime(2021, 10, 17, 18, 18, 51, 157, DateTimeKind.Local).AddTicks(7048),
+                            End = new DateTime(2021, 10, 18, 20, 2, 24, 764, DateTimeKind.Local).AddTicks(4703),
                             OwnerId = 2,
-                            Start = new DateTime(2021, 10, 12, 18, 18, 51, 161, DateTimeKind.Local).AddTicks(2812),
+                            Start = new DateTime(2021, 10, 13, 20, 2, 24, 767, DateTimeKind.Local).AddTicks(1315),
                             State = 0
                         });
                 });
@@ -279,6 +289,25 @@ namespace Rentals.Migrations
                             LastName = "Novák",
                             Trustfulness = 0
                         });
+                });
+
+            modelBuilder.Entity("Rentals.Models.DatabaseModel.AccessoryItem", b =>
+                {
+                    b.HasOne("Rentals.Models.DatabaseModel.Item", "Accessory")
+                        .WithMany()
+                        .HasForeignKey("AccessoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Rentals.Models.DatabaseModel.Item", "Item")
+                        .WithMany("Accessories")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Accessory");
+
+                    b.Navigation("Item");
                 });
 
             modelBuilder.Entity("Rentals.Models.DatabaseModel.CartItem", b =>
@@ -357,13 +386,6 @@ namespace Rentals.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Rentals.Models.DatabaseModel.Item", b =>
-                {
-                    b.HasOne("Rentals.Models.DatabaseModel.Item", null)
-                        .WithMany("AccessoryFor")
-                        .HasForeignKey("ItemId");
-                });
-
             modelBuilder.Entity("Rentals.Models.DatabaseModel.Renting", b =>
                 {
                     b.HasOne("Rentals.Models.DatabaseModel.User", "Approver")
@@ -409,7 +431,7 @@ namespace Rentals.Migrations
 
             modelBuilder.Entity("Rentals.Models.DatabaseModel.Item", b =>
                 {
-                    b.Navigation("AccessoryFor");
+                    b.Navigation("Accessories");
 
                     b.Navigation("Carts");
 
