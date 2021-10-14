@@ -11,5 +11,6 @@ namespace Rentals.Models.DatabaseModel
         public Item Item { get; set; }
         public int RentingId { get; set; }
         public Renting Renting { get; set; }
+        public bool Returned { get; set; }
     }
 }

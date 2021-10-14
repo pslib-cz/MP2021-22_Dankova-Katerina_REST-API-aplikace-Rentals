@@ -22,13 +22,13 @@ namespace Rentals.Controllers
         {
             _context = context;
         }
-        
+
         // *** znamená testováno a funkční
 
 
         //Přidat item ***
-        [HttpPost("Item")]
-        public async Task<ActionResult<Item>> AddNewItem(ItemRequest request)
+        [HttpPost()]
+        public async Task<ActionResult<Item>> AddNewItem([FromBody] ItemRequest request)
         {
             Item Item = new Item
             {
@@ -44,8 +44,8 @@ namespace Rentals.Controllers
         }
 
         //Změnit náhled ***
-        [HttpPut("Item/{id}/Img")]
-        public async Task<ActionResult<Item>> AddImg(int id, IFormFile file)
+        [HttpPut("{id}/Img")]
+        public async Task<ActionResult<Item>> AddImg(int id, [FromBody] IFormFile file)
         {
             if (ItemExists(id) && !IsDeleted(id))
             {
@@ -88,8 +88,8 @@ namespace Rentals.Controllers
         }
 
         //Změnit parametry itemu ***
-        [HttpPut("Item")]
-        public async Task<ActionResult<Item>> ChangeItem(ChangeItemRequest request)
+        [HttpPut()]
+        public async Task<ActionResult<Item>> ChangeItem([FromBody] ChangeItemRequest request)
         {
             if (ItemExists(request.Id) && !IsDeleted(request.Id))
             {
@@ -109,7 +109,7 @@ namespace Rentals.Controllers
         }
 
         //"Smazat" item
-        [HttpPut("Item/{id}")]
+        [HttpPut("{id}")]
         public async Task<ActionResult<Item>> DeleteItem(int id)
         {
             if (ItemExists(id) && !IsDeleted(id))
@@ -119,31 +119,24 @@ namespace Rentals.Controllers
                 _context.Entry(item).State = EntityState.Modified;
 
                 //Smazání všech záznamů
+                foreach (var del in _context.CartItems.Where(x => x.ItemId == id))
+                {
+                    _context.CartItems.Remove(del);
+                }
+                foreach (var del in _context.CategoryItems.Where(x => x.ItemId == id))
+                {
+                    _context.CategoryItems.Remove(del);
+                }
 
-                //foreach (var del in _context.CartItems.Where(x => x.ItemId == id))
-                //{
-                //    _context.CartItems.Remove(del);
-                //}
+                foreach (var del in _context.FavouriteItems.Where(x => x.ItemId == id))
+                {
+                    _context.FavouriteItems.Remove(del);
+                }
 
-                //foreach (var del in _context.CategoryItems.Where(x => x.ItemId == id))
-                //{
-                //    _context.CategoryItems.Remove(del);
-                //}
-
-                //foreach (var del in _context.FavouriteItems.Where(x => x.ItemId == id))
-                //{
-                //    _context.FavouriteItems.Remove(del);
-                //}
-
-                //foreach (var del in _context.InventoryItems.Where(x => x.ItemId == id))
-                //{
-                //    _context.InventoryItems.Remove(del);
-                //}
-
-                //foreach (var del in _context.RentingItems.Where(x => x.ItemId == id))
-                //{
-                //    _context.RentingItems.Remove(del);
-                //}
+                foreach (var del in _context.InventoryItems.Where(x => x.ItemId == id))
+                {
+                    _context.InventoryItems.Remove(del);
+                }
 
                 await _context.SaveChangesAsync();
                 return Ok(item);
@@ -163,7 +156,7 @@ namespace Rentals.Controllers
         }
 
         //Detail itemu
-        [HttpGet("Item/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Item>> GetItem(int id)
         {
             if (ItemExists(id) && !IsDeleted(id))
@@ -179,7 +172,7 @@ namespace Rentals.Controllers
         }
 
         //Obrázek itemu
-        [HttpGet("ItemImg/{id}")]
+        [HttpGet("Img/{id}")]
         public async Task<ActionResult<FileStream>> GetItemImg(int id)
         {
             if (ItemExists(id) && !IsDeleted(id))
@@ -194,7 +187,7 @@ namespace Rentals.Controllers
                 }
                 catch (Exception)
                 {
-                    return Forbid("Náhled nenalezen");
+                    return BadRequest("Náhled nenalezen");
                 }
 
             }
@@ -206,11 +199,11 @@ namespace Rentals.Controllers
         }
 
         //Všechny předměty + filtrování
-        [HttpGet("Items")]
-        public async Task<ActionResult<IEnumerable<Item>>> GetAllItems(int? category)
+        [HttpGet()]
+        public async Task<ActionResult<List<Item>>> GetAllItems(int? category)
         {
             IEnumerable<Item> Items = _context.Items.Where(x => x.IsDeleted == false).AsEnumerable();
-            IEnumerable<Item> List = Enumerable.Empty<Item>();
+            List<Item> List = new();
 
             if (category != null)
             {
@@ -218,16 +211,16 @@ namespace Rentals.Controllers
                 {
                     if (_context.CategoryItems.Any(x => x.ItemId == item.Id && x.CategoryId == category))
                     {
-                        List.Append(item);
+                        List.Add(item);
                     }
                 }
             }
             else
             {
-                List = Items;
+                List = Items.ToList();
             }
 
-            return Ok(Items);
+            return Ok(List);
         }
 
         //Kompatibilní příslušenství (vytvoření seznamu na změnu itemů)
@@ -236,7 +229,7 @@ namespace Rentals.Controllers
         {
             if (ItemExists(id) && !IsDeleted(id))
             {
-                IEnumerable<Item> Items = _context.AccessoryItems.Where(x => x.ItemId == id).Select(y => y.Item).AsEnumerable();
+                IEnumerable<Item> Items = _context.AccessoryItems.Where(x => x.ItemId == id && x.Item.IsDeleted == false).Select(y => y.Item).AsEnumerable();
                 return Ok(Items);
             }
             else
@@ -247,7 +240,7 @@ namespace Rentals.Controllers
 
         //Nastavení příslušenství
         [HttpPut("Accesories")]
-        public async Task<ActionResult<CreatedAtActionResult>> PutAccesories(ItemPropertyRequest request)
+        public async Task<ActionResult<CreatedAtActionResult>> PutAccesories([FromBody] ItemPropertyRequest request)
         {
             foreach (var item in _context.AccessoryItems.Where(x => x.ItemId == request.Id).ToList())
             {
@@ -255,7 +248,14 @@ namespace Rentals.Controllers
             }
             foreach (var item in request.Items)
             {
-                _context.AccessoryItems.Add(new AccessoryItem { ItemId = request.Id, AccessoryId = item });
+                if (ItemExists(item) && !IsDeleted(item))
+                {
+                    _context.AccessoryItems.Add(new AccessoryItem { ItemId = request.Id, AccessoryId = item });
+                }
+                else
+                {
+                    return BadRequest("Tento předmět neexistuje");
+                }
             }
             await _context.SaveChangesAsync();
             return Ok(CreatedAtAction("GetItem", request.Id));
@@ -278,7 +278,7 @@ namespace Rentals.Controllers
 
         //Nastavení kategorií
         [HttpPut("Categories")]
-        public async Task<ActionResult<CreatedAtActionResult>> PutCategories(ItemPropertyRequest request)
+        public async Task<ActionResult<CreatedAtActionResult>> PutCategories([FromBody] ItemPropertyRequest request)
         {
             foreach (var item in _context.CategoryItems.Where(x => x.ItemId == request.Id).ToList())
             {
@@ -286,7 +286,14 @@ namespace Rentals.Controllers
             }
             foreach (var item in request.Items)
             {
-                _context.CategoryItems.Add(new CategoryItem { ItemId = request.Id, CategoryId = item });
+                if (ItemExists(item) && !IsDeleted(item))
+                {
+                    _context.CategoryItems.Add(new CategoryItem { ItemId = request.Id, CategoryId = item });
+                }
+                else
+                {
+                    return BadRequest("Tento předmět neexistuje");
+                }
             }
             await _context.SaveChangesAsync();
             return Ok(CreatedAtAction("GetItem", request.Id));
@@ -315,7 +322,7 @@ namespace Rentals.Controllers
 
         //Změna jména kategorie
         [HttpPut("Category")]
-        public async Task<ActionResult<Category>> ChangeCategory(Category category)
+        public async Task<ActionResult<Category>> ChangeCategory([FromBody] Category category)
         {
             if (CategoryExists(category.Id))
             {
@@ -340,10 +347,10 @@ namespace Rentals.Controllers
                 Category category = _context.Categories.Find(id);
 
                 //odebrat itemy z dané kategorie
-                //foreach (var item in _context.CategoryItems.Where(x => x.CategoryId == id).Select(y => y.Item).ToList())
-                //{
-                //    _context.Remove(item);
-                //}
+                foreach (var item in _context.CategoryItems.Where(x => x.CategoryId == id).Select(y => y.Item).ToList())
+                {
+                    _context.Remove(item);
+                }
 
                 _context.Remove(category);
                 await _context.SaveChangesAsync();

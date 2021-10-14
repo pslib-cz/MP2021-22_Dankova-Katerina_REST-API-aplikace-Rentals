@@ -28,8 +28,8 @@ namespace Rentals.Controllers
 
 
         //Přidat uživatele
-        [HttpPost("User")]
-        public async Task<ActionResult<User>> NewUser(UserRequest user)
+        [HttpPost()]
+        public async Task<ActionResult<User>> NewUser([FromBody] UserRequest user)
         {
             if (!UserExists(user.OauthId))
             {
@@ -48,13 +48,13 @@ namespace Rentals.Controllers
             }
             else
             {
-                return Forbid("Uživatel již existuje");
+                return BadRequest("Uživatel již existuje");
             }
 
         }
 
         //Smazat uživatele
-        [HttpDelete("User/{id}")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUser(string id)
         {
             if (UserExists(id))
@@ -72,8 +72,8 @@ namespace Rentals.Controllers
         }
 
         //Změnit uživatele
-        [HttpPut("User")]
-        public async Task<ActionResult<User>> ChangeUser(UserRequest user)
+        [HttpPut()]
+        public async Task<ActionResult<User>> ChangeUser([FromBody] UserRequest user)
         {
             if (UserExists(user.OauthId))
             {
@@ -99,7 +99,7 @@ namespace Rentals.Controllers
             if (UserExists(id))
             {
                 User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
-                IEnumerable<Item> items = _context.CartItems.Where(x => x.UserId == user.Id).Select(y => y.Item).AsEnumerable();
+                IEnumerable<Item> items = _context.CartItems.Where(x => x.UserId == user.Id && x.Item.IsDeleted == false).Select(y => y.Item).AsEnumerable();
                 return Ok(items);
             }
             else
@@ -110,7 +110,7 @@ namespace Rentals.Controllers
 
         //Přidat do košíku
         [HttpPost("Cart")]
-        public async Task<ActionResult<CreatedAtActionResult>> AddToCart(ItemToUserRequest request)
+        public async Task<ActionResult<CreatedAtActionResult>> AddToCart([FromBody] ItemToUserRequest request)
         {
             if (UserExists(request.OauthId) && _context.Items.Any(x => x.Id == request.Item && x.IsDeleted == false))
             {
@@ -124,7 +124,7 @@ namespace Rentals.Controllers
                 }
                 else
                 {
-                    return Forbid("Tento předmět již máš v košíku");
+                    return BadRequest("Tento předmět již máš v košíku");
                 }
             }
             else
@@ -135,7 +135,7 @@ namespace Rentals.Controllers
 
         //Odebrat z košíku
         [HttpDelete("Cart")]
-        public async Task<ActionResult<CreatedAtActionResult>> RemoveItemfromCart(ItemToUserRequest request)
+        public async Task<ActionResult<CreatedAtActionResult>> RemoveItemfromCart([FromBody] ItemToUserRequest request)
         {
             if (UserExists(request.OauthId))
             {
@@ -161,27 +161,27 @@ namespace Rentals.Controllers
 
         //Všechny oblíbené položky + filtrace
         [HttpGet("Favourites")]
-        public async Task<ActionResult<IEnumerable<Item>>> GetFavourites(FavouritesRequest request)
+        public async Task<ActionResult<List<Item>>> GetFavourites([FromBody] FavouritesRequest request)
         {
             if (UserExists(request.OauthId))
             {
                 User user = _context.Users.SingleOrDefault(x => x.OauthId == request.OauthId);
                 Category category = _context.Categories.Find(request.Category);
                 IEnumerable<Item> Favourites = _context.FavouriteItems.Where(x => x.Item.IsDeleted == false && x.UserId == user.Id).Select(y => y.Item).AsEnumerable();
-                IEnumerable<Item> List = Enumerable.Empty<Item>();
+                List<Item> List = new();
                 if (request.Category != null)
                 {
                     foreach (var item in Favourites)
                     {
                         if (_context.CategoryItems.Any(x => x.ItemId == item.Id && x.CategoryId == request.Category))
                         {
-                            List.Append(item);
+                            List.Add(item);
                         }
                     }
                 }
                 else
                 {
-                    List = Favourites;
+                    List = Favourites.ToList();
                 }
 
                 return Ok(List);
@@ -194,7 +194,7 @@ namespace Rentals.Controllers
 
         //Přidat do oblíbených
         [HttpPost("Favourites")]
-        public async Task<ActionResult<CreatedAtActionResult>> AddToFavourites(ItemToUserRequest request)
+        public async Task<ActionResult<CreatedAtActionResult>> AddToFavourites([FromBody] ItemToUserRequest request)
         {
             if (UserExists(request.OauthId) && _context.Items.Any(x => x.Id == request.Item && x.IsDeleted == false))
             {
@@ -208,7 +208,7 @@ namespace Rentals.Controllers
                 }
                 else
                 {
-                    return Forbid("Tento předmět máš již v oblíbených");
+                    return BadRequest("Tento předmět máš již v oblíbených");
                 }
             }
             else
@@ -219,7 +219,7 @@ namespace Rentals.Controllers
 
         //Odebrat z oblíbených
         [HttpDelete("Favourites")]
-        public async Task<ActionResult<CreatedAtActionResult>> RemoveItemfromFavourites(ItemToUserRequest request)
+        public async Task<ActionResult<CreatedAtActionResult>> RemoveItemfromFavourites([FromBody] ItemToUserRequest request)
         {
             if (UserExists(request.OauthId))
             {
@@ -244,7 +244,7 @@ namespace Rentals.Controllers
         }
 
         //Všichni uživatelé
-        [HttpGet("Users")]
+        [HttpGet()]
         public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
         {
             IEnumerable<User> users = _context.Users.AsEnumerable();
@@ -258,7 +258,7 @@ namespace Rentals.Controllers
             if (UserExists(id))
             {
                 User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
-                IEnumerable<Item> items = _context.InventoryItems.Where(x => x.UserId == user.Id).Select(y => y.Item).AsEnumerable();
+                IEnumerable<Item> items = _context.InventoryItems.Where(x => x.UserId == user.Id && x.Item.IsDeleted == false).Select(y => y.Item).AsEnumerable();
                 return Ok(items);
             }
             else

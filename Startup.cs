@@ -1,13 +1,17 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Rentals.Context;
+using System.Linq;
 
 namespace Rentals
 {
@@ -28,7 +32,12 @@ namespace Rentals
                 options.UseSqlServer(connectionString)
             );
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(options =>
+            {
+                options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+            })
+                .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddSwaggerGen(c =>
             {
@@ -40,6 +49,22 @@ namespace Rentals
             {
                 configuration.RootPath = "ClientApp/build";
             });
+        }
+
+        private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
+        {
+            var builder = new ServiceCollection()
+                .AddLogging()
+                .AddMvc()
+                .AddNewtonsoftJson()
+                .Services.BuildServiceProvider();
+
+            return builder
+                .GetRequiredService<IOptions<MvcOptions>>()
+                .Value
+                .InputFormatters
+                .OfType<NewtonsoftJsonPatchInputFormatter>()
+                .First();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
