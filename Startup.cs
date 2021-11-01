@@ -11,7 +11,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Rentals.Context;
+using System;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace Rentals
 {
@@ -42,6 +45,10 @@ namespace Rentals
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API_Rentals", Version = "v1" });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
 
             // In production, the React files will be served from this directory

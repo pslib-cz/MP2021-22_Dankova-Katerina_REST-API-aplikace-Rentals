@@ -23,10 +23,9 @@ namespace Rentals.Controllers
             _context = context;
         }
 
-        // *** znamená testováno a funkční
-
-
-        //Přidat Výpůjčku
+        /// <summary>
+        /// Vytvoření nové výpůjčky
+        /// </summary>
         [HttpPost()]
         public async Task<ActionResult<Renting>> AddNewRenting([FromBody] RentingRequest renting)
         {
@@ -54,21 +53,11 @@ namespace Rentals.Controllers
                     {
                         var rentingItem = new RentingItem { ItemId = item, RentingId = newRenting.Id };
                         _context.RentingItems.Add(rentingItem);
-
-                        //Vložení itemu do uživatelova inventáře
-                        var inventoryitem = new InventoryItem { ItemId = item, UserId = owner.Id };
-                        _context.InventoryItems.Add(inventoryitem);
-
-                        //Nastavení stavu itemu na půjčený
-                        var rentedItem = _context.Items.Find(item);
-                        rentedItem.State = ItemState.Rented;
-                        _context.Entry(rentedItem).State = EntityState.Modified;
                     }
                     else
                     {
                         error++;
                     }
-
                 }
 
                 if (error == 0)
@@ -78,6 +67,8 @@ namespace Rentals.Controllers
                 }
                 else
                 {
+                    _context.Rentings.Remove(newRenting);
+                    await _context.SaveChangesAsync();
                     //{error} itemů nelze vypůjčit
                     return BadRequest($"Vyskytlo se {error} chyb");
                 }
@@ -88,7 +79,9 @@ namespace Rentals.Controllers
             }
         }
 
-        //Vrácení předmětů výpůjčky
+        /// <summary>
+        /// Vrácení předmětů dané výpůjčky
+        /// </summary>
         [HttpPut()]
         public async Task<ActionResult<Renting>> ChangeRenting([FromBody] ChangeRentingRequest request)
         {
@@ -114,13 +107,6 @@ namespace Rentals.Controllers
                             var itemToReturn = _context.Items.Find(item);
                             itemToReturn.State = ItemState.Available;
                             _context.Entry(itemToReturn).State = EntityState.Modified;
-
-                            //Ukončení pokud vše vráceno
-                            if (!_context.RentingItems.Any(x => x.RentingId == request.Id))
-                            {
-                                renting.State = RentingState.Ended;
-                                renting.End = DateTime.Now;
-                            }
                         }
                         else
                         {
@@ -130,12 +116,21 @@ namespace Rentals.Controllers
                 }
                 if (errors == 0)
                 {
+                    //nelze ukončit pokud se neprojeví vrácení
                     await _context.SaveChangesAsync();
+
+                    //Ukončení pokud vše vráceno
+                    if (!_context.RentingItems.Any(x => x.RentingId == request.Id && x.Returned == false))
+                    {
+                        renting.State = RentingState.Ended;
+                        renting.End = DateTime.Now;
+                    }
+                    await _context.SaveChangesAsync();
+
                     return Ok(renting);
                 }
                 else
                 {
-                    //Špatné itemy? počet: {errors}
                     return BadRequest($"Vyskytlo se {errors} chyb");
                 }
             }
@@ -145,7 +140,9 @@ namespace Rentals.Controllers
             }
         }
 
-        //Zrušení neuskutečněné výpůjčky
+        /// <summary>
+        /// Zrušení neuskutečněné výpůjčky
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<Renting>> CancelRenting(int id)
         {
@@ -170,7 +167,9 @@ namespace Rentals.Controllers
             }
         }
 
-        //Všechny výpůjčky + filtrace dle stavu
+        /// <summary>
+        /// Vypíše všechny výpůjčky + filtrování podle stavu (nepovinné)
+        /// </summary>
         [HttpGet()]
         public async Task<ActionResult<IEnumerable<Renting>>> GetAllRentings(RentingState? state)
         {
@@ -186,7 +185,9 @@ namespace Rentals.Controllers
             return Ok(rentings);
         }
 
-        //Všechny výpůjčky uživatele 
+        /// <summary>
+        /// Vypíše všechny výpůjčky daného uživatele
+        /// </summary>
         [HttpGet("RentingsByUser/{id}")]
         public async Task<ActionResult<IEnumerable<Renting>>> GetRentings(string id)
         {
@@ -202,18 +203,48 @@ namespace Rentals.Controllers
             }
         }
 
-        //Aktivovat výpůjčku
+        /// <summary>
+        /// Aktivuje výpůjčku
+        /// </summary>
         [HttpPut("Activate/{id}")]
         public async Task<ActionResult<Renting>> ActivateRenting(int id)
         {
+            var error = 0;
             if (RentingExists(id) && _context.Rentings.SingleOrDefault(x => x.Id == id).State == RentingState.WillStart)
             {
                 Renting renting = _context.Rentings.Find(id);
                 renting.State = RentingState.InProgress;
                 _context.Entry(renting).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
 
-                return Ok(renting);
+                //Vypůjčení itemů
+                foreach (var item in _context.RentingItems.Where(x => x.RentingId == id).Select(y => y.Item))
+                {
+                    if (_context.Items.Any(x => x.Id == item.Id) && _context.Items.Find(item.Id).State == ItemState.Available && _context.Items.Find(item.Id).IsDeleted == false)
+                    {
+                        //Vložení itemu do uživatelova inventáře
+                        var inventoryitem = new InventoryItem { ItemId = item.Id, UserId = renting.OwnerId };
+                        _context.InventoryItems.Add(inventoryitem);
+
+                        //Nastavení stavu itemu na půjčený
+                        var rentedItem = _context.Items.Find(item.Id);
+                        rentedItem.State = ItemState.Rented;
+                        _context.Entry(rentedItem).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        error++;
+                    }
+                }
+
+                if (error == 0)
+                {
+                    await _context.SaveChangesAsync();
+                    return Ok(renting);
+                }
+                else
+                {
+                    return BadRequest($"Vyskytlo se {error} chyb");
+                }
             }
             else
             {
@@ -221,7 +252,9 @@ namespace Rentals.Controllers
             }
         }
 
-        //Data výpůjček
+        /// <summary>
+        /// Vypíše data (od kdy do kdy) všech výpůjček, které probíhají nebo teprve začnou
+        /// </summary>
         [HttpGet("Dates")]
         public async Task<ActionResult<List<DatesResponse>>> GetDates()
         {

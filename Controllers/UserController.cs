@@ -23,11 +23,9 @@ namespace Rentals.Controllers
             _context = context;
         }
 
-        
-        // *** testováno a funkční
-
-
-        //Přidat uživatele
+        /// <summary>
+        /// Přidání uživatele
+        /// </summary>
         [HttpPost()]
         public async Task<ActionResult<User>> NewUser([FromBody] UserRequest user)
         {
@@ -53,7 +51,9 @@ namespace Rentals.Controllers
 
         }
 
-        //Smazat uživatele
+        /// <summary>
+        /// Smazání uživatele
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUser(string id)
         {
@@ -69,9 +69,12 @@ namespace Rentals.Controllers
             {
                 return NotFound("Tento uživatel neexistuje");
             }
+            //Nesmaže pokud má záznamy
         }
 
-        //Změnit uživatele
+        /// <summary>
+        /// Úprava uživatele
+        /// </summary>
         [HttpPut()]
         public async Task<ActionResult<User>> ChangeUser([FromBody] UserRequest user)
         {
@@ -92,7 +95,9 @@ namespace Rentals.Controllers
             }
         }
 
-        //Košík
+        /// <summary>
+        /// Košík uživatele
+        /// </summary>
         [HttpGet("Cart/{id}")]
         public async Task<ActionResult<IEnumerable<Item>>> GetUserCart(string id)
         {
@@ -108,9 +113,11 @@ namespace Rentals.Controllers
             }
         }
 
-        //Přidat do košíku
+        /// <summary>
+        /// Přidat do košíku uživatele
+        /// </summary>
         [HttpPost("Cart")]
-        public async Task<ActionResult<CreatedAtActionResult>> AddToCart([FromBody] ItemToUserRequest request)
+        public async Task<ActionResult<IEnumerable<Item>>> AddToCart([FromBody] ItemToUserRequest request)
         {
             if (UserExists(request.OauthId) && _context.Items.Any(x => x.Id == request.Item && x.IsDeleted == false))
             {
@@ -120,7 +127,7 @@ namespace Rentals.Controllers
                     CartItem cartItem = new CartItem { UserId = user.Id, ItemId = request.Item };
                     _context.CartItems.Add(cartItem);
                     await _context.SaveChangesAsync();
-                    return Ok(CreatedAtAction("GetUserCart", user.OauthId));
+                    return await GetUserCart(user.OauthId);
                 }
                 else
                 {
@@ -133,9 +140,11 @@ namespace Rentals.Controllers
             }
         }
 
-        //Odebrat z košíku
+        /// <summary>
+        /// Odebrat z košíku uživatele
+        /// </summary>
         [HttpDelete("Cart")]
-        public async Task<ActionResult<CreatedAtActionResult>> RemoveItemfromCart([FromBody] ItemToUserRequest request)
+        public async Task<ActionResult<IEnumerable<Item>>> RemoveItemfromCart([FromBody] ItemToUserRequest request)
         {
             if (UserExists(request.OauthId))
             {
@@ -145,7 +154,7 @@ namespace Rentals.Controllers
                     CartItem cartItem = _context.CartItems.Single(x => x.UserId == user.Id && x.ItemId == request.Item);
                     _context.CartItems.Remove(cartItem);
                     await _context.SaveChangesAsync();
-                    return Ok(CreatedAtAction("GetUserCart", user.OauthId));
+                    return await GetUserCart(user.OauthId);
                 }
                 else
                 {
@@ -159,21 +168,23 @@ namespace Rentals.Controllers
 
         }
 
-        //Všechny oblíbené položky + filtrace
-        [HttpGet("Favourites")]
-        public async Task<ActionResult<List<Item>>> GetFavourites([FromBody] FavouritesRequest request)
+        /// <summary>
+        /// Vypíše všechny oblíbené položky uživatele + filtrování podle kategorie (nepovinné)
+        /// </summary>
+        [HttpGet("Favourites/{id}")]
+        public async Task<ActionResult<List<Item>>> GetFavourites(string id, int? filter)
         {
-            if (UserExists(request.OauthId))
+            if (UserExists(id))
             {
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == request.OauthId);
-                Category category = _context.Categories.Find(request.Category);
+                User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
+                Category category = _context.Categories.Find(filter);
                 IEnumerable<Item> Favourites = _context.FavouriteItems.Where(x => x.Item.IsDeleted == false && x.UserId == user.Id).Select(y => y.Item).AsEnumerable();
                 List<Item> List = new();
-                if (request.Category != null)
+                if (filter != null)
                 {
                     foreach (var item in Favourites)
                     {
-                        if (_context.CategoryItems.Any(x => x.ItemId == item.Id && x.CategoryId == request.Category))
+                        if (_context.CategoryItems.Any(x => x.ItemId == item.Id && x.CategoryId == filter))
                         {
                             List.Add(item);
                         }
@@ -192,9 +203,11 @@ namespace Rentals.Controllers
             }
         }
 
-        //Přidat do oblíbených
+        /// <summary>
+        /// Přidat do oblíbených předmětů uživatele
+        /// </summary>
         [HttpPost("Favourites")]
-        public async Task<ActionResult<CreatedAtActionResult>> AddToFavourites([FromBody] ItemToUserRequest request)
+        public async Task<ActionResult<List<Item>>> AddToFavourites([FromBody] ItemToUserRequest request)
         {
             if (UserExists(request.OauthId) && _context.Items.Any(x => x.Id == request.Item && x.IsDeleted == false))
             {
@@ -204,7 +217,7 @@ namespace Rentals.Controllers
                     FavouriteItem favouriteItem = new FavouriteItem { UserId = user.Id, ItemId = request.Item };
                     _context.FavouriteItems.Add(favouriteItem);
                     await _context.SaveChangesAsync();
-                    return Ok(CreatedAtAction("GetFavourites", new FavouritesRequest { OauthId = user.OauthId }));
+                    return await GetFavourites(user.OauthId, null);
                 }
                 else
                 {
@@ -217,9 +230,11 @@ namespace Rentals.Controllers
             }
         }
 
-        //Odebrat z oblíbených
+        /// <summary>
+        /// Přidat z oblíbených předmětů uživatele
+        /// </summary>
         [HttpDelete("Favourites")]
-        public async Task<ActionResult<CreatedAtActionResult>> RemoveItemfromFavourites([FromBody] ItemToUserRequest request)
+        public async Task<ActionResult<List<Item>>> RemoveItemfromFavourites([FromBody] ItemToUserRequest request)
         {
             if (UserExists(request.OauthId))
             {
@@ -229,7 +244,7 @@ namespace Rentals.Controllers
                     FavouriteItem favourite = _context.FavouriteItems.Single(x => x.UserId == user.Id && x.ItemId == request.Item);
                     _context.FavouriteItems.Remove(favourite);
                     await _context.SaveChangesAsync();
-                    return Ok(CreatedAtAction("GetFavourites", new FavouritesRequest { OauthId = user.OauthId }));
+                    return await GetFavourites(user.OauthId, null);
                 }
                 else
                 {
@@ -243,7 +258,9 @@ namespace Rentals.Controllers
 
         }
 
-        //Všichni uživatelé
+        /// <summary>
+        /// Vypíše všechny uživatele
+        /// </summary>
         [HttpGet()]
         public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
         {
@@ -251,7 +268,9 @@ namespace Rentals.Controllers
             return Ok(users);
         }
 
-        //Inventář
+        /// <summary>
+        /// Vypíše inventář předmětů uživatele
+        /// </summary>
         [HttpGet("Inventory/{id}")]
         public async Task<ActionResult<IEnumerable<Item>>> GetInventoryByUser(string id)
         {
