@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
@@ -90,15 +91,30 @@ namespace Rentals.Controllers
         /// <summary>
         /// Úprava předmětu
         /// </summary>
-        [HttpPut()]
-        public async Task<ActionResult<Item>> ChangeItem([FromBody] ChangeItemRequest request)
+        [HttpPatch()]
+        public async Task<ActionResult<Item>> ChangeItem(int id, [FromBody] JsonPatchDocument<Item> patch)
         {
-            if (ItemExists(request.Id) && !IsDeleted(request.Id))
+            if (ItemExists(id) && !IsDeleted(id))
             {
-                Item item = _context.Items.Find(request.Id);
-                item.Name = request.Name;
-                item.Description = request.Description;
-                item.Note = request.Note;
+                Item item = _context.Items.Find(id);
+                patch.ApplyTo(item, ModelState);
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                foreach (var op in patch.Operations)
+                {
+                    if (op.path.ToLower() == "/id" || op.path.ToLower() == "/img" || op.path.ToLower() == "/isdeleted")
+                    {
+                        return BadRequest("Toto nelze změnit");
+                    }
+                    if (op.path.ToLower() == "/state" && (int)op.value > 2)
+                    {
+                        return BadRequest("Tento stav neexistuje");
+                    }
+                }
 
                 _context.Entry(item).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
@@ -113,13 +129,23 @@ namespace Rentals.Controllers
         /// <summary>
         /// Nastaví předmět na smazaný
         /// </summary>
-        [HttpPut("{id}")]
-        public async Task<ActionResult<Item>> DeleteItem(int id)
+        [HttpPatch("{id}")]
+        public async Task<ActionResult<Item>> DeleteItem(int id, [FromBody] JsonPatchDocument<Item> patch)
         {
             if (ItemExists(id) && !IsDeleted(id))
             {
                 Item item = _context.Items.Find(id);
-                item.IsDeleted = true;
+                patch.ApplyTo(item, ModelState);
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                if (patch.Operations.Count > 1 || patch.Operations[0].path.ToLower() != "/isdeleted" || (string)patch.Operations[0].value != "true")
+                {
+                    return BadRequest("Toto zde nelze změnit");
+                }
+
                 _context.Entry(item).State = EntityState.Modified;
 
                 //Smazání všech záznamů
@@ -380,16 +406,26 @@ namespace Rentals.Controllers
         /// <summary>
         /// Úprava kategorie
         /// </summary>
-        [HttpPut("Category")]
-        public async Task<ActionResult<Category>> ChangeCategory([FromBody] Category category)
+        [HttpPatch("Category")]
+        public async Task<ActionResult<Category>> ChangeCategory(int id, [FromBody] JsonPatchDocument<Category> patch)
         {
-            if (CategoryExists(category.Id))
+            if (CategoryExists(id))
             {
-                Category oldCategory = _context.Categories.Find(category.Id);
-                oldCategory.Name = category.Name;
-                _context.Entry(oldCategory).State = EntityState.Modified;
+                Category category = _context.Categories.Find(id);
+                patch.ApplyTo(category, ModelState);
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                if (patch.Operations.Count > 1 || patch.Operations[0].path.ToLower() != "/name")
+                {
+                    return BadRequest("Lze změnit pouze jméno");
+                }
+
+                _context.Entry(category).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
-                return Ok(oldCategory);
+                return Ok(category);
             }
             else
             {
