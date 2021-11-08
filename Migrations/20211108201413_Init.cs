@@ -206,11 +206,40 @@ namespace Rentals.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RentingHistoryLogs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RentingId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ChangedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Action = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RentingHistoryLogs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RentingHistoryLogs_Rentings_RentingId",
+                        column: x => x.RentingId,
+                        principalTable: "Rentings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_RentingHistoryLogs_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RentingItems",
                 columns: table => new
                 {
                     ItemId = table.Column<int>(type: "int", nullable: false),
-                    RentingId = table.Column<int>(type: "int", nullable: false)
+                    RentingId = table.Column<int>(type: "int", nullable: false),
+                    Returned = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -260,12 +289,12 @@ namespace Rentals.Migrations
             migrationBuilder.InsertData(
                 table: "Rentings",
                 columns: new[] { "Id", "ApproverId", "End", "Note", "OwnerId", "Start", "State" },
-                values: new object[] { 1, 1, new DateTime(2021, 10, 18, 20, 2, 24, 764, DateTimeKind.Local).AddTicks(4703), null, 2, new DateTime(2021, 10, 13, 20, 2, 24, 767, DateTimeKind.Local).AddTicks(1315), 0 });
+                values: new object[] { 1, 1, new DateTime(2021, 11, 13, 21, 14, 13, 263, DateTimeKind.Local).AddTicks(2130), null, 2, new DateTime(2021, 11, 8, 21, 14, 13, 265, DateTimeKind.Local).AddTicks(2792), 0 });
 
             migrationBuilder.InsertData(
                 table: "RentingItems",
-                columns: new[] { "ItemId", "RentingId" },
-                values: new object[] { 2, 1 });
+                columns: new[] { "ItemId", "RentingId", "Returned" },
+                values: new object[] { 2, 1, false });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccessoryItems_AccessoryId",
@@ -290,6 +319,16 @@ namespace Rentals.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_InventoryItems_UserId",
                 table: "InventoryItems",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RentingHistoryLogs_RentingId",
+                table: "RentingHistoryLogs",
+                column: "RentingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RentingHistoryLogs_UserId",
+                table: "RentingHistoryLogs",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -324,6 +363,9 @@ namespace Rentals.Migrations
 
             migrationBuilder.DropTable(
                 name: "InventoryItems");
+
+            migrationBuilder.DropTable(
+                name: "RentingHistoryLogs");
 
             migrationBuilder.DropTable(
                 name: "RentingItems");

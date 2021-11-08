@@ -24,7 +24,7 @@ namespace Rentals.Controllers
         }
 
         /// <summary>
-        /// Přidání uživatele
+        /// Přidání uživatele - testovací účely
         /// </summary>
         [HttpPost()]
         public async Task<ActionResult<User>> NewUser([FromBody] UserRequest user)
@@ -39,6 +39,7 @@ namespace Rentals.Controllers
                     Username = user.Username
                 };
                 newUser.Trustfulness = 100;
+                if (string.IsNullOrEmpty(newUser.OauthId)) newUser.OauthId = new Guid().ToString();
                 _context.Users.Add(newUser);
                 await _context.SaveChangesAsync();
 
@@ -49,50 +50,6 @@ namespace Rentals.Controllers
                 return BadRequest("Uživatel již existuje");
             }
 
-        }
-
-        /// <summary>
-        /// Smazání uživatele
-        /// </summary>
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<User>> DeleteUser(string id)
-        {
-            if (UserExists(id))
-            {
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
-                _context.Users.Remove(user);
-                await _context.SaveChangesAsync();
-
-                return Ok(user);
-            }
-            else
-            {
-                return NotFound("Tento uživatel neexistuje");
-            }
-            //Nesmaže pokud má záznamy
-        }
-
-        /// <summary>
-        /// Úprava uživatele
-        /// </summary>
-        [HttpPut()]
-        public async Task<ActionResult<User>> ChangeUser([FromBody] UserRequest user)
-        {
-            if (UserExists(user.OauthId))
-            {
-                User modifiedUser = _context.Users.SingleOrDefault(x => x.OauthId == user.OauthId);
-                modifiedUser.FirstName = user.FirstName;
-                modifiedUser.LastName = user.LastName;
-                modifiedUser.Username = user.Username;
-                _context.Entry(modifiedUser).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-
-                return Ok(modifiedUser);
-            }
-            else
-            {
-                return NotFound("Tento uživatel neexistuje");
-            }
         }
 
         /// <summary>

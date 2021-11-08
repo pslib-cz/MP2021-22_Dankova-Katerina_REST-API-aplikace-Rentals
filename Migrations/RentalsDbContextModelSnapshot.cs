@@ -218,11 +218,39 @@ namespace Rentals.Migrations
                         {
                             Id = 1,
                             ApproverId = 1,
-                            End = new DateTime(2021, 10, 19, 17, 6, 25, 583, DateTimeKind.Local).AddTicks(6561),
+                            End = new DateTime(2021, 11, 13, 21, 14, 13, 263, DateTimeKind.Local).AddTicks(2130),
                             OwnerId = 2,
-                            Start = new DateTime(2021, 10, 14, 17, 6, 25, 586, DateTimeKind.Local).AddTicks(4651),
+                            Start = new DateTime(2021, 11, 8, 21, 14, 13, 265, DateTimeKind.Local).AddTicks(2792),
                             State = 0
                         });
+                });
+
+            modelBuilder.Entity("Rentals.Models.DatabaseModel.RentingHistoryLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Action")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ChangedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RentingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RentingId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RentingHistoryLogs");
                 });
 
             modelBuilder.Entity("Rentals.Models.DatabaseModel.RentingItem", b =>
@@ -407,6 +435,25 @@ namespace Rentals.Migrations
                     b.Navigation("Owner");
                 });
 
+            modelBuilder.Entity("Rentals.Models.DatabaseModel.RentingHistoryLog", b =>
+                {
+                    b.HasOne("Rentals.Models.DatabaseModel.Renting", "Renting")
+                        .WithMany("Logs")
+                        .HasForeignKey("RentingId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Rentals.Models.DatabaseModel.User", "User")
+                        .WithMany("Logs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Renting");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Rentals.Models.DatabaseModel.RentingItem", b =>
                 {
                     b.HasOne("Rentals.Models.DatabaseModel.Item", "Item")
@@ -449,6 +496,8 @@ namespace Rentals.Migrations
             modelBuilder.Entity("Rentals.Models.DatabaseModel.Renting", b =>
                 {
                     b.Navigation("Items");
+
+                    b.Navigation("Logs");
                 });
 
             modelBuilder.Entity("Rentals.Models.DatabaseModel.User", b =>
@@ -458,6 +507,8 @@ namespace Rentals.Migrations
                     b.Navigation("Favourite");
 
                     b.Navigation("Inventory");
+
+                    b.Navigation("Logs");
 
                     b.Navigation("Rentings");
                 });

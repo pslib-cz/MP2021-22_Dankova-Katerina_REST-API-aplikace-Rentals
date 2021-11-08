@@ -12,9 +12,17 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Rentals.Context;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using tusdotnet;
+using tusdotnet.Interfaces;
+using tusdotnet.Models;
+using tusdotnet.Models.Configuration;
+using tusdotnet.Stores;
 
 namespace Rentals
 {
@@ -96,6 +104,28 @@ namespace Rentals
 
             app.UseRouting();
 
+            app.UseTus(httpContext => new DefaultTusConfiguration
+            {
+                // This method is called on each request so different configurations can be returned per user, domain, path etc.
+                // Return null to disable tusdotnet for the current request.
+
+                // c:\tusfiles is where to store files
+                Store = new TusDiskStore(@"C:\temp\"),
+                // On what url should we listen for uploads?
+                UrlPath = "/files",
+                MaxAllowedUploadSizeInBytes = 999999999,
+                Events = new Events
+                {
+                    OnFileCompleteAsync = async eventContext =>
+                    {
+                        ITusFile file = await eventContext.GetFileAsync();
+                        Dictionary<string, Metadata> metadata = await file.GetMetadataAsync(eventContext.CancellationToken);
+
+                        await DoSomeProcessing(file, eventContext.CancellationToken, metadata);
+                    }
+                }
+            });
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -113,6 +143,12 @@ namespace Rentals
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+        }
+
+        private async Task DoSomeProcessing(ITusFile file, CancellationToken cancellationToken, Dictionary<string, Metadata> metadata)
+        {
+            var content = await file.GetContentAsync(cancellationToken);
+            var len = content.Length;
         }
     }
 }

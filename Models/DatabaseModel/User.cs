@@ -21,5 +21,6 @@ namespace Rentals.Models.DatabaseModel
         public ICollection<FavouriteItem> Favourite { get; set; }
         public ICollection<CartItem> Cart { get; set; }
         public ICollection<Renting> Rentings { get; set; }
+        public ICollection<RentingHistoryLog> Logs { get; set; }
     }
 }

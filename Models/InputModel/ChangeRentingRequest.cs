@@ -9,5 +9,6 @@ namespace Rentals.Models.InputModel
     {
         public int Id { get; set; }
         public ICollection<int> ReturnedItems { get; set; }
+        public string UserId { get; set; }
     }
 }

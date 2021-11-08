@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Action = Rentals.Models.DatabaseModel.Action;
 
 namespace Rentals.Controllers
 {
@@ -125,6 +126,17 @@ namespace Rentals.Controllers
                         renting.State = RentingState.Ended;
                         renting.End = DateTime.Now;
                     }
+
+                    //Historie - neošetřuji zda uživatel existuje
+                    RentingHistoryLog log = new RentingHistoryLog
+                    {
+                        RentingId = request.Id,
+                        UserId = _context.Users.SingleOrDefault(x => x.OauthId == request.UserId).Id,
+                        ChangedTime = DateTime.Now,
+                        Action = Action.PickedUpItems
+                    };
+                    _context.RentingHistoryLogs.Add(log);
+
                     await _context.SaveChangesAsync();
 
                     return Ok(renting);
@@ -144,7 +156,7 @@ namespace Rentals.Controllers
         /// Zrušení neuskutečněné výpůjčky
         /// </summary>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Renting>> CancelRenting(int id)
+        public async Task<ActionResult<Renting>> CancelRenting(int id, string UserId)
         {
             if (RentingExists(id))
             {
@@ -158,6 +170,17 @@ namespace Rentals.Controllers
                 }
 
                 _context.Remove(renting);
+
+                //Historie - neošetřuji zda uživatel existuje
+                RentingHistoryLog log = new RentingHistoryLog
+                {
+                    RentingId = id,
+                    UserId = _context.Users.SingleOrDefault(x => x.OauthId == UserId).Id,
+                    ChangedTime = DateTime.Now,
+                    Action = Action.Cancel
+                };
+                _context.RentingHistoryLogs.Add(log);
+
                 await _context.SaveChangesAsync();
                 return Ok(renting);
             }
@@ -207,7 +230,7 @@ namespace Rentals.Controllers
         /// Aktivuje výpůjčku
         /// </summary>
         [HttpPut("Activate/{id}")]
-        public async Task<ActionResult<Renting>> ActivateRenting(int id)
+        public async Task<ActionResult<Renting>> ActivateRenting(int id, string UserId)
         {
             var error = 0;
             if (RentingExists(id) && _context.Rentings.SingleOrDefault(x => x.Id == id).State == RentingState.WillStart)
@@ -238,6 +261,17 @@ namespace Rentals.Controllers
 
                 if (error == 0)
                 {
+
+                    //Historie - neošetřuji zda uživatel existuje
+                    RentingHistoryLog log = new RentingHistoryLog
+                    {
+                        RentingId = id,
+                        UserId = _context.Users.SingleOrDefault(x => x.OauthId == UserId).Id,
+                        ChangedTime = DateTime.Now,
+                        Action = Action.Rented
+                    };
+                    _context.RentingHistoryLogs.Add(log);
+
                     await _context.SaveChangesAsync();
                     return Ok(renting);
                 }

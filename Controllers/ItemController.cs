@@ -43,51 +43,6 @@ namespace Rentals.Controllers
             return Ok(Item);
         }
 
-        //Změnit náhled ***
-        //Chyba v kódování, stejně se bude měnit
-        //[HttpPut("{id}/Img")]
-        //public async Task<ActionResult<Item>> AddImg(int id, [FromBody] IFormFile file)
-        //{
-        //    if (ItemExists(id) && !IsDeleted(id))
-        //    {
-        //        Item item = _context.Items.Find(id);
-        //        //Smaže původní soubor
-        //        if (item.Img != Path.Combine("Images", "Placeholder.bmp") && _context.Items.Where(x => x.Img == item.Img).ToList().Count <= 1)
-        //        {
-        //            System.IO.File.Delete(item.Img);
-        //        }
-        //        if (file != null)
-        //        {
-        //            //Uloží obrázek
-        //            if (!_context.Items.Any(x => x.Img == Path.Combine("Images", file.FileName)))
-        //            {
-        //                string filePath = Path.Combine("Images", file.FileName);
-        //                using (Stream fileStream = new FileStream(filePath, FileMode.Create))
-        //                {
-        //                    await file.CopyToAsync(fileStream);
-        //                }
-        //                item.Img = filePath;
-        //            }
-        //            else
-        //            {
-        //                item.Img = Path.Combine("Images", file.FileName);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            item.Img = Path.Combine("Images", "Placeholder.bmp");
-        //        }
-
-        //        _context.Entry(item).State = EntityState.Modified;
-        //        await _context.SaveChangesAsync();
-        //        return Ok(item);
-        //    }
-        //    else
-        //    {
-        //        return NotFound("Tento předmět neexistuje");
-        //    }
-        //}
-
         /// <summary>
         /// Úprava předmětu
         /// </summary>
@@ -281,7 +236,7 @@ namespace Rentals.Controllers
         /// <summary>
         /// Přidá (nevybranné odebere) k předmětu příslušenství
         /// </summary>
-        [HttpPut("Accesories")]
+        [HttpPatch("Accesories")]
         public async Task<ActionResult<Item>> PutAccesories([FromBody] ItemAccesoriesRequest request)
         {
             var errors = 0;

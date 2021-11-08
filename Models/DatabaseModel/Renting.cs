@@ -22,5 +22,6 @@ namespace Rentals.Models.DatabaseModel
         public int ApproverId { get; set; }
         public ICollection<RentingItem> Items { get; set; }
         public RentingState State { get; set; }
+        public ICollection<RentingHistoryLog> Logs { get; set; }
     }
 }

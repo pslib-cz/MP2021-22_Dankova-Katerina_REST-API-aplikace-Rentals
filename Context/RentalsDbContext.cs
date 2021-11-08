@@ -20,6 +20,7 @@ namespace Rentals.Context
         public DbSet<RentingItem> RentingItems { get; set; }
         public DbSet<AccessoryItem> AccessoryItems { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<RentingHistoryLog> RentingHistoryLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -88,6 +89,16 @@ namespace Rentals.Context
                 .HasForeignKey(x => x.OwnerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<RentingHistoryLog>()
+                .HasOne(x => x.Renting)
+                .WithMany(x => x.Logs)
+                .HasForeignKey(x => x.RentingId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<RentingHistoryLog>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.Logs)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Category>().HasData(new Category { Id = 1, Name = "Fotoaparáty" });
             modelBuilder.Entity<Category>().HasData(new Category { Id = 2, Name = "Kamery" });
@@ -96,9 +107,9 @@ namespace Rentals.Context
             modelBuilder.Entity<Item>().HasData(new Item { Id = 2, Name = "Jméno2", Description = "Popis", Note = "Poznámka", IsDeleted = false, State = ItemState.Available });
             modelBuilder.Entity<Item>().HasData(new Item { Id = 3, Name = "Jméno3", Description = "Popis", Note = "Poznámka", State = ItemState.Rented });
 
-            modelBuilder.Entity<Renting>().HasData(new Renting { Id = 1, ApproverId = 1, OwnerId = 2, End = DateTime.Now.AddDays(5), Start = DateTime.Now, State = RentingState.InProgress});
+            modelBuilder.Entity<Renting>().HasData(new Renting { Id = 1, ApproverId = 1, OwnerId = 2, End = DateTime.Now.AddDays(5), Start = DateTime.Now, State = RentingState.InProgress });
 
-            modelBuilder.Entity<RentingItem>().HasData(new RentingItem { ItemId = 2, RentingId = 1});
+            modelBuilder.Entity<RentingItem>().HasData(new RentingItem { ItemId = 2, RentingId = 1 });
 
             modelBuilder.Entity<User>().HasData(new User { Id = 1, FirstName = "Admin" });
             modelBuilder.Entity<User>().HasData(new User { Id = 2, FirstName = "Jan", LastName = "Novák" });
