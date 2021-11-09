@@ -100,6 +100,10 @@ namespace Rentals.Context
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.OauthId)
+                .IsUnique();
+
             modelBuilder.Entity<Category>().HasData(new Category { Id = 1, Name = "Fotoaparáty" });
             modelBuilder.Entity<Category>().HasData(new Category { Id = 2, Name = "Kamery" });
 
