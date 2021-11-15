@@ -193,7 +193,7 @@ namespace Rentals_API_NET6.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("ApproverId")
+                    b.Property<int?>("ApproverId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("End")
@@ -224,9 +224,9 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 1,
                             ApproverId = 1,
-                            End = new DateTime(2021, 11, 16, 19, 15, 19, 226, DateTimeKind.Local).AddTicks(2864),
+                            End = new DateTime(2021, 11, 20, 13, 45, 22, 193, DateTimeKind.Local).AddTicks(5098),
                             OwnerId = 2,
-                            Start = new DateTime(2021, 11, 11, 19, 15, 19, 226, DateTimeKind.Local).AddTicks(2900),
+                            Start = new DateTime(2021, 11, 15, 13, 45, 22, 193, DateTimeKind.Local).AddTicks(5128),
                             State = 0
                         });
                 });
@@ -432,9 +432,7 @@ namespace Rentals_API_NET6.Migrations
                 {
                     b.HasOne("Rentals_API_NET6.Models.DatabaseModel.User", "Approver")
                         .WithMany()
-                        .HasForeignKey("ApproverId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ApproverId");
 
                     b.HasOne("Rentals_API_NET6.Models.DatabaseModel.User", "Owner")
                         .WithMany("Rentings")

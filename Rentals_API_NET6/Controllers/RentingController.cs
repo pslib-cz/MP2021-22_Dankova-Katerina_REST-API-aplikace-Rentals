@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +10,13 @@ using Rentals_API_NET6.Models.OutputModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Action = Rentals_API_NET6.Models.DatabaseModel.Action;
 
 namespace Rentals_API_NET6.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RentingController : ControllerBase
@@ -31,16 +34,18 @@ namespace Rentals_API_NET6.Controllers
         public async Task<ActionResult<Renting>> AddNewRenting([FromBody] RentingRequest renting)
         {
             var error = 0;
-            if (_context.Users.Any(x => x.OauthId == renting.Owner) && _context.Users.Any(x => x.OauthId == renting.Approver))
+            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            //if (_context.Users.Any(x => x.OauthId == userId) && _context.Users.Any(x => x.OauthId == renting.Approver))
+            if (_context.Users.Any(x => x.OauthId == userId))
             {
-                User owner = _context.Users.SingleOrDefault(x => x.OauthId == renting.Owner);
-                User approver = _context.Users.SingleOrDefault(x => x.OauthId == renting.Approver);
+                User owner = _context.Users.SingleOrDefault(x => x.OauthId == userId);
+                //User approver = _context.Users.SingleOrDefault(x => x.OauthId == renting.Approver);
                 Renting newRenting = new Renting
                 {
                     Start = renting.Start,
                     End = renting.End,
                     OwnerId = owner.Id,
-                    ApproverId = approver.Id,
+                    //ApproverId = approver.Id,
                     Note = renting.Note,
                 };
                 newRenting.State = RentingState.WillStart;
@@ -70,13 +75,12 @@ namespace Rentals_API_NET6.Controllers
                 {
                     _context.Rentings.Remove(newRenting);
                     await _context.SaveChangesAsync();
-                    //{error} itemů nelze vypůjčit
-                    return BadRequest($"Vyskytlo se {error} chyb");
+                    return BadRequest();
                 }
             }
             else
             {
-                return NotFound("Tento uživatel neexistuje");
+                return NotFound();
             }
         }
 
@@ -128,10 +132,11 @@ namespace Rentals_API_NET6.Controllers
                     }
 
                     //Historie - neošetřuji zda uživatel existuje
+                    var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
                     RentingHistoryLog log = new RentingHistoryLog
                     {
                         RentingId = request.Id,
-                        UserId = _context.Users.SingleOrDefault(x => x.OauthId == request.UserId).Id,
+                        UserId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id,
                         ChangedTime = DateTime.Now,
                         Action = Action.PickedUpItems
                     };
@@ -143,12 +148,12 @@ namespace Rentals_API_NET6.Controllers
                 }
                 else
                 {
-                    return BadRequest($"Vyskytlo se {errors} chyb");
+                    return BadRequest();
                 }
             }
             else
             {
-                return NotFound("Tato výpůjčka neexistuje");
+                return NotFound();
             }
         }
 
@@ -156,8 +161,9 @@ namespace Rentals_API_NET6.Controllers
         /// Zrušení neuskutečněné výpůjčky
         /// </summary>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Renting>> CancelRenting(int id, string UserId)
+        public async Task<ActionResult<Renting>> CancelRenting(int id)
         {
+            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
             if (RentingExists(id))
             {
                 Renting renting = _context.Rentings.Find(id);
@@ -175,7 +181,7 @@ namespace Rentals_API_NET6.Controllers
                 RentingHistoryLog log = new RentingHistoryLog
                 {
                     RentingId = id,
-                    UserId = _context.Users.SingleOrDefault(x => x.OauthId == UserId).Id,
+                    UserId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id,
                     ChangedTime = DateTime.Now,
                     Action = Action.Cancel
                 };
@@ -186,7 +192,7 @@ namespace Rentals_API_NET6.Controllers
             }
             else
             {
-                return NotFound("Tato výpůjčka neexistuje");
+                return NotFound();
             }
         }
 
@@ -222,7 +228,7 @@ namespace Rentals_API_NET6.Controllers
             }
             else
             {
-                return NotFound("Tento uživatel neexistuje");
+                return NotFound();
             }
         }
 
@@ -230,12 +236,14 @@ namespace Rentals_API_NET6.Controllers
         /// Aktivuje výpůjčku
         /// </summary>
         [HttpPut("Activate/{id}")]
-        public async Task<ActionResult<Renting>> ActivateRenting(int id, string UserId)
+        public async Task<ActionResult<Renting>> ActivateRenting(int id)
         {
+            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
             var error = 0;
             if (RentingExists(id) && _context.Rentings.SingleOrDefault(x => x.Id == id).State == RentingState.WillStart)
             {
                 Renting renting = _context.Rentings.Find(id);
+                renting.ApproverId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id;
                 renting.State = RentingState.InProgress;
                 _context.Entry(renting).State = EntityState.Modified;
 
@@ -261,12 +269,11 @@ namespace Rentals_API_NET6.Controllers
 
                 if (error == 0)
                 {
-
                     //Historie - neošetřuji zda uživatel existuje
                     RentingHistoryLog log = new RentingHistoryLog
                     {
                         RentingId = id,
-                        UserId = _context.Users.SingleOrDefault(x => x.OauthId == UserId).Id,
+                        UserId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id,
                         ChangedTime = DateTime.Now,
                         Action = Action.Rented
                     };
@@ -277,12 +284,12 @@ namespace Rentals_API_NET6.Controllers
                 }
                 else
                 {
-                    return BadRequest($"Vyskytlo se {error} chyb");
+                    return BadRequest();
                 }
             }
             else
             {
-                return BadRequest("Tuto výpůjčku nelze aktivovat nebo neexistuje");
+                return NotFound();
             }
         }
 

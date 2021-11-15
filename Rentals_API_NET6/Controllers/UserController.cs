@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
@@ -8,11 +9,13 @@ using Rentals_API_NET6.Models.InputModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 
 namespace Rentals_API_NET6.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -27,19 +30,16 @@ namespace Rentals_API_NET6.Controllers
         /// Přidání uživatele - testovací účely
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<User>> NewUser([FromBody] UserRequest user)
+        public async Task<ActionResult<User>> NewUser()
         {
-            if (!UserExists(user.OauthId))
+            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            if (!UserExists(userId))
             {
                 User newUser = new User
                 {
-                    OauthId = user.OauthId,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Username = user.Username
+                    OauthId = userId,
                 };
                 newUser.Trustfulness = 100;
-                if (string.IsNullOrEmpty(newUser.OauthId)) newUser.OauthId = new Guid().ToString();
                 _context.Users.Add(newUser);
                 await _context.SaveChangesAsync();
 
@@ -47,26 +47,27 @@ namespace Rentals_API_NET6.Controllers
             }
             else
             {
-                return BadRequest("Uživatel již existuje");
+                return BadRequest();
             }
-
+            return Ok();
         }
 
         /// <summary>
         /// Košík uživatele
         /// </summary>
         [HttpGet("Cart/{id}")]
-        public async Task<ActionResult<IEnumerable<Item>>> GetUserCart(string id)
+        public async Task<ActionResult<IEnumerable<Item>>> GetUserCart()
         {
-            if (UserExists(id))
+            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            if (UserExists(userId))
             {
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
+                User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
                 IEnumerable<Item> items = _context.CartItems.Where(x => x.UserId == user.Id && x.Item.IsDeleted == false).Select(y => y.Item).AsEnumerable();
                 return Ok(items);
             }
             else
             {
-                return NotFound("Tento uživatel neexistuje");
+                return NotFound();
             }
         }
 
@@ -74,26 +75,28 @@ namespace Rentals_API_NET6.Controllers
         /// Přidat do košíku uživatele
         /// </summary>
         [HttpPost("Cart")]
-        public async Task<ActionResult<IEnumerable<Item>>> AddToCart([FromBody] ItemToUserRequest request)
+        public async Task<ActionResult<IEnumerable<Item>>> AddToCart(int Item)
         {
-            if (UserExists(request.OauthId) && _context.Items.Any(x => x.Id == request.Item && x.IsDeleted == false))
+            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            //if (UserExists(request.OauthId) && _context.Items.Any(x => x.Id == Item && x.IsDeleted == false))
+            if (_context.Items.Any(x => x.Id == Item && x.IsDeleted == false))
             {
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == request.OauthId);
-                if (!_context.CartItems.Any(x => x.UserId == user.Id && x.ItemId == request.Item))
+                User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
+                if (!_context.CartItems.Any(x => x.UserId == user.Id && x.ItemId == Item))
                 {
-                    CartItem cartItem = new CartItem { UserId = user.Id, ItemId = request.Item };
+                    CartItem cartItem = new CartItem { UserId = user.Id, ItemId = Item };
                     _context.CartItems.Add(cartItem);
                     await _context.SaveChangesAsync();
-                    return await GetUserCart(user.OauthId);
+                    return await GetUserCart();
                 }
                 else
                 {
-                    return BadRequest("Tento předmět již máš v košíku");
+                    return BadRequest();
                 }
             }
             else
             {
-                return NotFound("Uživatel nebo předmět neexistuje");
+                return NotFound();
             }
         }
 
@@ -101,26 +104,27 @@ namespace Rentals_API_NET6.Controllers
         /// Odebrat z košíku uživatele
         /// </summary>
         [HttpDelete("Cart")]
-        public async Task<ActionResult<IEnumerable<Item>>> RemoveItemfromCart([FromBody] ItemToUserRequest request)
+        public async Task<ActionResult<IEnumerable<Item>>> RemoveItemfromCart(int Item)
         {
-            if (UserExists(request.OauthId))
+            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            if (UserExists(userId))
             {
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == request.OauthId);
-                if (_context.CartItems.Any(x => x.UserId == user.Id && x.ItemId == request.Item))
+                User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
+                if (_context.CartItems.Any(x => x.UserId == user.Id && x.ItemId == Item))
                 {
-                    CartItem cartItem = _context.CartItems.Single(x => x.UserId == user.Id && x.ItemId == request.Item);
+                    CartItem cartItem = _context.CartItems.Single(x => x.UserId == user.Id && x.ItemId == Item);
                     _context.CartItems.Remove(cartItem);
                     await _context.SaveChangesAsync();
-                    return await GetUserCart(user.OauthId);
+                    return await GetUserCart();
                 }
                 else
                 {
-                    return NotFound("Tento předmět není v košíku tohoto uživatele");
+                    return NotFound();
                 }
             }
             else
             {
-                return NotFound("Tento uživatel neexistuje");
+                return NotFound();
             }
 
         }
@@ -129,11 +133,12 @@ namespace Rentals_API_NET6.Controllers
         /// Vypíše všechny oblíbené položky uživatele + filtrování podle kategorie (nepovinné)
         /// </summary>
         [HttpGet("Favourites/{id}")]
-        public async Task<ActionResult<List<Item>>> GetFavourites(string id, int? filter)
+        public async Task<ActionResult<List<Item>>> GetFavourites(int? filter)
         {
-            if (UserExists(id))
+            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            if (UserExists(userId))
             {
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
+                User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
                 Category category = _context.Categories.Find(filter);
                 IEnumerable<Item> Favourites = _context.FavouriteItems.Where(x => x.Item.IsDeleted == false && x.UserId == user.Id).Select(y => y.Item).AsEnumerable();
                 List<Item> List = new();
@@ -156,7 +161,7 @@ namespace Rentals_API_NET6.Controllers
             }
             else
             {
-                return NotFound("Tento uživatel neexistuje");
+                return NotFound();
             }
         }
 
@@ -164,26 +169,27 @@ namespace Rentals_API_NET6.Controllers
         /// Přidat do oblíbených předmětů uživatele
         /// </summary>
         [HttpPost("Favourites")]
-        public async Task<ActionResult<List<Item>>> AddToFavourites([FromBody] ItemToUserRequest request)
+        public async Task<ActionResult<List<Item>>> AddToFavourites(int Item)
         {
-            if (UserExists(request.OauthId) && _context.Items.Any(x => x.Id == request.Item && x.IsDeleted == false))
+            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            if (UserExists(userId) && _context.Items.Any(x => x.Id == Item && x.IsDeleted == false))
             {
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == request.OauthId);
-                if (!_context.FavouriteItems.Any(x => x.UserId == user.Id && x.ItemId == request.Item))
+                User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
+                if (!_context.FavouriteItems.Any(x => x.UserId == user.Id && x.ItemId == Item))
                 {
-                    FavouriteItem favouriteItem = new FavouriteItem { UserId = user.Id, ItemId = request.Item };
+                    FavouriteItem favouriteItem = new FavouriteItem { UserId = user.Id, ItemId = Item };
                     _context.FavouriteItems.Add(favouriteItem);
                     await _context.SaveChangesAsync();
-                    return await GetFavourites(user.OauthId, null);
+                    return await GetFavourites(null);
                 }
                 else
                 {
-                    return BadRequest("Tento předmět máš již v oblíbených");
+                    return BadRequest();
                 }
             }
             else
             {
-                return NotFound("Tento uživatel nebo předmět neexistuje");
+                return NotFound();
             }
         }
 
@@ -191,26 +197,27 @@ namespace Rentals_API_NET6.Controllers
         /// Přidat z oblíbených předmětů uživatele
         /// </summary>
         [HttpDelete("Favourites")]
-        public async Task<ActionResult<List<Item>>> RemoveItemfromFavourites([FromBody] ItemToUserRequest request)
+        public async Task<ActionResult<List<Item>>> RemoveItemfromFavourites(int Item)
         {
-            if (UserExists(request.OauthId))
+            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            if (UserExists(userId))
             {
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == request.OauthId);
-                if (_context.FavouriteItems.Any(x => x.UserId == user.Id && x.ItemId == request.Item))
+                User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
+                if (_context.FavouriteItems.Any(x => x.UserId == user.Id && x.ItemId == Item))
                 {
-                    FavouriteItem favourite = _context.FavouriteItems.Single(x => x.UserId == user.Id && x.ItemId == request.Item);
+                    FavouriteItem favourite = _context.FavouriteItems.Single(x => x.UserId == user.Id && x.ItemId == Item);
                     _context.FavouriteItems.Remove(favourite);
                     await _context.SaveChangesAsync();
-                    return await GetFavourites(user.OauthId, null);
+                    return await GetFavourites(null);
                 }
                 else
                 {
-                    return NotFound("Tento předmět nemáš v oblíbených");
+                    return NotFound();
                 }
             }
             else
             {
-                return NotFound("Tento uživatel neexistuje");
+                return NotFound();
             }
 
         }
@@ -229,17 +236,18 @@ namespace Rentals_API_NET6.Controllers
         /// Vypíše inventář předmětů uživatele
         /// </summary>
         [HttpGet("Inventory/{id}")]
-        public async Task<ActionResult<IEnumerable<Item>>> GetInventoryByUser(string id)
+        public async Task<ActionResult<IEnumerable<Item>>> GetInventoryByUser()
         {
-            if (UserExists(id))
+            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            if (UserExists(userId))
             {
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
+                User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
                 IEnumerable<Item> items = _context.InventoryItems.Where(x => x.UserId == user.Id && x.Item.IsDeleted == false).Select(y => y.Item).AsEnumerable();
                 return Ok(items);
             }
             else
             {
-                return NotFound("Tento uživatel neexistuje");
+                return NotFound();
             }
         }
 

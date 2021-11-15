@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Rentals_API_NET6.Migrations
 {
-    public partial class net6 : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -187,7 +187,7 @@ namespace Rentals_API_NET6.Migrations
                     End = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OwnerId = table.Column<int>(type: "int", nullable: false),
-                    ApproverId = table.Column<int>(type: "int", nullable: false),
+                    ApproverId = table.Column<int>(type: "int", nullable: true),
                     State = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -197,8 +197,7 @@ namespace Rentals_API_NET6.Migrations
                         name: "FK_Rentings_Users_ApproverId",
                         column: x => x.ApproverId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Rentings_Users_OwnerId",
                         column: x => x.OwnerId,
@@ -291,7 +290,7 @@ namespace Rentals_API_NET6.Migrations
             migrationBuilder.InsertData(
                 table: "Rentings",
                 columns: new[] { "Id", "ApproverId", "End", "Note", "OwnerId", "Start", "State" },
-                values: new object[] { 1, 1, new DateTime(2021, 11, 16, 19, 15, 19, 226, DateTimeKind.Local).AddTicks(2864), null, 2, new DateTime(2021, 11, 11, 19, 15, 19, 226, DateTimeKind.Local).AddTicks(2900), 0 });
+                values: new object[] { 1, 1, new DateTime(2021, 11, 20, 13, 45, 22, 193, DateTimeKind.Local).AddTicks(5098), null, 2, new DateTime(2021, 11, 15, 13, 45, 22, 193, DateTimeKind.Local).AddTicks(5128), 0 });
 
             migrationBuilder.InsertData(
                 table: "RentingItems",

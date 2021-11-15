@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Rentals_API_NET6.Context;
 using Rentals_API_NET6.Models.DatabaseModel;
 using Rentals_API_NET6.Models.InputModel;
+using System.Security.Claims;
 
 namespace Rentals_API_NET6.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ItemController : ControllerBase
@@ -54,13 +57,9 @@ namespace Rentals_API_NET6.Controllers
 
                 foreach (var op in patch.Operations)
                 {
-                    if (op.path.ToLower() == "/id" || op.path.ToLower() == "/img" || op.path.ToLower() == "/isdeleted")
+                    if (op.path.ToLower() == "/id" || op.path.ToLower() == "/img" || op.path.ToLower() == "/isdeleted" || (op.path.ToLower() == "/state" && (int)op.value > 2))
                     {
-                        return BadRequest("Toto nelze změnit");
-                    }
-                    if (op.path.ToLower() == "/state" && (int)op.value > 2)
-                    {
-                        return BadRequest("Tento stav neexistuje");
+                        return BadRequest();
                     }
                 }
 
@@ -70,7 +69,7 @@ namespace Rentals_API_NET6.Controllers
             }
             else
             {
-                return NotFound("Tento předmět neexistuje");
+                return NotFound();
             }
         }
 
@@ -91,7 +90,7 @@ namespace Rentals_API_NET6.Controllers
                 }
                 if (patch.Operations.Count > 1 || patch.Operations[0].path.ToLower() != "/isdeleted" || (string)patch.Operations[0].value != "true")
                 {
-                    return BadRequest("Toto zde nelze změnit");
+                    return BadRequest();
                 }
 
                 _context.Entry(item).State = EntityState.Modified;
@@ -121,7 +120,7 @@ namespace Rentals_API_NET6.Controllers
             }
             else
             {
-                return NotFound("Tento předmět neexistuje");
+                return NotFound();
             }
         }
 
@@ -148,7 +147,7 @@ namespace Rentals_API_NET6.Controllers
             }
             else
             {
-                return NotFound("Tento předmět neexistuje");
+                return NotFound();
             }
 
         }
@@ -171,13 +170,13 @@ namespace Rentals_API_NET6.Controllers
                 }
                 catch (Exception)
                 {
-                    return BadRequest("Náhled nenalezen");
+                    return BadRequest();
                 }
 
             }
             else
             {
-                return NotFound("Tento předmět neexistuje");
+                return NotFound();
             }
 
         }
@@ -185,6 +184,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše všechny předměty + filtrování podle kategorie (nepovinné)
         /// </summary>
+        [Authorize(Policy = "Administrator")]
         [HttpGet]
         public async Task<ActionResult<List<Item>>> GetAllItems(int? category)
         {
@@ -222,7 +222,7 @@ namespace Rentals_API_NET6.Controllers
             }
             else
             {
-                return NotFound("Tento předmět neexistuje");
+                return NotFound();
             }
         }
 
@@ -257,12 +257,12 @@ namespace Rentals_API_NET6.Controllers
                 }
                 else
                 {
-                    return BadRequest($"U {errors} předmětů se vyskytla chyba");
+                    return BadRequest();
                 }
             }
             else
             {
-                return BadRequest("Tento předmět neexistuje");
+                return NotFound();
             }
 
         }
@@ -280,7 +280,7 @@ namespace Rentals_API_NET6.Controllers
             }
             else
             {
-                return NotFound("Tento předmět neexistuje");
+                return NotFound();
             }
         }
 
@@ -317,12 +317,12 @@ namespace Rentals_API_NET6.Controllers
                 }
                 else
                 {
-                    return BadRequest($"U {errors} kategorií se vyskytla chyba");
+                    return BadRequest();
                 }
             }
             else
             {
-                return BadRequest("Tento předmět neexistuje");
+                return NotFound();
             }
         }
 
@@ -368,7 +368,7 @@ namespace Rentals_API_NET6.Controllers
                 }
                 if (patch.Operations.Count > 1 || patch.Operations[0].path.ToLower() != "/name")
                 {
-                    return BadRequest("Lze změnit pouze jméno");
+                    return BadRequest();
                 }
 
                 _context.Entry(category).State = EntityState.Modified;
@@ -377,7 +377,7 @@ namespace Rentals_API_NET6.Controllers
             }
             else
             {
-                return NotFound("Tato kategrie neexistuje");
+                return NotFound();
             }
         }
 
@@ -403,7 +403,7 @@ namespace Rentals_API_NET6.Controllers
             }
             else
             {
-                return NotFound("Tato kategorie neexistuje");
+                return NotFound();
             }
         }
 
