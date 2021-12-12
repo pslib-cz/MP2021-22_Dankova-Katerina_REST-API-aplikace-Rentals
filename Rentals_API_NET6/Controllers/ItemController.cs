@@ -74,6 +74,36 @@ namespace Rentals_API_NET6.Controllers
         }
 
         /// <summary>
+        /// Uložení názvu souboru do databáze
+        /// </summary>
+        [HttpPatch("Upload/{id}")]
+        public async Task<ActionResult<Item>> SaveFileName(int id, [FromBody] JsonPatchDocument<Item> patch)
+        {
+            if (ItemExists(id) && !IsDeleted(id))
+            {
+                Item item = _context.Items.Find(id);
+                patch.ApplyTo(item, ModelState);
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                if (patch.Operations.Count > 1 || patch.Operations[0].path.ToLower() != "/img")
+                {
+                    return BadRequest();
+                }
+
+                _context.Entry(item).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return Ok(item);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
         /// Nastaví předmět na smazaný
         /// </summary>
         [HttpPatch("Delete/{id}")]
@@ -184,7 +214,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše všechny předměty + filtrování podle kategorie (nepovinné)
         /// </summary>
-        [Authorize(Policy = "Administrator")]
+        //[Authorize(Policy = "Administrator")]
         [HttpGet]
         public async Task<ActionResult<List<Item>>> GetAllItems(int? category)
         {
