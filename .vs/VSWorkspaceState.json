@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Rentals_API_NET6",
+    "\\Rentals_API_NET6\\Models",
+    "\\Rentals_API_NET6\\Models\\DatabaseModel"
   ],
-  "SelectedNode": "\\Rentals_API_NET6.sln",
+  "SelectedNode": "\\Rentals_API_NET6\\Models\\DatabaseModel\\States.cs",
   "PreviewInSolutionExplorer": false
 }
