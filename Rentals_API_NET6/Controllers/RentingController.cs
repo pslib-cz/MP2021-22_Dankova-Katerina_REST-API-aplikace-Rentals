@@ -16,7 +16,7 @@ using Action = Rentals_API_NET6.Models.DatabaseModel.Action;
 
 namespace Rentals_API_NET6.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RentingController : ControllerBase

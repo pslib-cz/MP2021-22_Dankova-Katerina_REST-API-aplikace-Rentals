@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Rentals_API_NET6.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase

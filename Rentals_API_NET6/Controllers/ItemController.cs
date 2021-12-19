@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace Rentals_API_NET6.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ItemController : ControllerBase
@@ -32,7 +32,7 @@ namespace Rentals_API_NET6.Controllers
                 Description = request.Description,
                 Note = request.Note,
                 State = ItemState.Available,
-                Img = Path.Combine("Images", "Placeholder.bmp")
+                Img = "Placeholder.bmp"
             };
             _context.Items.Add(Item);
             await _context.SaveChangesAsync();
@@ -57,40 +57,10 @@ namespace Rentals_API_NET6.Controllers
 
                 foreach (var op in patch.Operations)
                 {
-                    if (op.path.ToLower() == "/id" || op.path.ToLower() == "/img" || op.path.ToLower() == "/isdeleted" || (op.path.ToLower() == "/state" && (int)op.value > 2))
+                    if (op.path.ToLower() == "/id" || op.path.ToLower() == "/isdeleted" || (op.path.ToLower() == "/state" && (int)op.value > 2))
                     {
                         return BadRequest();
                     }
-                }
-
-                _context.Entry(item).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-                return Ok(item);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
-        /// <summary>
-        /// Uložení názvu souboru do databáze
-        /// </summary>
-        [HttpPatch("Upload/{id}")]
-        public async Task<ActionResult<Item>> SaveFileName(int id, [FromBody] JsonPatchDocument<Item> patch)
-        {
-            if (ItemExists(id) && !IsDeleted(id))
-            {
-                Item item = _context.Items.Find(id);
-                patch.ApplyTo(item, ModelState);
-
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-                if (patch.Operations.Count > 1 || patch.Operations[0].path.ToLower() != "/img")
-                {
-                    return BadRequest();
                 }
 
                 _context.Entry(item).State = EntityState.Modified;
@@ -190,7 +160,7 @@ namespace Rentals_API_NET6.Controllers
         {
             if (ItemExists(id) && !IsDeleted(id))
             {
-                var path = _context.Items.Find(id).Img;
+                var path = $"Images/{_context.Items.Find(id).Img}";
 
                 //Exituje fyzicky soubor?
                 try
