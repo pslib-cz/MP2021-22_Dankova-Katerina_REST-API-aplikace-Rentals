@@ -35,6 +35,623 @@ namespace Rentals_API_NET6.Migrations
                     b.HasIndex("AccessoryId");
 
                     b.ToTable("AccessoryItems");
+
+                    b.HasData(
+                        new
+                        {
+                            ItemId = 11,
+                            AccessoryId = 13
+                        },
+                        new
+                        {
+                            ItemId = 12,
+                            AccessoryId = 13
+                        },
+                        new
+                        {
+                            ItemId = 11,
+                            AccessoryId = 14
+                        },
+                        new
+                        {
+                            ItemId = 12,
+                            AccessoryId = 14
+                        },
+                        new
+                        {
+                            ItemId = 11,
+                            AccessoryId = 17
+                        },
+                        new
+                        {
+                            ItemId = 12,
+                            AccessoryId = 17
+                        },
+                        new
+                        {
+                            ItemId = 11,
+                            AccessoryId = 24
+                        },
+                        new
+                        {
+                            ItemId = 12,
+                            AccessoryId = 24
+                        },
+                        new
+                        {
+                            ItemId = 11,
+                            AccessoryId = 25
+                        },
+                        new
+                        {
+                            ItemId = 12,
+                            AccessoryId = 25
+                        },
+                        new
+                        {
+                            ItemId = 11,
+                            AccessoryId = 46
+                        },
+                        new
+                        {
+                            ItemId = 12,
+                            AccessoryId = 46
+                        },
+                        new
+                        {
+                            ItemId = 11,
+                            AccessoryId = 48
+                        },
+                        new
+                        {
+                            ItemId = 12,
+                            AccessoryId = 48
+                        },
+                        new
+                        {
+                            ItemId = 11,
+                            AccessoryId = 49
+                        },
+                        new
+                        {
+                            ItemId = 12,
+                            AccessoryId = 49
+                        },
+                        new
+                        {
+                            ItemId = 11,
+                            AccessoryId = 50
+                        },
+                        new
+                        {
+                            ItemId = 12,
+                            AccessoryId = 50
+                        },
+                        new
+                        {
+                            ItemId = 11,
+                            AccessoryId = 51
+                        },
+                        new
+                        {
+                            ItemId = 12,
+                            AccessoryId = 51
+                        },
+                        new
+                        {
+                            ItemId = 11,
+                            AccessoryId = 52
+                        },
+                        new
+                        {
+                            ItemId = 12,
+                            AccessoryId = 52
+                        },
+                        new
+                        {
+                            ItemId = 11,
+                            AccessoryId = 63
+                        },
+                        new
+                        {
+                            ItemId = 12,
+                            AccessoryId = 63
+                        },
+                        new
+                        {
+                            ItemId = 11,
+                            AccessoryId = 64
+                        },
+                        new
+                        {
+                            ItemId = 12,
+                            AccessoryId = 64
+                        },
+                        new
+                        {
+                            ItemId = 11,
+                            AccessoryId = 69
+                        },
+                        new
+                        {
+                            ItemId = 12,
+                            AccessoryId = 69
+                        },
+                        new
+                        {
+                            ItemId = 15,
+                            AccessoryId = 69
+                        },
+                        new
+                        {
+                            ItemId = 16,
+                            AccessoryId = 69
+                        },
+                        new
+                        {
+                            ItemId = 15,
+                            AccessoryId = 72
+                        },
+                        new
+                        {
+                            ItemId = 16,
+                            AccessoryId = 72
+                        },
+                        new
+                        {
+                            ItemId = 15,
+                            AccessoryId = 44
+                        },
+                        new
+                        {
+                            ItemId = 16,
+                            AccessoryId = 44
+                        },
+                        new
+                        {
+                            ItemId = 15,
+                            AccessoryId = 61
+                        },
+                        new
+                        {
+                            ItemId = 16,
+                            AccessoryId = 61
+                        },
+                        new
+                        {
+                            ItemId = 15,
+                            AccessoryId = 62
+                        },
+                        new
+                        {
+                            ItemId = 16,
+                            AccessoryId = 62
+                        },
+                        new
+                        {
+                            ItemId = 15,
+                            AccessoryId = 49
+                        },
+                        new
+                        {
+                            ItemId = 16,
+                            AccessoryId = 49
+                        },
+                        new
+                        {
+                            ItemId = 15,
+                            AccessoryId = 53
+                        },
+                        new
+                        {
+                            ItemId = 16,
+                            AccessoryId = 53
+                        },
+                        new
+                        {
+                            ItemId = 15,
+                            AccessoryId = 54
+                        },
+                        new
+                        {
+                            ItemId = 16,
+                            AccessoryId = 54
+                        },
+                        new
+                        {
+                            ItemId = 15,
+                            AccessoryId = 55
+                        },
+                        new
+                        {
+                            ItemId = 16,
+                            AccessoryId = 55
+                        },
+                        new
+                        {
+                            ItemId = 15,
+                            AccessoryId = 48
+                        },
+                        new
+                        {
+                            ItemId = 16,
+                            AccessoryId = 48
+                        },
+                        new
+                        {
+                            ItemId = 15,
+                            AccessoryId = 46
+                        },
+                        new
+                        {
+                            ItemId = 16,
+                            AccessoryId = 46
+                        },
+                        new
+                        {
+                            ItemId = 15,
+                            AccessoryId = 17
+                        },
+                        new
+                        {
+                            ItemId = 16,
+                            AccessoryId = 17
+                        },
+                        new
+                        {
+                            ItemId = 15,
+                            AccessoryId = 22
+                        },
+                        new
+                        {
+                            ItemId = 16,
+                            AccessoryId = 22
+                        },
+                        new
+                        {
+                            ItemId = 15,
+                            AccessoryId = 13
+                        },
+                        new
+                        {
+                            ItemId = 16,
+                            AccessoryId = 13
+                        },
+                        new
+                        {
+                            ItemId = 15,
+                            AccessoryId = 14
+                        },
+                        new
+                        {
+                            ItemId = 16,
+                            AccessoryId = 14
+                        },
+                        new
+                        {
+                            ItemId = 18,
+                            AccessoryId = 47
+                        },
+                        new
+                        {
+                            ItemId = 19,
+                            AccessoryId = 47
+                        },
+                        new
+                        {
+                            ItemId = 20,
+                            AccessoryId = 47
+                        },
+                        new
+                        {
+                            ItemId = 18,
+                            AccessoryId = 57
+                        },
+                        new
+                        {
+                            ItemId = 19,
+                            AccessoryId = 57
+                        },
+                        new
+                        {
+                            ItemId = 20,
+                            AccessoryId = 57
+                        },
+                        new
+                        {
+                            ItemId = 18,
+                            AccessoryId = 58
+                        },
+                        new
+                        {
+                            ItemId = 19,
+                            AccessoryId = 58
+                        },
+                        new
+                        {
+                            ItemId = 20,
+                            AccessoryId = 58
+                        },
+                        new
+                        {
+                            ItemId = 18,
+                            AccessoryId = 59
+                        },
+                        new
+                        {
+                            ItemId = 19,
+                            AccessoryId = 59
+                        },
+                        new
+                        {
+                            ItemId = 20,
+                            AccessoryId = 59
+                        },
+                        new
+                        {
+                            ItemId = 21,
+                            AccessoryId = 57
+                        },
+                        new
+                        {
+                            ItemId = 21,
+                            AccessoryId = 58
+                        },
+                        new
+                        {
+                            ItemId = 21,
+                            AccessoryId = 59
+                        },
+                        new
+                        {
+                            ItemId = 21,
+                            AccessoryId = 47
+                        },
+                        new
+                        {
+                            ItemId = 24,
+                            AccessoryId = 40
+                        },
+                        new
+                        {
+                            ItemId = 25,
+                            AccessoryId = 40
+                        },
+                        new
+                        {
+                            ItemId = 24,
+                            AccessoryId = 41
+                        },
+                        new
+                        {
+                            ItemId = 25,
+                            AccessoryId = 41
+                        },
+                        new
+                        {
+                            ItemId = 24,
+                            AccessoryId = 42
+                        },
+                        new
+                        {
+                            ItemId = 25,
+                            AccessoryId = 42
+                        },
+                        new
+                        {
+                            ItemId = 24,
+                            AccessoryId = 43
+                        },
+                        new
+                        {
+                            ItemId = 25,
+                            AccessoryId = 43
+                        },
+                        new
+                        {
+                            ItemId = 38,
+                            AccessoryId = 40
+                        },
+                        new
+                        {
+                            ItemId = 38,
+                            AccessoryId = 41
+                        },
+                        new
+                        {
+                            ItemId = 38,
+                            AccessoryId = 42
+                        },
+                        new
+                        {
+                            ItemId = 38,
+                            AccessoryId = 43
+                        },
+                        new
+                        {
+                            ItemId = 39,
+                            AccessoryId = 40
+                        },
+                        new
+                        {
+                            ItemId = 39,
+                            AccessoryId = 41
+                        },
+                        new
+                        {
+                            ItemId = 39,
+                            AccessoryId = 42
+                        },
+                        new
+                        {
+                            ItemId = 39,
+                            AccessoryId = 43
+                        },
+                        new
+                        {
+                            ItemId = 45,
+                            AccessoryId = 46
+                        },
+                        new
+                        {
+                            ItemId = 45,
+                            AccessoryId = 48
+                        },
+                        new
+                        {
+                            ItemId = 45,
+                            AccessoryId = 49
+                        },
+                        new
+                        {
+                            ItemId = 61,
+                            AccessoryId = 53
+                        },
+                        new
+                        {
+                            ItemId = 62,
+                            AccessoryId = 53
+                        },
+                        new
+                        {
+                            ItemId = 61,
+                            AccessoryId = 54
+                        },
+                        new
+                        {
+                            ItemId = 62,
+                            AccessoryId = 54
+                        },
+                        new
+                        {
+                            ItemId = 61,
+                            AccessoryId = 55
+                        },
+                        new
+                        {
+                            ItemId = 62,
+                            AccessoryId = 55
+                        },
+                        new
+                        {
+                            ItemId = 63,
+                            AccessoryId = 50
+                        },
+                        new
+                        {
+                            ItemId = 64,
+                            AccessoryId = 50
+                        },
+                        new
+                        {
+                            ItemId = 63,
+                            AccessoryId = 51
+                        },
+                        new
+                        {
+                            ItemId = 64,
+                            AccessoryId = 51
+                        },
+                        new
+                        {
+                            ItemId = 63,
+                            AccessoryId = 52
+                        },
+                        new
+                        {
+                            ItemId = 64,
+                            AccessoryId = 52
+                        },
+                        new
+                        {
+                            ItemId = 65,
+                            AccessoryId = 26
+                        },
+                        new
+                        {
+                            ItemId = 65,
+                            AccessoryId = 27
+                        },
+                        new
+                        {
+                            ItemId = 65,
+                            AccessoryId = 28
+                        },
+                        new
+                        {
+                            ItemId = 65,
+                            AccessoryId = 29
+                        },
+                        new
+                        {
+                            ItemId = 65,
+                            AccessoryId = 93
+                        },
+                        new
+                        {
+                            ItemId = 65,
+                            AccessoryId = 94
+                        },
+                        new
+                        {
+                            ItemId = 65,
+                            AccessoryId = 95
+                        },
+                        new
+                        {
+                            ItemId = 65,
+                            AccessoryId = 30
+                        },
+                        new
+                        {
+                            ItemId = 65,
+                            AccessoryId = 31
+                        },
+                        new
+                        {
+                            ItemId = 65,
+                            AccessoryId = 32
+                        },
+                        new
+                        {
+                            ItemId = 65,
+                            AccessoryId = 33
+                        },
+                        new
+                        {
+                            ItemId = 65,
+                            AccessoryId = 34
+                        },
+                        new
+                        {
+                            ItemId = 65,
+                            AccessoryId = 35
+                        },
+                        new
+                        {
+                            ItemId = 65,
+                            AccessoryId = 36
+                        },
+                        new
+                        {
+                            ItemId = 65,
+                            AccessoryId = 37
+                        },
+                        new
+                        {
+                            ItemId = 76,
+                            AccessoryId = 78
+                        },
+                        new
+                        {
+                            ItemId = 77,
+                            AccessoryId = 78
+                        },
+                        new
+                        {
+                            ItemId = 80,
+                            AccessoryId = 60
+                        });
                 });
 
             modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.CartItem", b =>
@@ -71,7 +688,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Těla fotoaparátů"
+                            Name = "Přístroje"
                         },
                         new
                         {
@@ -81,17 +698,17 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 3,
-                            Name = "Fotoaparáty"
-                        },
-                        new
-                        {
-                            Id = 4,
                             Name = "Stativy"
                         },
                         new
                         {
-                            Id = 5,
+                            Id = 4,
                             Name = "Příslušenství"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Audiotechnika"
                         },
                         new
                         {
@@ -118,62 +735,92 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             ItemId = 1,
-                            CategoryId = 3
+                            CategoryId = 1
                         },
                         new
                         {
                             ItemId = 2,
-                            CategoryId = 3
-                        },
-                        new
-                        {
-                            ItemId = 3,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 4,
-                            CategoryId = 5
+                            CategoryId = 1
                         },
                         new
                         {
                             ItemId = 5,
-                            CategoryId = 3
+                            CategoryId = 1
                         },
                         new
                         {
                             ItemId = 6,
-                            CategoryId = 3
+                            CategoryId = 1
                         },
                         new
                         {
                             ItemId = 7,
-                            CategoryId = 3
+                            CategoryId = 1
                         },
                         new
                         {
                             ItemId = 8,
-                            CategoryId = 3
+                            CategoryId = 1
                         },
                         new
                         {
                             ItemId = 9,
-                            CategoryId = 3
+                            CategoryId = 1
                         },
                         new
                         {
                             ItemId = 10,
-                            CategoryId = 3
+                            CategoryId = 1
                         },
                         new
                         {
                             ItemId = 11,
-                            CategoryId = 3
+                            CategoryId = 1
                         },
                         new
                         {
                             ItemId = 12,
-                            CategoryId = 3
+                            CategoryId = 1
+                        },
+                        new
+                        {
+                            ItemId = 15,
+                            CategoryId = 1
+                        },
+                        new
+                        {
+                            ItemId = 16,
+                            CategoryId = 1
+                        },
+                        new
+                        {
+                            ItemId = 18,
+                            CategoryId = 1
+                        },
+                        new
+                        {
+                            ItemId = 19,
+                            CategoryId = 1
+                        },
+                        new
+                        {
+                            ItemId = 20,
+                            CategoryId = 1
+                        },
+                        new
+                        {
+                            ItemId = 21,
+                            CategoryId = 1
+                        },
+                        new
+                        {
+                            ItemId = 45,
+                            CategoryId = 1
+                        },
+                        new
+                        {
+                            ItemId = 80,
+                            CategoryId = 1
                         },
                         new
                         {
@@ -187,148 +834,8 @@ namespace Rentals_API_NET6.Migrations
                         },
                         new
                         {
-                            ItemId = 15,
-                            CategoryId = 3
-                        },
-                        new
-                        {
-                            ItemId = 16,
-                            CategoryId = 3
-                        },
-                        new
-                        {
                             ItemId = 17,
                             CategoryId = 2
-                        },
-                        new
-                        {
-                            ItemId = 18,
-                            CategoryId = 3
-                        },
-                        new
-                        {
-                            ItemId = 19,
-                            CategoryId = 3
-                        },
-                        new
-                        {
-                            ItemId = 20,
-                            CategoryId = 3
-                        },
-                        new
-                        {
-                            ItemId = 21,
-                            CategoryId = 3
-                        },
-                        new
-                        {
-                            ItemId = 22,
-                            CategoryId = 6
-                        },
-                        new
-                        {
-                            ItemId = 23,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 24,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 25,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 26,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 27,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 28,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 29,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 30,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 31,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 32,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 33,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 34,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 35,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 36,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 37,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 38,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 39,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 40,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 41,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 42,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 43,
-                            CategoryId = 5
                         },
                         new
                         {
@@ -337,123 +844,8 @@ namespace Rentals_API_NET6.Migrations
                         },
                         new
                         {
-                            ItemId = 45,
-                            CategoryId = 3
-                        },
-                        new
-                        {
                             ItemId = 46,
                             CategoryId = 2
-                        },
-                        new
-                        {
-                            ItemId = 47,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 48,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 49,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 50,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 51,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 52,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 53,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 54,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 55,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 56,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 57,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 58,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 59,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 60,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 61,
-                            CategoryId = 6
-                        },
-                        new
-                        {
-                            ItemId = 62,
-                            CategoryId = 6
-                        },
-                        new
-                        {
-                            ItemId = 63,
-                            CategoryId = 6
-                        },
-                        new
-                        {
-                            ItemId = 64,
-                            CategoryId = 6
-                        },
-                        new
-                        {
-                            ItemId = 65,
-                            CategoryId = 6
-                        },
-                        new
-                        {
-                            ItemId = 66,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 67,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 68,
-                            CategoryId = 6
                         },
                         new
                         {
@@ -462,28 +854,23 @@ namespace Rentals_API_NET6.Migrations
                         },
                         new
                         {
+                            ItemId = 79,
+                            CategoryId = 2
+                        },
+                        new
+                        {
                             ItemId = 70,
-                            CategoryId = 4
+                            CategoryId = 3
                         },
                         new
                         {
                             ItemId = 71,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 72,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 73,
-                            CategoryId = 6
+                            CategoryId = 3
                         },
                         new
                         {
                             ItemId = 74,
-                            CategoryId = 4
+                            CategoryId = 3
                         },
                         new
                         {
@@ -492,48 +879,273 @@ namespace Rentals_API_NET6.Migrations
                         },
                         new
                         {
-                            ItemId = 76,
-                            CategoryId = 6
-                        },
-                        new
-                        {
-                            ItemId = 77,
-                            CategoryId = 6
-                        },
-                        new
-                        {
                             ItemId = 78,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 79,
-                            CategoryId = 2
-                        },
-                        new
-                        {
-                            ItemId = 80,
                             CategoryId = 3
                         },
                         new
                         {
                             ItemId = 81,
-                            CategoryId = 4
+                            CategoryId = 3
                         },
                         new
                         {
                             ItemId = 82,
-                            CategoryId = 4
+                            CategoryId = 3
                         },
                         new
                         {
                             ItemId = 83,
-                            CategoryId = 4
+                            CategoryId = 3
                         },
                         new
                         {
                             ItemId = 84,
+                            CategoryId = 3
+                        },
+                        new
+                        {
+                            ItemId = 87,
+                            CategoryId = 3
+                        },
+                        new
+                        {
+                            ItemId = 22,
                             CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 23,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 24,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 25,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 26,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 27,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 28,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 29,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 30,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 31,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 32,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 33,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 34,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 35,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 36,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 37,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 38,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 39,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 40,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 41,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 42,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 43,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 47,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 48,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 49,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 50,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 51,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 52,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 53,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 54,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 55,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 56,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 57,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 58,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 59,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 60,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 61,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 62,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 63,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 64,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 65,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 66,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 67,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 72,
+                            CategoryId = 4
+                        },
+                        new
+                        {
+                            ItemId = 3,
+                            CategoryId = 5
+                        },
+                        new
+                        {
+                            ItemId = 4,
+                            CategoryId = 5
+                        },
+                        new
+                        {
+                            ItemId = 76,
+                            CategoryId = 5
+                        },
+                        new
+                        {
+                            ItemId = 77,
+                            CategoryId = 5
                         },
                         new
                         {
@@ -547,8 +1159,13 @@ namespace Rentals_API_NET6.Migrations
                         },
                         new
                         {
-                            ItemId = 87,
-                            CategoryId = 4
+                            ItemId = 68,
+                            CategoryId = 6
+                        },
+                        new
+                        {
+                            ItemId = 73,
+                            CategoryId = 6
                         },
                         new
                         {
@@ -721,6 +1338,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 11,
+                            Img = "EOS650D_5a40.jpg",
                             IsDeleted = false,
                             Name = "Fotoaparát Canon EOS 650D",
                             Note = "Bez očnice",
@@ -729,6 +1347,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 12,
+                            Img = "EOS650D_5a40.jpg",
                             IsDeleted = false,
                             Name = "Fotoaparát Canon EOS 650D",
                             Note = "Bez očnice",
@@ -737,6 +1356,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 13,
+                            Img = "Sigma18-50_f918.jpg",
                             IsDeleted = false,
                             Name = "Objektiv SIGMA 17-50 mm 1:2.8",
                             Note = "Prstenec transfokátoru má vůli",
@@ -745,6 +1365,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 14,
+                            Img = "Sigma18-50_f918.jpg",
                             IsDeleted = false,
                             Name = "Objektiv SIGMA 17-50 mm 1:2.8",
                             Note = "Určen primárně do ateliéru!",
@@ -753,6 +1374,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 15,
+                            Img = "EOS70D_b624.jpg",
                             IsDeleted = false,
                             Name = "Fotoaparát Canon EOS 70D",
                             State = 0
@@ -760,6 +1382,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 16,
+                            Img = "EOS70D_b624.jpg",
                             IsDeleted = false,
                             Name = "Fotoaparát Canon EOS 70D",
                             Note = "Určen primárně do ateliéru!",
@@ -769,6 +1392,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 17,
                             Description = "FullFrame objektiv",
+                            Img = "Sigma24-70_7bde.jpg",
                             IsDeleted = false,
                             Name = "Objektiv SIGMA 24-70 mm 1:2.8",
                             State = 0
@@ -801,6 +1425,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 21,
                             Description = "F1.8/f1.9-57 (černá)",
+                            Img = "SonyHDR-CX320_6824.jpg",
                             IsDeleted = false,
                             Name = "Videokamera Sony HDR-CX320",
                             State = 0
@@ -808,6 +1433,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 22,
+                            Img = "gripC70D_2982.jpg",
                             IsDeleted = false,
                             Name = "Bateriový grip Phottix BG 70D",
                             State = 0
@@ -823,6 +1449,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 24,
                             Description = "90 MB/s",
+                            Img = "SDSanDisk64GB_715b.jpg",
                             IsDeleted = false,
                             Name = "SD karta SanDisk 64 GB",
                             State = 0
@@ -831,6 +1458,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 25,
                             Description = "90 MB/s",
+                            Img = "SDSanDisk64GB_715b.jpg",
                             IsDeleted = false,
                             Name = "SD karta SanDisk 64 GB",
                             State = 0
@@ -971,6 +1599,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 44,
                             Description = "FullFrame",
+                            Img = "CanonEF70-200_b2f2.jpg",
                             IsDeleted = false,
                             Name = "Objektiv Canon ULTRASONIC 70-200 mm F4",
                             State = 0
@@ -987,6 +1616,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 46,
                             Description = "FullFrame",
+                            Img = "CanonEF50_0055.jpg",
                             IsDeleted = false,
                             Name = "Objektiv Canon 50 mm F1.8",
                             State = 0
@@ -1019,6 +1649,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 50,
                             Description = "k 650D (šedá)",
+                            Img = "BattLPE8_fd96.jpg",
                             IsDeleted = false,
                             Name = "Baterie Canon LP E8 1120mAh",
                             State = 0
@@ -1027,6 +1658,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 51,
                             Description = "k 650D (šedá)",
+                            Img = "BattLPE8_fd96.jpg",
                             IsDeleted = false,
                             Name = "Baterie Canon LP E8 1120mAh",
                             State = 0
@@ -1035,6 +1667,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 52,
                             Description = "k 650D (šedá)",
+                            Img = "BattLPE8_fd96.jpg",
                             IsDeleted = false,
                             Name = "Baterie Canon LP E8 1120mAh",
                             State = 0
@@ -1043,6 +1676,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 53,
                             Description = "k C70D, C5D",
+                            Img = "BattLPE6_03b5.jpg",
                             IsDeleted = false,
                             Name = "Baterie Canon LP E6 1800mAh",
                             State = 0
@@ -1051,6 +1685,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 54,
                             Description = "k C70D, C5D",
+                            Img = "BattLPE6_03b5.jpg",
                             IsDeleted = false,
                             Name = "Baterie Canon LP E6 1800mAh",
                             State = 0
@@ -1059,6 +1694,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 55,
                             Description = "k C70D, C5D",
+                            Img = "BattLPE6_03b5.jpg",
                             IsDeleted = false,
                             Name = "Baterie Canon LP E6 1800mAh",
                             State = 0
@@ -1107,6 +1743,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 61,
                             Description = "k C70D, C5D",
+                            Img = "BattChgLC-E6E_27dd.jpg",
                             IsDeleted = false,
                             Name = "Nabíječka baterií Canon LC E6E",
                             State = 0
@@ -1115,6 +1752,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 62,
                             Description = "k C70D, C5D",
+                            Img = "BattChgLC-E6E_27dd.jpg",
                             IsDeleted = false,
                             Name = "Nabíječka baterií Canon LC E6E",
                             State = 0
@@ -1123,6 +1761,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 63,
                             Description = "k C650D",
+                            Img = "BattChgLC-E8E_02bb.jpg",
                             IsDeleted = false,
                             Name = "Nabíječka baterií Canon LC E8E",
                             State = 0
@@ -1131,6 +1770,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 64,
                             Description = "k C650D",
+                            Img = "BattChgLC-E8E_02bb.jpg",
                             IsDeleted = false,
                             Name = "Nabíječka baterií Canon LC E8E",
                             State = 0
@@ -1170,6 +1810,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 69,
                             Description = "(Kz)",
+                            Img = "Sigma18-200_cd74.jpg",
                             IsDeleted = false,
                             Name = "Objektiv SIGMA 18-200 mm 1:3.5-6.3",
                             State = 0
@@ -1177,6 +1818,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 70,
+                            Img = "StativVelbonC-600_b14c.jpg",
                             IsDeleted = false,
                             Name = "Stativ Velbon C-600",
                             Note = "xxx 2308",
@@ -1185,6 +1827,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 71,
+                            Img = "StativVelbonC-600_b14c.jpg",
                             IsDeleted = false,
                             Name = "Stativ Velbon C-600",
                             State = 0
@@ -1193,6 +1836,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 72,
                             Description = "95 MB/s",
+                            Img = "SDLexar64GB_e4c2.jpg",
                             IsDeleted = false,
                             Name = "SD karta Lexar 64GB",
                             State = 0
@@ -1201,6 +1845,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 73,
                             Description = "Rezervace místnosti se studiovými světly a odpalovačem.",
+                            Img = "atelier_a27b.jpg",
                             IsDeleted = false,
                             Name = "Ateliér B210",
                             State = 0
@@ -1209,6 +1854,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 74,
                             Description = "Hlava má vůli; nevhodný na video",
+                            Img = "hamaStar62_914d.jpg",
                             IsDeleted = false,
                             Name = "Stativ Hama Star 62",
                             State = 0
@@ -1217,6 +1863,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 75,
                             Description = "Steadicam Camtree Wonder-3",
+                            Img = "flycam_fd0f.jpg",
                             IsDeleted = false,
                             Name = "Flycam HD-3000",
                             State = 0
@@ -1224,6 +1871,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 76,
+                            Img = "ZoomH1_2ffd.jpg",
                             IsDeleted = false,
                             Name = "Rekordér Zoom H1",
                             State = 0
@@ -1231,6 +1879,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 77,
+                            Img = "ZoomH1_2ffd.jpg",
                             IsDeleted = false,
                             Name = "Rekordér Zoom H1",
                             State = 0
@@ -1238,6 +1887,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 78,
+                            Img = "MiniTripod_92cc.jpg",
                             IsDeleted = false,
                             Name = "stativ MiniTripod plochý",
                             State = 0
@@ -1245,6 +1895,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 79,
+                            Img = "Sigma30_0caf.jpg",
                             IsDeleted = false,
                             Name = "Objektiv Sigma 30mm/F1.4",
                             State = 0
@@ -1253,6 +1904,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 80,
                             Description = "F1,5 f2,84-34,1mm (včetně akumulátoru)",
+                            Img = "Panasonic_HC-X920_7ce7.jpg",
                             IsDeleted = false,
                             Name = "Videokamera Panasonic HC-X920",
                             State = 0
@@ -1260,6 +1912,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 81,
+                            Img = "RigSpider_ea93.jpg",
                             IsDeleted = false,
                             Name = "Stativ Rig Spider FT-10",
                             State = 0
@@ -1267,6 +1920,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 82,
+                            Img = "RigSpider_ea93.jpg",
                             IsDeleted = false,
                             Name = "Stativ Rig Spider FT-10",
                             State = 0
@@ -1274,6 +1928,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 83,
+                            Img = "RigSpider_ea93.jpg",
                             IsDeleted = false,
                             Name = "Stativ Rig Spider FT-10",
                             State = 0
@@ -1282,6 +1937,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 84,
                             Description = "(kulová hlava)",
+                            Img = "StativMS-007H_3d14.jpg",
                             IsDeleted = false,
                             Name = "Stativ video MS-007H",
                             Note = "poškozen zip",
@@ -1291,6 +1947,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 85,
                             Description = "bez předzesilovače, induktivní",
+                            Img = "MikrofonKlopový_97b3.jpg",
                             IsDeleted = false,
                             Name = "Mikrofon klopový",
                             State = 0
@@ -1299,6 +1956,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 86,
                             Description = "bez předzesilovače, induktivní",
+                            Img = "MikrofonKlopový_97b3.jpg",
                             IsDeleted = false,
                             Name = "Mikrofon klopový",
                             State = 0
@@ -1306,6 +1964,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 87,
+                            Img = "SonyVct-d680rm_9d51.jpg",
                             IsDeleted = false,
                             Name = "Stativ Sony VCT-D680RM",
                             State = 0
@@ -1314,6 +1973,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 88,
                             Description = "Tento výrobek je zkonstruován z tenkého plátu ocelového plechu, který má patinovaný povrch. Díky tomuto hrubému povrchu působí výrobek surově, ale zároveň kvůli jednoduché až primitivní konstrukci nabývá minimalistického a elegantního vzhledu. ",
+                            Img = "tn-techtips_f9dd.jpg",
                             IsDeleted = true,
                             Name = "zkušební předmět",
                             Note = "první předmět",
@@ -1323,6 +1983,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 89,
                             Description = "Tento výrobek je zkonstruován z tenkého plátu ocelového plechu, který má patinovaný povrch. Díky tomuto hrubému povrchu působí výrobek surově, ale zároveň kvůli jednoduché až primitivní konstrukci nabývá minimalistického a elegantního vzhledu. ",
+                            Img = "kitt-design-illustration_73ad.png",
                             IsDeleted = true,
                             Name = "zkušební předmět",
                             Note = "druhý předmět",
@@ -1332,6 +1993,7 @@ namespace Rentals_API_NET6.Migrations
                         {
                             Id = 90,
                             Description = "Tento výrobek je zkonstruován z tenkého plátu ocelového plechu, který má patinovaný povrch. Díky tomuto hrubému povrchu působí výrobek surově, ale zároveň kvůli jednoduché až primitivní konstrukci nabývá minimalistického a elegantního vzhledu. ",
+                            Img = "tn-techtips_f9dd.jpg",
                             IsDeleted = true,
                             Name = "zkušební předmět",
                             State = 0
@@ -1350,6 +2012,27 @@ namespace Rentals_API_NET6.Migrations
                             Description = "Tento výrobek je zkonstruován z tenkého plátu ocelového plechu, který má patinovaný povrch. Díky tomuto hrubému povrchu působí výrobek surově, ale zároveň kvůli jednoduché konstrukci nabývá minimalistického a elegantního vzhledu. ",
                             IsDeleted = true,
                             Name = "Fiktivní předmět",
+                            State = 0
+                        },
+                        new
+                        {
+                            Id = 93,
+                            IsDeleted = true,
+                            Name = "Alkalická baterie GP 2700 1.2 V AA",
+                            State = 0
+                        },
+                        new
+                        {
+                            Id = 94,
+                            IsDeleted = true,
+                            Name = "Alkalická baterie GP 2700 1.2 V AA",
+                            State = 0
+                        },
+                        new
+                        {
+                            Id = 95,
+                            IsDeleted = true,
+                            Name = "Alkalická baterie GP 2700 1.2 V AA",
                             State = 0
                         });
                 });
@@ -1434,6 +2117,28 @@ namespace Rentals_API_NET6.Migrations
                     b.HasIndex("RentingId");
 
                     b.ToTable("RentingItems");
+                });
+
+            modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.UploadedFile", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ContentType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OriginalName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("Size")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("Uploaded")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.User", b =>

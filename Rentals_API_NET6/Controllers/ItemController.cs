@@ -32,8 +32,9 @@ namespace Rentals_API_NET6.Controllers
                 Description = request.Description,
                 Note = request.Note,
                 State = ItemState.Available,
-                Img = "Placeholder.bmp"
+                Img = request.Img == null ? "Placeholder.bmp" : request.Img
             };
+
             _context.Items.Add(Item);
             await _context.SaveChangesAsync();
             return Ok(Item);
@@ -57,7 +58,7 @@ namespace Rentals_API_NET6.Controllers
 
                 foreach (var op in patch.Operations)
                 {
-                    if (op.path.ToLower() == "/id" || op.path.ToLower() == "/isdeleted" || (op.path.ToLower() == "/state" && (int)op.value > 2))
+                    if (op.path.ToLower() == "/id" || op.path.ToLower() == "/isdeleted")
                     {
                         return BadRequest();
                     }
@@ -160,7 +161,19 @@ namespace Rentals_API_NET6.Controllers
         {
             if (ItemExists(id) && !IsDeleted(id))
             {
-                var path = $"Images/{_context.Items.Find(id).Img}";
+                var item = _context.Items.Find(id);
+                var path = "";
+
+                //soubor s příponou nebo bez?
+                if (item.Img.Contains('.'))
+                {
+                    path = $"Images/{item.Img}";
+                }
+                else
+                {
+                    UploadedFile file = _context.Files.FirstOrDefault(x => x.Id == item.Img);
+                    path = $"Images/{file.Id}";
+                }
 
                 //Exituje fyzicky soubor?
                 try
