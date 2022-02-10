@@ -9,20 +9,23 @@ using System.Security.Claims;
 
 namespace Rentals_API_NET6.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ItemController : ControllerBase
     {
         private readonly RentalsDbContext _context;
-        public ItemController(RentalsDbContext context)
+        private readonly IAuthorizationService _authorizationService;
+        public ItemController(RentalsDbContext context, IAuthorizationService authorizationService)
         {
             _context = context;
+            _authorizationService = authorizationService;
         }
 
         /// <summary>
         /// Vytvoření nového předmětu
         /// </summary>
+        [Authorize(Policy = "Administrator")]
         [HttpPost]
         public async Task<ActionResult<Item>> AddNewItem([FromBody] ItemRequest request)
         {
@@ -43,9 +46,11 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Úprava předmětu
         /// </summary>
+        [Authorize(Policy = "Employee")]
         [HttpPatch("{id}")]
         public async Task<ActionResult<Item>> ChangeItem(int id, [FromBody] JsonPatchDocument<Item> patch)
         {
+            var isAdmin = await _authorizationService.AuthorizeAsync(User, "Administrator");
             if (ItemExists(id) && !IsDeleted(id))
             {
                 Item item = _context.Items.Find(id);
@@ -62,6 +67,10 @@ namespace Rentals_API_NET6.Controllers
                     {
                         return BadRequest();
                     }
+                    else if ((op.path.ToLower() != "note" || op.path.ToLower() != "description") && !isAdmin.Succeeded)
+                    {
+                        return Unauthorized();
+                    }
                 }
 
                 _context.Entry(item).State = EntityState.Modified;
@@ -77,6 +86,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Nastaví předmět na smazaný
         /// </summary>
+        [Authorize(Policy = "Administrator")]
         [HttpPatch("Delete/{id}")]
         public async Task<ActionResult<Item>> DeleteItem(int id, [FromBody] JsonPatchDocument<Item> patch)
         {
@@ -128,6 +138,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše všechny předměty, které jsou smazané (pro případ navrácení)
         /// </summary>
+        [Authorize(Policy = "Employee")]
         [HttpGet("Deleted")]
         public async Task<ActionResult<IEnumerable<Item>>> DeletedItems()
         {
@@ -242,6 +253,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Přidá (nevybranné odebere) k předmětu příslušenství
         /// </summary>
+        [Authorize(Policy = "Administrator")]
         [HttpPatch("Accesories")]
         public async Task<ActionResult<Item>> PutAccesories([FromBody] ItemAccesoriesRequest request)
         {
@@ -300,6 +312,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Přidá (nevybranné odebere) k předmětu kategorie
         /// </summary>
+        [Authorize(Policy = "Administrator")]
         [HttpPut("Categories")]
         public async Task<ActionResult<Item>> PutCategories([FromBody] ItemPropertyRequest request)
         {
@@ -354,6 +367,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vytvoří novou kategorii
         /// </summary>
+        [Authorize(Policy = "Administrator")]
         [HttpPost("Category")]
         public async Task<ActionResult<Category>> AddNewCategory(string name)
         {
@@ -367,6 +381,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Úprava kategorie
         /// </summary>
+        [Authorize(Policy = "Administrator")]
         [HttpPatch("Category")]
         public async Task<ActionResult<Category>> ChangeCategory(int id, [FromBody] JsonPatchDocument<Category> patch)
         {
@@ -397,6 +412,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Smaže kategorii
         /// </summary>
+        [Authorize(Policy = "Administrator")]
         [HttpDelete("Category/{id}")]
         public async Task<ActionResult<Category>> DeleteCategory(int id)
         {

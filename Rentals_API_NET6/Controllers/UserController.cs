@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Rentals_API_NET6.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -225,6 +225,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše všechny uživatele
         /// </summary>
+        [Authorize(Policy = "Employee")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
         {
@@ -235,6 +236,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše inventář předmětů uživatele
         /// </summary>
+        [Authorize(Policy = "Employee")]
         [HttpGet("Inventory/{id}")]
         public async Task<ActionResult<IEnumerable<Item>>> GetInventoryByUser()
         {

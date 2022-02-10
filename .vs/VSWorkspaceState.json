@@ -2,7 +2,6 @@
   "ExpandedNodes": [
     "",
     "\\Rentals_API_NET6",
-    "\\Rentals_API_NET6\\ClientApp",
     "\\Rentals_API_NET6\\Context",
     "\\Rentals_API_NET6\\Controllers",
     "\\Rentals_API_NET6\\Models",
@@ -10,5 +9,6 @@
     "\\Rentals_API_NET6\\Models\\InputModel",
     "\\Rentals_API_NET6\\Services"
   ],
+  "SelectedNode": "\\Rentals_API_NET6\\Services\\FileStorageManager.cs",
   "PreviewInSolutionExplorer": false
 }

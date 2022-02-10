@@ -16,7 +16,7 @@ using Action = Rentals_API_NET6.Models.DatabaseModel.Action;
 
 namespace Rentals_API_NET6.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RentingController : ControllerBase
@@ -87,6 +87,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vrácení předmětů dané výpůjčky
         /// </summary>
+        [Authorize(Policy = "Employee")]
         [HttpPut]
         public async Task<ActionResult<Renting>> ChangeRenting([FromBody] ChangeRentingRequest request)
         {
@@ -131,7 +132,6 @@ namespace Rentals_API_NET6.Controllers
                         renting.End = DateTime.Now;
                     }
 
-                    //Historie - neošetřuji zda uživatel existuje
                     var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
                     RentingHistoryLog log = new RentingHistoryLog
                     {
@@ -160,6 +160,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Zrušení neuskutečněné výpůjčky
         /// </summary>
+        [Authorize(Policy = "Employee")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Renting>> CancelRenting(int id)
         {
@@ -199,6 +200,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše všechny výpůjčky + filtrování podle stavu (nepovinné)
         /// </summary>
+        [Authorize(Policy = "Employee")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Renting>>> GetAllRentings(RentingState? state)
         {
@@ -217,6 +219,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše všechny výpůjčky daného uživatele
         /// </summary>
+        [Authorize(Policy = "Employee")]
         [HttpGet("RentingsByUser/{id}")]
         public async Task<ActionResult<IEnumerable<Renting>>> GetRentings(string id)
         {
@@ -235,6 +238,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Aktivuje výpůjčku
         /// </summary>
+        [Authorize(Policy = "Employee")]
         [HttpPut("Activate/{id}")]
         public async Task<ActionResult<Renting>> ActivateRenting(int id)
         {
