@@ -29,7 +29,6 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Kontrola uživatele
         /// </summary>
-        [Authorize]
         [HttpPost("User")]
         public async Task<ActionResult<User>> NewUser(UserRequest request)
         {
