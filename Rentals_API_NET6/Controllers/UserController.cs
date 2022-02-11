@@ -27,30 +27,29 @@ namespace Rentals_API_NET6.Controllers
         }
 
         /// <summary>
-        /// Přidání uživatele - testovací účely
+        /// Kontrola uživatele
         /// </summary>
-        [HttpPost]
-        public async Task<ActionResult<User>> NewUser()
+        [Authorize]
+        [HttpPost("User")]
+        public async Task<ActionResult<User>> NewUser(UserRequest request)
         {
-            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-            if (!UserExists(userId))
+            var id = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            if (_context.Users.SingleOrDefault(x => x.OauthId == id) == null)
             {
-                User newUser = new User
+                User user = new User
                 {
-                    OauthId = userId,
+                    OauthId = id,
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    Username = request.Username,
                 };
-                newUser.Trustfulness = 100;
-                _context.Users.Add(newUser);
-                await _context.SaveChangesAsync();
 
-                return Ok(newUser);
-            }
-            else
-            {
-                return BadRequest();
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
             }
             return Ok();
         }
+
 
         /// <summary>
         /// Košík uživatele
