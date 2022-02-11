@@ -208,7 +208,6 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše všechny předměty + filtrování podle kategorie (nepovinné)
         /// </summary>
-        //[Authorize(Policy = "Administrator")]
         [HttpGet]
         public async Task<ActionResult<List<Item>>> GetAllItems(int? category)
         {

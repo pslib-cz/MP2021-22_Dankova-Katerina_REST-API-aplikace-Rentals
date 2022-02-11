@@ -21,9 +21,11 @@ namespace Rentals_API_NET6.Controllers
     public class UserController : ControllerBase
     {
         private readonly RentalsDbContext _context;
-        public UserController(RentalsDbContext context)
+        private readonly IAuthorizationService _authorizationService;
+        public UserController(RentalsDbContext context, IAuthorizationService authorizationService)
         {
             _context = context;
+            _authorizationService = authorizationService;
         }
 
         /// <summary>
@@ -53,7 +55,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Košík uživatele
         /// </summary>
-        [HttpGet("Cart/{id}")]
+        [HttpGet("Cart")]
         public async Task<ActionResult<IEnumerable<Item>>> GetUserCart()
         {
             var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
@@ -76,7 +78,6 @@ namespace Rentals_API_NET6.Controllers
         public async Task<ActionResult<IEnumerable<Item>>> AddToCart(int Item)
         {
             var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-            //if (UserExists(request.OauthId) && _context.Items.Any(x => x.Id == Item && x.IsDeleted == false))
             if (_context.Items.Any(x => x.Id == Item && x.IsDeleted == false))
             {
                 User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
@@ -130,7 +131,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše všechny oblíbené položky uživatele + filtrování podle kategorie (nepovinné)
         /// </summary>
-        [HttpGet("Favourites/{id}")]
+        [HttpGet("Favourites")]
         public async Task<ActionResult<List<Item>>> GetFavourites(int? filter)
         {
             var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
@@ -192,7 +193,7 @@ namespace Rentals_API_NET6.Controllers
         }
 
         /// <summary>
-        /// Přidat z oblíbených předmětů uživatele
+        /// Odebrat z oblíbených předmětů uživatele
         /// </summary>
         [HttpDelete("Favourites")]
         public async Task<ActionResult<List<Item>>> RemoveItemfromFavourites(int Item)
@@ -236,12 +237,13 @@ namespace Rentals_API_NET6.Controllers
         /// </summary>
         [Authorize(Policy = "Employee")]
         [HttpGet("Inventory/{id}")]
-        public async Task<ActionResult<IEnumerable<Item>>> GetInventoryByUser()
+        public async Task<ActionResult<IEnumerable<Item>>> GetInventoryByUser(string id)
         {
+            User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
+            var isEmployee = await _authorizationService.AuthorizeAsync(User, "Employee");
             var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-            if (UserExists(userId))
+            if (UserExists(userId) || isEmployee.Succeeded)
             {
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
                 IEnumerable<Item> items = _context.InventoryItems.Where(x => x.UserId == user.Id && x.Item.IsDeleted == false).Select(y => y.Item).AsEnumerable();
                 return Ok(items);
             }
