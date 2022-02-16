@@ -74,7 +74,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Přidat do košíku uživatele
         /// </summary>
-        [HttpPost("Cart")]
+        [HttpPost("Cart/{Item}")]
         public async Task<ActionResult<IEnumerable<Item>>> AddToCart(int Item)
         {
             var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
@@ -102,7 +102,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Odebrat z košíku uživatele
         /// </summary>
-        [HttpDelete("Cart")]
+        [HttpDelete("Cart/{Item}")]
         public async Task<ActionResult<IEnumerable<Item>>> RemoveItemfromCart(int Item)
         {
             var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
@@ -131,7 +131,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše všechny oblíbené položky uživatele + filtrování podle kategorie (nepovinné)
         /// </summary>
-        [HttpGet("Favourites")]
+        [HttpGet("Favourites/{filter}")]
         public async Task<ActionResult<List<Item>>> GetFavourites(int? filter)
         {
             var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
@@ -167,7 +167,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Přidat do oblíbených předmětů uživatele
         /// </summary>
-        [HttpPost("Favourites")]
+        [HttpPost("Favourites/{Item}")]
         public async Task<ActionResult<List<Item>>> AddToFavourites(int Item)
         {
             var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
@@ -195,7 +195,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Odebrat z oblíbených předmětů uživatele
         /// </summary>
-        [HttpDelete("Favourites")]
+        [HttpDelete("Favourites/{Item}")]
         public async Task<ActionResult<List<Item>>> RemoveItemfromFavourites(int Item)
         {
             var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
