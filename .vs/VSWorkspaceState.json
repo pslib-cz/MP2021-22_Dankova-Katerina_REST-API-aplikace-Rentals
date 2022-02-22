@@ -8,6 +8,6 @@
     "\\Rentals_API_NET6\\Models\\DatabaseModel",
     "\\Rentals_API_NET6\\Services"
   ],
-  "SelectedNode": "\\Rentals_API_NET6\\Program.cs",
+  "SelectedNode": "\\Rentals_API_NET6\\Controllers\\UserController.cs",
   "PreviewInSolutionExplorer": false
 }
