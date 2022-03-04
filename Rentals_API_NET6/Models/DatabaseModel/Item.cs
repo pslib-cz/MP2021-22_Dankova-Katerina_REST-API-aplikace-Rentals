@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Rentals_API_NET6.Models.DatabaseModel
 {
@@ -13,7 +14,9 @@ namespace Rentals_API_NET6.Models.DatabaseModel
         public bool IsDeleted { get; set; }
         public ItemState State { get; set; }
         public ICollection<RentingItem> Rentings { get; set; }
-        public ICollection<CategoryItem> Categories { get; set; }
+        [ForeignKey("Category")]
+        public int? CategoryId { get; set; }
+        public Category Category { get; set; }
         public ICollection<InventoryItem> Inventories { get; set; }
         public ICollection<FavouriteItem> Favourites { get; set; }
         public ICollection<AccessoryItem> Accessories { get; set; }

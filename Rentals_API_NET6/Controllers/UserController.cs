@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Rentals_API_NET6.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -131,7 +131,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše všechny oblíbené položky uživatele + filtrování podle kategorie (nepovinné)
         /// </summary>
-        [HttpGet("Favourites/{filter}")]
+        [HttpGet("Favourites")]
         public async Task<ActionResult<List<Item>>> GetFavourites(int? filter)
         {
             var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
@@ -143,12 +143,9 @@ namespace Rentals_API_NET6.Controllers
                 List<Item> List = new();
                 if (filter != null)
                 {
-                    foreach (var item in Favourites)
+                    foreach (var item in Favourites.Where(x => x.CategoryId == filter))
                     {
-                        if (_context.CategoryItems.Any(x => x.ItemId == item.Id && x.CategoryId == filter))
-                        {
-                            List.Add(item);
-                        }
+                        List.Add(item);
                     }
                 }
                 else

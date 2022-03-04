@@ -8,6 +8,6 @@
     "\\Rentals_API_NET6\\Models\\DatabaseModel",
     "\\Rentals_API_NET6\\Services"
   ],
-  "SelectedNode": "\\Rentals_API_NET6\\appsettings.json",
+  "SelectedNode": "\\Rentals_API_NET6\\Program.cs",
   "PreviewInSolutionExplorer": false
 }

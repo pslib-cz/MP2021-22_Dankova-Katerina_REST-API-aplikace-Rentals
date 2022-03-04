@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace Rentals_API_NET6.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ItemController : ControllerBase
@@ -111,10 +111,10 @@ namespace Rentals_API_NET6.Controllers
                 {
                     _context.CartItems.Remove(del);
                 }
-                foreach (var del in _context.CategoryItems.Where(x => x.ItemId == id))
-                {
-                    _context.CategoryItems.Remove(del);
-                }
+                //foreach (var del in _context.CategoryItems.Where(x => x.ItemId == id))
+                //{
+                //    _context.CategoryItems.Remove(del);
+                //}
 
                 foreach (var del in _context.FavouriteItems.Where(x => x.ItemId == id))
                 {
@@ -216,12 +216,9 @@ namespace Rentals_API_NET6.Controllers
 
             if (category != null)
             {
-                foreach (var item in Items)
+                foreach (var item in Items.Where(x => x.CategoryId == category))
                 {
-                    if (_context.CategoryItems.Any(x => x.ItemId == item.Id && x.CategoryId == category))
-                    {
-                        List.Add(item);
-                    }
+                    List.Add(item);
                 }
             }
             else
@@ -294,62 +291,62 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše všechny kategorie, které předmět obsahuje
         /// </summary>
-        [HttpGet("Categories/{id}")]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategories(int id)
-        {
-            if (ItemExists(id) && !IsDeleted(id))
-            {
-                IEnumerable<Category> categories = _context.CategoryItems.Where(x => x.ItemId == id).Select(y => y.Category).AsEnumerable();
-                return Ok(categories);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
+        //[HttpGet("Categories/{id}")]
+        //public async Task<ActionResult<IEnumerable<Category>>> GetCategories(int id)
+        //{
+        //    if (ItemExists(id) && !IsDeleted(id))
+        //    {
+        //        IEnumerable<Category> categories = _context.CategoryItems.Where(x => x.ItemId == id).Select(y => y.Category).AsEnumerable();
+        //        return Ok(categories);
+        //    }
+        //    else
+        //    {
+        //        return NotFound();
+        //    }
+        //}
 
         /// <summary>
         /// Přidá (nevybranné odebere) k předmětu kategorie
         /// </summary>
-        [Authorize(Policy = "Administrator")]
-        [HttpPut("Categories")]
-        public async Task<ActionResult<Item>> PutCategories([FromBody] ItemPropertyRequest request)
-        {
-            var errors = 0;
-            if (ItemExists(request.Id) && !IsDeleted(request.Id))
-            {
-                foreach (var item in _context.CategoryItems.Where(x => x.ItemId == request.Id).ToList())
-                {
-                    _context.Remove(item);
-                }
+        //[Authorize(Policy = "Administrator")]
+        //[HttpPut("Categories")]
+        //public async Task<ActionResult<Item>> PutCategories([FromBody] ItemPropertyRequest request)
+        //{
+        //    var errors = 0;
+        //    if (ItemExists(request.Id) && !IsDeleted(request.Id))
+        //    {
+        //        foreach (var item in _context.CategoryItems.Where(x => x.ItemId == request.Id).ToList())
+        //        {
+        //            _context.Remove(item);
+        //        }
 
-                foreach (var item in request.Categories)
-                {
-                    if (_context.Categories.Any(x => x.Id == item))
-                    {
-                        _context.CategoryItems.Add(new CategoryItem { ItemId = request.Id, CategoryId = item });
-                    }
-                    else
-                    {
-                        errors++;
-                    }
-                }
+        //        foreach (var item in request.Categories)
+        //        {
+        //            if (_context.Categories.Any(x => x.Id == item))
+        //            {
+        //                _context.CategoryItems.Add(new CategoryItem { ItemId = request.Id, CategoryId = item });
+        //            }
+        //            else
+        //            {
+        //                errors++;
+        //            }
+        //        }
 
-                if (errors == 0)
-                {
-                    await _context.SaveChangesAsync();
-                    return Ok(_context.Items.Find(request.Id));
-                }
-                else
-                {
-                    return BadRequest();
-                }
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
+        //        if (errors == 0)
+        //        {
+        //            await _context.SaveChangesAsync();
+        //            return Ok(_context.Items.Find(request.Id));
+        //        }
+        //        else
+        //        {
+        //            return BadRequest();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return NotFound();
+        //    }
+        //}
 
         /* -- Kategorie --*/
 
@@ -420,9 +417,9 @@ namespace Rentals_API_NET6.Controllers
                 Category category = _context.Categories.Find(id);
 
                 //odebrat itemy z dané kategorie
-                foreach (var item in _context.CategoryItems.Where(x => x.CategoryId == id).ToList())
+                foreach (var item in _context.Items.Where(x => x.CategoryId == id))
                 {
-                    _context.Remove(item);
+                    item.CategoryId = null;
                 }
 
                 _context.Remove(category);
