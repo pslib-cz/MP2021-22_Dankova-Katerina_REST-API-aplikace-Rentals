@@ -5,11 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using Rentals_API_NET6.Context;
 using Rentals_API_NET6.Models.DatabaseModel;
 using Rentals_API_NET6.Models.InputModel;
+using Rentals_API_NET6.Models.OutputModel;
 using System.Security.Claims;
 
 namespace Rentals_API_NET6.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ItemController : ControllerBase
@@ -172,11 +173,15 @@ namespace Rentals_API_NET6.Controllers
         {
             if (ItemExists(id) && !IsDeleted(id))
             {
-                var item = _context.Items.Find(id);
+                var item = _context.Items.FirstOrDefault(x => x.Id == id);
                 var path = "";
 
                 //soubor s příponou nebo bez?
-                if (item.Img.Contains('.'))
+                if (item.Img == null)
+                {
+                    path = "Images/Placeholder.jpg";
+                }
+                else if (item.Img.Contains('.'))
                 {
                     path = $"Images/{item.Img}";
                 }
@@ -196,13 +201,11 @@ namespace Rentals_API_NET6.Controllers
                 {
                     return BadRequest();
                 }
-
             }
             else
             {
                 return NotFound();
             }
-
         }
 
         /// <summary>
@@ -347,6 +350,46 @@ namespace Rentals_API_NET6.Controllers
         //        return NotFound();
         //    }
         //}
+
+        [HttpGet("IsFavourite/{id}")]
+        public async Task<ActionResult<bool>> IsItemFavourite(int id)
+        {
+            if (ItemExists(id) && !IsDeleted(id))
+            {
+                var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+                var result = _context.FavouriteItems.SingleOrDefault(x => x.User.OauthId == userId && x.ItemId == id) != null;
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet("{id}/Dates")]
+        public async Task<ActionResult<List<DatesResponse>>> GetItemDates(int id)
+        {
+            if (ItemExists(id) && !IsDeleted(id))
+            {
+                List<DatesResponse> dates = new();
+                foreach (var item in _context.RentingItems.Where(x => x.ItemId == id).Select(x => x.Renting))
+                {
+                    dates.Add(new DatesResponse
+                    {
+                        Id = item.Id,
+                        State = item.State,
+                        Start = item.Start,
+                        End = item.End,
+                        Title = _context.Users.SingleOrDefault(x => x.Id == item.OwnerId).FullName
+                    });
+                }
+                return Ok(dates);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
 
         /* -- Kategorie --*/
 

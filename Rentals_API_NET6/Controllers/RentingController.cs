@@ -22,9 +22,11 @@ namespace Rentals_API_NET6.Controllers
     public class RentingController : ControllerBase
     {
         private readonly RentalsDbContext _context;
-        public RentingController(RentalsDbContext context)
+        private readonly IAuthorizationService _authorizationService;
+        public RentingController(RentalsDbContext context, IAuthorizationService authorizationService)
         {
             _context = context;
+            _authorizationService = authorizationService;
         }
 
         /// <summary>
@@ -64,6 +66,12 @@ namespace Rentals_API_NET6.Controllers
                     {
                         error++;
                     }
+                }
+
+                //Smazání košíku
+                foreach (var item in _context.CartItems.Where(x => x.User.OauthId == userId))
+                {
+                    _context.Remove(item);
                 }
 
                 if (error == 0)
@@ -176,7 +184,8 @@ namespace Rentals_API_NET6.Controllers
                     _context.RentingItems.Remove(item);
                 }
 
-                _context.Remove(renting);
+                renting.State = RentingState.Cancelled;
+                _context.Entry(renting).State = EntityState.Modified;
 
                 //Historie - neošetřuji zda uživatel existuje
                 RentingHistoryLog log = new RentingHistoryLog
@@ -207,11 +216,11 @@ namespace Rentals_API_NET6.Controllers
             IEnumerable<Renting> rentings = Enumerable.Empty<Renting>();
             if (state != null)
             {
-                rentings = _context.Rentings.Include(o => o.Owner).Where(x => x.State == state).AsEnumerable();
+                rentings = _context.Rentings.Include(o => o.Owner).Include(x => x.Items).Where(x => x.State == state).AsEnumerable();
             }
             else
             {
-                rentings = _context.Rentings.Include(o => o.Owner).AsEnumerable();
+                rentings = _context.Rentings.Include(o => o.Owner).Include(x => x.Items).AsEnumerable();
             }
             return Ok(rentings);
         }
@@ -219,14 +228,15 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše všechny výpůjčky daného uživatele
         /// </summary>
-        [Authorize(Policy = "Employee")]
         [HttpGet("RentingsByUser/{id}")]
         public async Task<ActionResult<IEnumerable<Renting>>> GetRentings(string id)
         {
-            if (_context.Users.Any(x => x.OauthId == id))
+            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            var isEmployee = await _authorizationService.AuthorizeAsync(User, "Employee");
+            if (_context.Users.Any(x => x.OauthId == id) && (userId == id || isEmployee.Succeeded))
             {
                 User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
-                IEnumerable<Renting> rentings = _context.Rentings.Where(y => y.OwnerId == user.Id).AsEnumerable();
+                IEnumerable<Renting> rentings = _context.Rentings.Include(x => x.Items).Where(y => y.OwnerId == user.Id).AsEnumerable();
                 return Ok(rentings);
             }
             else
@@ -240,7 +250,7 @@ namespace Rentals_API_NET6.Controllers
         /// </summary>
         [Authorize(Policy = "Employee")]
         [HttpPut("Activate/{id}")]
-        public async Task<ActionResult<Renting>> ActivateRenting(int id)
+         public async Task<ActionResult<Renting>> ActivateRenting(int id)
         {
             var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
             var error = 0;
@@ -308,13 +318,28 @@ namespace Rentals_API_NET6.Controllers
             {
                 dates.Add(new DatesResponse
                 {
+                    Id = item.Id,
+                    State = item.State,
                     Start = item.Start,
                     End = item.End,
-                    Owner = item.Owner.FullName
+                    Title = item.Owner.FullName
                 });
             }
-
             return Ok(dates);
+        }
+
+        [HttpGet("Items/{id}")]
+        public async Task<ActionResult<List<Item>>> RentingDetail(int id)
+        {
+            if (RentingExists(id))
+            {
+                List<Item> items = _context.RentingItems.Where(x => x.RentingId == id).Select(x => x.Item).ToList();
+                return Ok(items);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         private bool RentingExists(int id)
