@@ -52,9 +52,9 @@ namespace Rentals_API_NET6.Controllers
         public async Task<ActionResult<Item>> ChangeItem(int id, [FromBody] JsonPatchDocument<Item> patch)
         {
             var isAdmin = await _authorizationService.AuthorizeAsync(User, "Administrator");
-            if (ItemExists(id) && !IsDeleted(id))
+            Item item = _context.Items.SingleOrDefault(x => x.Id == id);
+            if (item != null && !item.IsDeleted)
             {
-                Item item = _context.Items.Find(id);
                 patch.ApplyTo(item, ModelState);
 
                 if (!ModelState.IsValid)
@@ -91,9 +91,9 @@ namespace Rentals_API_NET6.Controllers
         [HttpPatch("Delete/{id}")]
         public async Task<ActionResult<Item>> DeleteItem(int id, [FromBody] JsonPatchDocument<Item> patch)
         {
-            if (ItemExists(id) && !IsDeleted(id))
+            Item item = _context.Items.SingleOrDefault(x => x.Id == id);
+            if (item != null && !item.IsDeleted)
             {
-                Item item = _context.Items.Find(id);
                 patch.ApplyTo(item, ModelState);
 
                 if (!ModelState.IsValid)
@@ -112,10 +112,6 @@ namespace Rentals_API_NET6.Controllers
                 {
                     _context.CartItems.Remove(del);
                 }
-                //foreach (var del in _context.CategoryItems.Where(x => x.ItemId == id))
-                //{
-                //    _context.CategoryItems.Remove(del);
-                //}
 
                 foreach (var del in _context.FavouriteItems.Where(x => x.ItemId == id))
                 {
@@ -139,7 +135,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše všechny předměty, které jsou smazané (pro případ navrácení)
         /// </summary>
-        [Authorize(Policy = "Employee")]
+        //[Authorize(Policy = "Employee")]
         [HttpGet("Deleted")]
         public async Task<ActionResult<IEnumerable<Item>>> DeletedItems()
         {
@@ -153,9 +149,9 @@ namespace Rentals_API_NET6.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Item>> GetItem(int id)
         {
-            if (ItemExists(id) && !IsDeleted(id))
+            Item item = _context.Items.SingleOrDefault(x => x.Id == id);
+            if (item != null && !item.IsDeleted)
             {
-                Item item = _context.Items.Find(id);
                 return Ok(item);
             }
             else
@@ -171,12 +167,11 @@ namespace Rentals_API_NET6.Controllers
         [HttpGet("Img/{id}")]
         public async Task<ActionResult<FileStream>> GetItemImg(int id)
         {
-            if (ItemExists(id) && !IsDeleted(id))
+            Item item = _context.Items.SingleOrDefault(x => x.Id == id);
+            if (item != null && !item.IsDeleted)
             {
-                var item = _context.Items.FirstOrDefault(x => x.Id == id);
                 var path = "";
 
-                //soubor s příponou nebo bez?
                 if (item.Img == null)
                 {
                     path = "Images/Placeholder.jpg";
@@ -207,24 +202,10 @@ namespace Rentals_API_NET6.Controllers
         /// Vypíše všechny předměty + filtrování podle kategorie (nepovinné)
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<List<Item>>> GetAllItems(int? category)
+        public async Task<ActionResult<List<Item>>> GetAllItems()
         {
-            IEnumerable<Item> Items = _context.Items.Where(x => x.IsDeleted == false).AsEnumerable();
-            List<Item> List = new();
-
-            if (category != null)
-            {
-                foreach (var item in Items.Where(x => x.CategoryId == category))
-                {
-                    List.Add(item);
-                }
-            }
-            else
-            {
-                List = Items.ToList();
-            }
-
-            return Ok(List);
+            IEnumerable<Item> Items = _context.Items.Where(x => !x.IsDeleted).AsEnumerable();
+            return Ok(Items);
         }
 
         /// <summary>
@@ -233,9 +214,10 @@ namespace Rentals_API_NET6.Controllers
         [HttpGet("Accesories/{id}")]
         public async Task<ActionResult<IEnumerable<Item>>> GetAccesories(int id)
         {
-            if (ItemExists(id) && !IsDeleted(id))
+            Item item = _context.Items.SingleOrDefault(x => x.Id == id);
+            if (item != null && !item.IsDeleted)
             {
-                IEnumerable<Item> Items = _context.AccessoryItems.Where(x => x.ItemId == id && x.Item.IsDeleted == false).Select(y => y.Accessory).AsEnumerable();
+                IEnumerable<Item> Items = _context.AccessoryItems.Where(x => x.ItemId == id && !x.Item.IsDeleted).Select(y => y.Accessory).AsEnumerable();
                 return Ok(Items);
             }
             else
@@ -252,17 +234,19 @@ namespace Rentals_API_NET6.Controllers
         public async Task<ActionResult<Item>> PutAccesories([FromBody] ItemAccesoriesRequest request)
         {
             var errors = 0;
-            if (ItemExists(request.Id) && !IsDeleted(request.Id))
+            Item itemForAccesory = _context.Items.SingleOrDefault(x => x.Id == request.Id);
+            if (itemForAccesory != null && !itemForAccesory.IsDeleted)
             {
-                foreach (var item in _context.AccessoryItems.Where(x => x.ItemId == request.Id).ToList())
+                foreach (var item in _context.AccessoryItems.Where(x => x.ItemId == itemForAccesory.Id).ToList())
                 {
                     _context.Remove(item);
                 }
                 foreach (var item in request.Items)
                 {
-                    if (ItemExists(item) && !IsDeleted(item))
+                    Item tempItem = _context.Items.SingleOrDefault(x => x.Id == item);
+                    if (tempItem != null && !tempItem.IsDeleted)
                     {
-                        _context.AccessoryItems.Add(new AccessoryItem { ItemId = request.Id, AccessoryId = item });
+                        _context.AccessoryItems.Add(new AccessoryItem { ItemId = itemForAccesory.Id, AccessoryId = item });
                     }
                     else
                     {
@@ -286,70 +270,11 @@ namespace Rentals_API_NET6.Controllers
 
         }
 
-        /// <summary>
-        /// Vypíše všechny kategorie, které předmět obsahuje
-        /// </summary>
-        //[HttpGet("Categories/{id}")]
-        //public async Task<ActionResult<IEnumerable<Category>>> GetCategories(int id)
-        //{
-        //    if (ItemExists(id) && !IsDeleted(id))
-        //    {
-        //        IEnumerable<Category> categories = _context.CategoryItems.Where(x => x.ItemId == id).Select(y => y.Category).AsEnumerable();
-        //        return Ok(categories);
-        //    }
-        //    else
-        //    {
-        //        return NotFound();
-        //    }
-        //}
-
-        /// <summary>
-        /// Přidá (nevybranné odebere) k předmětu kategorie
-        /// </summary>
-        //[Authorize(Policy = "Administrator")]
-        //[HttpPut("Categories")]
-        //public async Task<ActionResult<Item>> PutCategories([FromBody] ItemPropertyRequest request)
-        //{
-        //    var errors = 0;
-        //    if (ItemExists(request.Id) && !IsDeleted(request.Id))
-        //    {
-        //        foreach (var item in _context.CategoryItems.Where(x => x.ItemId == request.Id).ToList())
-        //        {
-        //            _context.Remove(item);
-        //        }
-
-        //        foreach (var item in request.Categories)
-        //        {
-        //            if (_context.Categories.Any(x => x.Id == item))
-        //            {
-        //                _context.CategoryItems.Add(new CategoryItem { ItemId = request.Id, CategoryId = item });
-        //            }
-        //            else
-        //            {
-        //                errors++;
-        //            }
-        //        }
-
-        //        if (errors == 0)
-        //        {
-        //            await _context.SaveChangesAsync();
-        //            return Ok(_context.Items.Find(request.Id));
-        //        }
-        //        else
-        //        {
-        //            return BadRequest();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return NotFound();
-        //    }
-        //}
-
         [HttpGet("IsFavourite/{id}")]
         public async Task<ActionResult<bool>> IsItemFavourite(int id)
         {
-            if (ItemExists(id) && !IsDeleted(id))
+            Item item = _context.Items.SingleOrDefault(x => x.Id == id);
+            if (item != null && !item.IsDeleted)
             {
                 var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
                 var result = _context.FavouriteItems.SingleOrDefault(x => x.User.OauthId == userId && x.ItemId == id) != null;
@@ -364,18 +289,19 @@ namespace Rentals_API_NET6.Controllers
         [HttpGet("{id}/Dates")]
         public async Task<ActionResult<List<DatesResponse>>> GetItemDates(int id)
         {
-            if (ItemExists(id) && !IsDeleted(id))
+            Item item = _context.Items.SingleOrDefault(x => x.Id == id);
+            if (item != null && !item.IsDeleted)
             {
                 List<DatesResponse> dates = new();
-                foreach (var item in _context.RentingItems.Where(x => x.ItemId == id).Select(x => x.Renting))
+                foreach (var i in _context.RentingItems.Where(x => x.ItemId == id).Select(x => x.Renting))
                 {
                     dates.Add(new DatesResponse
                     {
-                        Id = item.Id,
-                        State = item.State,
-                        Start = item.Start,
-                        End = item.End,
-                        Title = _context.Users.SingleOrDefault(x => x.Id == item.OwnerId).FullName
+                        Id = i.Id,
+                        State = i.State,
+                        Start = i.Start,
+                        End = i.End,
+                        Title = _context.Users.SingleOrDefault(x => x.Id == i.OwnerId).FullName
                     });
                 }
                 return Ok(dates);
@@ -419,9 +345,9 @@ namespace Rentals_API_NET6.Controllers
         [HttpPatch("Category")]
         public async Task<ActionResult<Category>> ChangeCategory(int id, [FromBody] JsonPatchDocument<Category> patch)
         {
-            if (CategoryExists(id))
+            Category category = _context.Categories.SingleOrDefault(x => x.Id == id);
+            if (category != null)
             {
-                Category category = _context.Categories.Find(id);
                 patch.ApplyTo(category, ModelState);
 
                 if (!ModelState.IsValid)
@@ -450,10 +376,9 @@ namespace Rentals_API_NET6.Controllers
         [HttpDelete("Category/{id}")]
         public async Task<ActionResult<Category>> DeleteCategory(int id)
         {
-            if (CategoryExists(id))
+            Category category = _context.Categories.SingleOrDefault(x => x.Id == id);
+            if (category != null)
             {
-                Category category = _context.Categories.Find(id);
-
                 //odebrat itemy z dané kategorie
                 foreach (var item in _context.Items.Where(x => x.CategoryId == id))
                 {
@@ -468,19 +393,6 @@ namespace Rentals_API_NET6.Controllers
             {
                 return NotFound();
             }
-        }
-
-        private bool ItemExists(int id)
-        {
-            return _context.Items.Any(x => x.Id == id);
-        }
-        private bool CategoryExists(int id)
-        {
-            return _context.Categories.Any(x => x.Id == id);
-        }
-        private bool IsDeleted(int id)
-        {
-            return _context.Items.Single(x => x.Id == id).IsDeleted;
         }
     }
 }

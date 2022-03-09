@@ -14,7 +14,7 @@ export const Upload = () => {
                 // Create a new tus upload
                 var upload = new tus.Upload(file, {
                     // Endpoint is the upload creation URL from your tus server
-                    endpoint: "https://localhost:44486/files/",
+                    endpoint: "https://localhost:3000/files/",
                     // Retry delays will enable tus-js-client to automatically retry on errors
                     retryDelays: [0, 3000, 5000, 10000, 20000],
                     // Attach additional meta data about the file for the server

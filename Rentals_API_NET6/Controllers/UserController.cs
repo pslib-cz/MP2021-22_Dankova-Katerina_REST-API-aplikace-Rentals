@@ -51,17 +51,16 @@ namespace Rentals_API_NET6.Controllers
             return Ok();
         }
 
-
         /// <summary>
         /// Košík uživatele
         /// </summary>
         [HttpGet("Cart")]
         public async Task<ActionResult<IEnumerable<Item>>> GetUserCart()
         {
-            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-            if (UserExists(userId))
+            var userId = UserId();
+            User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
+            if (user != null)
             {
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
                 IEnumerable<Item> items = _context.CartItems.Where(x => x.UserId == user.Id && x.Item.IsDeleted == false).Select(y => y.Item).AsEnumerable();
                 return Ok(items);
             }
@@ -77,7 +76,7 @@ namespace Rentals_API_NET6.Controllers
         [HttpPost("Cart/{Item}")]
         public async Task<ActionResult<IEnumerable<Item>>> AddToCart(int Item)
         {
-            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            var userId = UserId();
             if (_context.Items.Any(x => x.Id == Item && x.IsDeleted == false))
             {
                 User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
@@ -105,13 +104,13 @@ namespace Rentals_API_NET6.Controllers
         [HttpDelete("Cart/{Item}")]
         public async Task<ActionResult<IEnumerable<Item>>> RemoveItemfromCart(int Item)
         {
-            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-            if (UserExists(userId))
+            var userId = UserId();
+            User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
+            if (user != null)
             {
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
                 if (_context.CartItems.Any(x => x.UserId == user.Id && x.ItemId == Item))
                 {
-                    CartItem cartItem = _context.CartItems.Single(x => x.UserId == user.Id && x.ItemId == Item);
+                    CartItem cartItem = _context.CartItems.SingleOrDefault(x => x.UserId == user.Id && x.ItemId == Item);
                     _context.CartItems.Remove(cartItem);
                     await _context.SaveChangesAsync();
                     return await GetUserCart();
@@ -134,10 +133,10 @@ namespace Rentals_API_NET6.Controllers
         [HttpGet("Favourites")]
         public async Task<ActionResult<List<Item>>> GetFavourites(int? filter)
         {
-            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-            if (UserExists(userId))
+            var userId = UserId();
+            User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
+            if (user != null)
             {
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
                 Category category = _context.Categories.Find(filter);
                 IEnumerable<Item> Favourites = _context.FavouriteItems.Where(x => x.Item.IsDeleted == false && x.UserId == user.Id).Select(y => y.Item).AsEnumerable();
                 List<Item> List = new();
@@ -167,10 +166,10 @@ namespace Rentals_API_NET6.Controllers
         [HttpPost("Favourites/{Item}")]
         public async Task<ActionResult<List<Item>>> AddToFavourites(int Item)
         {
-            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-            if (UserExists(userId) && _context.Items.Any(x => x.Id == Item && x.IsDeleted == false))
+            var userId = UserId();
+            User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
+            if (user != null && _context.Items.SingleOrDefault(x => x.Id == Item && x.IsDeleted == false) != null)
             {
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
                 if (!_context.FavouriteItems.Any(x => x.UserId == user.Id && x.ItemId == Item))
                 {
                     FavouriteItem favouriteItem = new FavouriteItem { UserId = user.Id, ItemId = Item };
@@ -195,13 +194,13 @@ namespace Rentals_API_NET6.Controllers
         [HttpDelete("Favourites/{Item}")]
         public async Task<ActionResult<List<Item>>> RemoveItemfromFavourites(int Item)
         {
-            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-            if (UserExists(userId))
+            var userId = UserId();
+            User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
+            if (user != null)
             {
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
                 if (_context.FavouriteItems.Any(x => x.UserId == user.Id && x.ItemId == Item))
                 {
-                    FavouriteItem favourite = _context.FavouriteItems.Single(x => x.UserId == user.Id && x.ItemId == Item);
+                    FavouriteItem favourite = _context.FavouriteItems.SingleOrDefault(x => x.UserId == user.Id && x.ItemId == Item);
                     _context.FavouriteItems.Remove(favourite);
                     await _context.SaveChangesAsync();
                     return await GetFavourites(null);
@@ -221,7 +220,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše všechny uživatele
         /// </summary>
-        [Authorize(Policy = "Employee")]
+        //[Authorize(Policy = "Employee")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
         {
@@ -238,8 +237,8 @@ namespace Rentals_API_NET6.Controllers
         {
             User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
             var isEmployee = await _authorizationService.AuthorizeAsync(User, "Employee");
-            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-            if (UserExists(userId) || isEmployee.Succeeded)
+            var userId = UserId();
+            if (user != null || isEmployee.Succeeded)
             {
                 IEnumerable<Item> items = _context.InventoryItems.Where(x => x.UserId == user.Id && x.Item.IsDeleted == false).Select(y => y.Item).AsEnumerable();
                 return Ok(items);
@@ -250,9 +249,9 @@ namespace Rentals_API_NET6.Controllers
             }
         }
 
-        private bool UserExists(string id)
+        private string UserId()
         {
-            return _context.Users.Any(x => x.OauthId == id);
+            return User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
         }
     }
 }

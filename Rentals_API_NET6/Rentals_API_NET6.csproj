@@ -9,7 +9,7 @@
 		<SpaRoot>ClientApp\</SpaRoot>
 		<DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<SpaProxyServerUrl>https://localhost:44486</SpaProxyServerUrl>
+		<SpaProxyServerUrl>https://localhost:3000</SpaProxyServerUrl>
 		<SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<!--disable missing comment warning-->

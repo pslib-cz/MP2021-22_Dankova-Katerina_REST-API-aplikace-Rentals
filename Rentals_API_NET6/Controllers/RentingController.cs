@@ -36,18 +36,15 @@ namespace Rentals_API_NET6.Controllers
         public async Task<ActionResult<Renting>> AddNewRenting([FromBody] RentingRequest renting)
         {
             var error = 0;
-            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-            //if (_context.Users.Any(x => x.OauthId == userId) && _context.Users.Any(x => x.OauthId == renting.Approver))
-            if (_context.Users.Any(x => x.OauthId == userId))
+            var userId = UserId();
+            User owner = _context.Users.SingleOrDefault(x => x.OauthId == userId);
+            if (owner != null)
             {
-                User owner = _context.Users.SingleOrDefault(x => x.OauthId == userId);
-                //User approver = _context.Users.SingleOrDefault(x => x.OauthId == renting.Approver);
                 Renting newRenting = new Renting
                 {
                     Start = renting.Start,
                     End = renting.End,
                     OwnerId = owner.Id,
-                    //ApproverId = approver.Id,
                     Note = renting.Note,
                 };
                 newRenting.State = RentingState.WillStart;
@@ -95,14 +92,14 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vrácení předmětů dané výpůjčky
         /// </summary>
-        [Authorize(Policy = "Employee")]
+        //[Authorize(Policy = "Employee")]
         [HttpPut]
         public async Task<ActionResult<Renting>> ChangeRenting([FromBody] ChangeRentingRequest request)
         {
             var errors = 0;
-            if (RentingExists(request.Id))
+            Renting renting = _context.Rentings.SingleOrDefault(x => x.Id == request.Id);
+            if (renting != null)
             {
-                Renting renting = _context.Rentings.Find(request.Id);
                 if (request.ReturnedItems != null)
                 {
                     foreach (var item in request.ReturnedItems)
@@ -168,26 +165,23 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Zrušení neuskutečněné výpůjčky
         /// </summary>
-        [Authorize(Policy = "Employee")]
+        //[Authorize(Policy = "Employee")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Renting>> CancelRenting(int id)
         {
-            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-            if (RentingExists(id))
+            var userId = UserId();
+            Renting renting = _context.Rentings.SingleOrDefault(x => x.Id == id);
+            if (renting != null)
             {
-                Renting renting = _context.Rentings.Find(id);
-
                 //Odebrání itemů
-                foreach (var item in _context.RentingItems.Include(i => i.Item).Where(x => x.RentingId == id))
+                foreach (var item in _context.RentingItems.Where(x => x.RentingId == id))
                 {
-                    _context.Entry(item).State = EntityState.Modified;
                     _context.RentingItems.Remove(item);
                 }
 
                 renting.State = RentingState.Cancelled;
                 _context.Entry(renting).State = EntityState.Modified;
 
-                //Historie - neošetřuji zda uživatel existuje
                 RentingHistoryLog log = new RentingHistoryLog
                 {
                     RentingId = id,
@@ -209,19 +203,11 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše všechny výpůjčky + filtrování podle stavu (nepovinné)
         /// </summary>
-        [Authorize(Policy = "Employee")]
+        //[Authorize(Policy = "Employee")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Renting>>> GetAllRentings(RentingState? state)
+        public async Task<ActionResult<IEnumerable<Renting>>> GetAllRentings()
         {
-            IEnumerable<Renting> rentings = Enumerable.Empty<Renting>();
-            if (state != null)
-            {
-                rentings = _context.Rentings.Include(o => o.Owner).Include(x => x.Items).Where(x => x.State == state).AsEnumerable();
-            }
-            else
-            {
-                rentings = _context.Rentings.Include(o => o.Owner).Include(x => x.Items).AsEnumerable();
-            }
+            IEnumerable<Renting> rentings = _context.Rentings.Include(o => o.Owner).Include(x => x.Items).AsEnumerable();
             return Ok(rentings);
         }
 
@@ -231,11 +217,11 @@ namespace Rentals_API_NET6.Controllers
         [HttpGet("RentingsByUser/{id}")]
         public async Task<ActionResult<IEnumerable<Renting>>> GetRentings(string id)
         {
-            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            var userId = UserId();
             var isEmployee = await _authorizationService.AuthorizeAsync(User, "Employee");
-            if (_context.Users.Any(x => x.OauthId == id) && (userId == id || isEmployee.Succeeded))
+            User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
+            if (user != null && (userId == user.OauthId || isEmployee.Succeeded))
             {
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
                 IEnumerable<Renting> rentings = _context.Rentings.Include(x => x.Items).Where(y => y.OwnerId == user.Id).AsEnumerable();
                 return Ok(rentings);
             }
@@ -248,15 +234,15 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Aktivuje výpůjčku
         /// </summary>
-        [Authorize(Policy = "Employee")]
+        //[Authorize(Policy = "Employee")]
         [HttpPut("Activate/{id}")]
-         public async Task<ActionResult<Renting>> ActivateRenting(int id)
+        public async Task<ActionResult<Renting>> ActivateRenting(int id)
         {
-            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            var userId = UserId();
             var error = 0;
-            if (RentingExists(id) && _context.Rentings.SingleOrDefault(x => x.Id == id).State == RentingState.WillStart)
+            Renting renting = _context.Rentings.SingleOrDefault(x => x.Id == id);
+            if (renting != null && renting.State == RentingState.WillStart)
             {
-                Renting renting = _context.Rentings.Find(id);
                 renting.ApproverId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id;
                 renting.State = RentingState.InProgress;
                 _context.Entry(renting).State = EntityState.Modified;
@@ -283,7 +269,6 @@ namespace Rentals_API_NET6.Controllers
 
                 if (error == 0)
                 {
-                    //Historie - neošetřuji zda uživatel existuje
                     RentingHistoryLog log = new RentingHistoryLog
                     {
                         RentingId = id,
@@ -331,7 +316,8 @@ namespace Rentals_API_NET6.Controllers
         [HttpGet("Items/{id}")]
         public async Task<ActionResult<List<Item>>> RentingDetail(int id)
         {
-            if (RentingExists(id) && _context.Rentings.SingleOrDefault(x => x.Id == id).State == RentingState.InProgress)
+            Renting renting = _context.Rentings.SingleOrDefault(x => x.Id == id);
+            if(renting != null && renting.State == RentingState.InProgress)
             {
                 List<Item> items = _context.RentingItems.Where(x => x.RentingId == id && x.Returned == false).Select(x => x.Item).ToList();
                 return Ok(items);
@@ -342,9 +328,9 @@ namespace Rentals_API_NET6.Controllers
             }
         }
 
-        private bool RentingExists(int id)
+        private string UserId()
         {
-            return _context.Rentings.Any(x => x.Id == id);
+            return User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
         }
     }
 }
