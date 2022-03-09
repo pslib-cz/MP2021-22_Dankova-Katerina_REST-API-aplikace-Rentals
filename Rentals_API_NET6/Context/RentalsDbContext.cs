@@ -110,6 +110,11 @@ namespace Rentals_API_NET6.Context
                 .WithMany(x => x.Items)
                 .HasForeignKey(x => x.CategoryId);
 
+            modelBuilder.Entity<Item>()
+                .HasOne(x => x.ImgFile)
+                .WithMany(x => x.Items)
+                .HasForeignKey(x => x.Img);
+
             //Kategorie
             modelBuilder.Entity<Category>().HasData(new Category { Id = 1, Name = "Přístroje" });
             modelBuilder.Entity<Category>().HasData(new Category { Id = 2, Name = "Objektivy" });
@@ -214,6 +219,61 @@ namespace Rentals_API_NET6.Context
             modelBuilder.Entity<Item>().HasData(new Item { Id = 93, Name = "Alkalická baterie GP 2700 1.2 V AA", IsDeleted = true, CategoryId = 4 });
             modelBuilder.Entity<Item>().HasData(new Item { Id = 94, Name = "Alkalická baterie GP 2700 1.2 V AA", IsDeleted = true, CategoryId = 4 });
             modelBuilder.Entity<Item>().HasData(new Item { Id = 95, Name = "Alkalická baterie GP 2700 1.2 V AA", IsDeleted = true, CategoryId = 4 });
+
+            //Obrázky
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "AsteroidSprite_ddff.png", OriginalName = "AsteroidSprite_ddff" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "atelier_a27b.jpg", OriginalName = "atelier_a27b" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "BattChgLC-E6E_27dd.jpg", OriginalName = "BattChgLC-E6E_27dd" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "BattChgLC-E8E_02bb.jpg", OriginalName = "BattChgLC-E8E_02bb" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "BattLPE6_03b5.jpg", OriginalName = "BattLPE6_03b5" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "BattLPE8_fd96.jpg", OriginalName = "BattLPE8_fd96" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "CanonEF50_0055.jpg", OriginalName = "CanonEF50_0055" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "CanonEF70-200_b2f2.jpg", OriginalName = "CanonEF70-200_b2f2" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "comica1_5b38.jpg", OriginalName = "comica1_5b38" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "comica2_ed64.jpg", OriginalName = "comica2_ed64" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "crane3Lab_1685.jpg", OriginalName = "crane3Lab_1685" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "Cullmann3400_cd56.jpg", OriginalName = "Cullmann3400_cd56" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "cvm-d02_8d19.jpg", OriginalName = "cvm-d02_8d19" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "deity_v-mic-d3_e4bb.jpg", OriginalName = "deity_v-mic-d3_e4bb" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "e890d2d1-ce7d-4b33-98ff-851e85ac4fd2_940c.jpg", OriginalName = "e890d2d1-ce7d-4b33-98ff-851e85ac4fd2_940c" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "e890d2d1-ce7d-4b33-98ff-851e85ac4fd2_b249.jpg", OriginalName = "e890d2d1-ce7d-4b33-98ff-851e85ac4fd2_b249" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "EOS_RP_e3fe.jpg", OriginalName = "EOS_RP_e3fe" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "EOS650D_5a40.jpg", OriginalName = "EOS650D_5a40" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "EOS70D_b624.jpg", OriginalName = "EOS70D_b624" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "EOS90D_7dd9.jpg", OriginalName = "EOS90D_7dd9" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "flycam_fd0f.jpg", OriginalName = "flycam_fd0f" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "gripC70D_2982.jpg", OriginalName = "gripC70D_2982" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "Group 1_0aad.jpg", OriginalName = "Group 1_0aad" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "Group 612_3ac5.png", OriginalName = "Group 612_3ac5" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "hamaStar62_914d.jpg", OriginalName = "hamaStar62_914d" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "img_2_46b9.jpg", OriginalName = "img_2_46b9" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "img_2_de6d.jpg", OriginalName = "img_2_de6d" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "kitt-design-illustration_73ad.png", OriginalName = "kitt-design-illustration_73ad" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "MikrofonKlopový_97b3.jpg", OriginalName = "MikrofonKlopový_97b3" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "MiniTripod_92cc.jpg", OriginalName = "MiniTripod_92cc" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "moza_912f.jpg", OriginalName = "moza_912f" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "Panasonic_HC-X920_7ce7.jpg", OriginalName = "Panasonic_HC-X920_7ce7" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "PanasonicVW-CT45E_cd22.jpg", OriginalName = "PanasonicVW-CT45E_cd22" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "Placeholder.jpg", OriginalName = "Placeholder" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "rigHawk_8fd1.jpg", OriginalName = "rigHawk_8fd1" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "RigSpider_ea93.jpg", OriginalName = "RigSpider_ea93" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "SDLexar64GB_e4c2.jpg", OriginalName = "SDLexar64GB_e4c2" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "SDSanDisk64GB_2b06.jpg", OriginalName = "SDSanDisk64GB_2b06" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "SDSanDisk64GB_715b.jpg", OriginalName = "SDSanDisk64GB_715b" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "Sigma18-200_cd74.jpg", OriginalName = "Sigma18-200_cd74" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "Sigma18-50_f918.jpg", OriginalName = "Sigma18-50_f918" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "Sigma24-70_7bde.jpg", OriginalName = "Sigma24-70_7bde" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "Sigma30_0caf.jpg", OriginalName = "Sigma30_0caf" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "snoppa_4626.jpg", OriginalName = "snoppa_4626" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "SonyHDR-CX320_6824.jpg", OriginalName = "SonyHDR-CX320_6824" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "SonyVct-d680rm_9d51.jpg", OriginalName = "SonyVct-d680rm_9d51" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "StativMS-007H_3d14.jpg", OriginalName = "StativMS-007H_3d14" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "StativMS-007H_3d14_d8f7.png", OriginalName = "StativMS-007H_3d14_d8f7" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "stativ-svetlo_98ea.jpg", OriginalName = "stativ-svetlo_98ea" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "StativVelbonC-600_b14c.jpg", OriginalName = "StativVelbonC-600_b14c" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "tn-techtips_f9dd.jpg", OriginalName = "tn-techtips_f9dd" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "Viltrox_f0a5.jpg", OriginalName = "Viltrox_f0a5" });
+            modelBuilder.Entity<UploadedFile>().HasData(new UploadedFile { Id = "ZoomH1_2ffd.jpg", OriginalName = "ZoomH1_2ffd" });
 
             //Přeslušenství předmětů
             //1002
@@ -391,112 +451,6 @@ namespace Rentals_API_NET6.Context
 
             //1050
             modelBuilder.Entity<AccessoryItem>().HasData(new AccessoryItem { ItemId = 80, AccessoryId = 60 });
-
-
-            //Kategorie předmětů
-            //-přístroje (to jako fotoaparáty a videokamery)
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 1, ItemId = 1 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 1, ItemId = 2 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 1, ItemId = 5 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 1, ItemId = 6 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 1, ItemId = 7 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 1, ItemId = 8 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 1, ItemId = 9 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 1, ItemId = 10 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 1, ItemId = 11 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 1, ItemId = 12 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 1, ItemId = 15 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 1, ItemId = 16 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 1, ItemId = 18 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 1, ItemId = 19 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 1, ItemId = 20 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 1, ItemId = 21 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 1, ItemId = 45 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 1, ItemId = 80 });
-
-            ////-objektivy
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 2, ItemId = 13 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 2, ItemId = 14 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 2, ItemId = 17 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 2, ItemId = 44 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 2, ItemId = 46 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 2, ItemId = 69 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 2, ItemId = 79 });
-
-            ////-stativy (stativ, gimbal, flycam, rigy...)
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 3, ItemId = 70 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 3, ItemId = 71 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 3, ItemId = 74 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 3, ItemId = 75 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 3, ItemId = 78 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 3, ItemId = 81 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 3, ItemId = 82 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 3, ItemId = 83 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 3, ItemId = 84 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 3, ItemId = 87 });
-
-            ////-příslušenství (sd karty, akumulátory, nabíječky brašny)
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 22 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 23 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 24 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 25 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 26 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 27 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 28 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 29 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 30 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 31 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 32 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 33 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 34 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 35 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 36 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 37 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 38 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 39 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 40 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 41 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 42 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 43 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 47 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 48 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 49 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 50 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 51 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 52 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 53 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 54 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 55 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 56 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 57 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 58 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 59 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 60 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 61 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 62 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 63 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 64 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 65 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 66 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 67 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 4, ItemId = 72 });
-
-            ////-audiotechnika (mikrofon, rekordér)
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 5, ItemId = 3 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 5, ItemId = 4 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 5, ItemId = 76 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 5, ItemId = 77 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 5, ItemId = 85 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 5, ItemId = 86 });
-
-            ////ostatní (ateliér a co se "nevejde" jinam)
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 6, ItemId = 68 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 6, ItemId = 73 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 6, ItemId = 88 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 6, ItemId = 89 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 6, ItemId = 90 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 6, ItemId = 91 });
-            //modelBuilder.Entity<CategoryItem>().HasData(new CategoryItem { CategoryId = 6, ItemId = 92 });
         }
     }
 }

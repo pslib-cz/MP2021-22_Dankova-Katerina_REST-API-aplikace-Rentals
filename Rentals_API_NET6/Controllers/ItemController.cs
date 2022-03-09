@@ -47,7 +47,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Úprava předmětu
         /// </summary>
-        [Authorize(Policy = "Employee")]
+        //[Authorize(Policy = "Employee")]
         [HttpPatch("{id}")]
         public async Task<ActionResult<Item>> ChangeItem(int id, [FromBody] JsonPatchDocument<Item> patch)
         {
@@ -181,14 +181,9 @@ namespace Rentals_API_NET6.Controllers
                 {
                     path = "Images/Placeholder.jpg";
                 }
-                else if (item.Img.Contains('.'))
-                {
-                    path = $"Images/{item.Img}";
-                }
                 else
                 {
-                    UploadedFile file = _context.Files.FirstOrDefault(x => x.Id == item.Img);
-                    path = $"Images/{file.Id}";
+                    path = $"Images/{item.Img}";
                 }
 
                 //Exituje fyzicky soubor?

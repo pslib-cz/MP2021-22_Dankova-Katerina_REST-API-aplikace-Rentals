@@ -22,7 +22,7 @@ namespace Rentals_API_NET6.Services
             Dictionary<string, Metadata> metadata = await file.GetMetadataAsync(fileCompleteContext.CancellationToken);
             string? filename = metadata.FirstOrDefault(m => m.Key == "filename").Value.GetString(System.Text.Encoding.UTF8);
             string? filetype = metadata.FirstOrDefault(m => m.Key == "filetype").Value.GetString(System.Text.Encoding.UTF8);
-            await CreateAsync(new UploadedFile { Id = file.Id, OriginalName = filename, Uploaded = DateTime.Now, ContentType = filetype });
+            await CreateAsync(new UploadedFile { Id = file.Id, OriginalName = filename });
         }
 
         public async Task<ICollection<UploadedFile>> ListAsync()

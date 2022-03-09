@@ -10,7 +10,9 @@ namespace Rentals_API_NET6.Models.DatabaseModel
         public string Name { get; set; }
         public string Description { get; set; }
         public string Note { get; set; }
-        public string Img { get; set; }
+        public UploadedFile ImgFile { get; set; }
+        [ForeignKey("ImgFile")]
+        public string? Img { get; set; }
         public bool IsDeleted { get; set; }
         public ItemState State { get; set; }
         public ICollection<RentingItem> Rentings { get; set; }

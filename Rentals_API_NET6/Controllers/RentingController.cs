@@ -331,9 +331,9 @@ namespace Rentals_API_NET6.Controllers
         [HttpGet("Items/{id}")]
         public async Task<ActionResult<List<Item>>> RentingDetail(int id)
         {
-            if (RentingExists(id))
+            if (RentingExists(id) && _context.Rentings.SingleOrDefault(x => x.Id == id).State == RentingState.InProgress)
             {
-                List<Item> items = _context.RentingItems.Where(x => x.RentingId == id).Select(x => x.Item).ToList();
+                List<Item> items = _context.RentingItems.Where(x => x.RentingId == id && x.Returned == false).Select(x => x.Item).ToList();
                 return Ok(items);
             }
             else

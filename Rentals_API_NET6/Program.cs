@@ -16,17 +16,19 @@ using tusdotnet.Stores;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("Rentals_Database"); 
+var connectionString = builder.Configuration.GetConnectionString("Rentals_Database");
 builder.Services.AddDbContext<RentalsDbContext>(x => x.UseSqlServer(connectionString));
 builder.Services.AddScoped<FileStorageManager>();
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
-                      builder =>
-                      {
-                          builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-                      });
+    builder => {builder
+        .SetIsOriginAllowedToAllowWildcardSubdomains()
+        .WithOrigins(new string[] { "https://*.pslib.cloud", "https://rentals.pslib.cz" })
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
 });
 
 builder.Services.AddControllersWithViews(options =>
@@ -35,7 +37,6 @@ builder.Services.AddControllersWithViews(options =>
 })
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-
 
 builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
 {
@@ -86,17 +87,20 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+string uploadPath;
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+    uploadPath = Path.Combine(app.Environment.ContentRootPath, builder.Configuration["ImgFolder"]);
 }
 else
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    uploadPath = builder.Configuration["ImgFolder"];
 }
 
 app.UseHttpsRedirection();
@@ -110,7 +114,6 @@ app.MapControllers();
 
 app.UseTus(httpContext =>
 {
-    var uploadPath = Path.Combine(app.Environment.ContentRootPath, builder.Configuration["ImgFolder"]);
     var fsm = httpContext.RequestServices.GetService<FileStorageManager>();
     var TUSconf = new DefaultTusConfiguration
     {
