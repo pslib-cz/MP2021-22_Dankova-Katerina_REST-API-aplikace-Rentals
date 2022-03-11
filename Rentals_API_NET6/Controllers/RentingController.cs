@@ -201,13 +201,13 @@ namespace Rentals_API_NET6.Controllers
         }
 
         /// <summary>
-        /// Vypíše všechny výpůjčky + filtrování podle stavu (nepovinné)
+        /// Vypíše všechny výpůjčky
         /// </summary>
         //[Authorize(Policy = "Employee")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Renting>>> GetAllRentings()
         {
-            IEnumerable<Renting> rentings = _context.Rentings.Include(o => o.Owner).Include(x => x.Items).AsEnumerable();
+            IEnumerable<Renting> rentings = _context.Rentings.Include(o => o.Owner).Include(x => x.Items).OrderBy(x => x.State).AsEnumerable();
             return Ok(rentings);
         }
 
@@ -222,7 +222,7 @@ namespace Rentals_API_NET6.Controllers
             User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
             if (user != null && (userId == user.OauthId || isEmployee.Succeeded))
             {
-                IEnumerable<Renting> rentings = _context.Rentings.Include(x => x.Items).Where(y => y.OwnerId == user.Id).AsEnumerable();
+                IEnumerable<Renting> rentings = _context.Rentings.Include(x => x.Items).Where(y => y.OwnerId == user.Id).OrderBy(x => x.State).AsEnumerable();
                 return Ok(rentings);
             }
             else
@@ -313,6 +313,9 @@ namespace Rentals_API_NET6.Controllers
             return Ok(dates);
         }
 
+        /// <summary>
+        /// Vypíše předměty, které probíhající výpůjčka obsahuje (seznam k vrácení)
+        /// </summary>
         [HttpGet("Items/{id}")]
         public async Task<ActionResult<List<Item>>> RentingDetail(int id)
         {

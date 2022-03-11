@@ -106,23 +106,6 @@ namespace Rentals_API_NET6.Controllers
                 }
 
                 _context.Entry(item).State = EntityState.Modified;
-
-                //Smazání všech záznamů
-                foreach (var del in _context.CartItems.Where(x => x.ItemId == id))
-                {
-                    _context.CartItems.Remove(del);
-                }
-
-                foreach (var del in _context.FavouriteItems.Where(x => x.ItemId == id))
-                {
-                    _context.FavouriteItems.Remove(del);
-                }
-
-                foreach (var del in _context.InventoryItems.Where(x => x.ItemId == id))
-                {
-                    _context.InventoryItems.Remove(del);
-                }
-
                 await _context.SaveChangesAsync();
                 return Ok(item);
             }
@@ -144,6 +127,27 @@ namespace Rentals_API_NET6.Controllers
         }
 
         /// <summary>
+        /// Navrátí smazaný předmět
+        /// </summary>
+        [Authorize(Policy = "Administrator")]
+        [HttpPut("Restore/{id}")]
+        public async Task<ActionResult<Item>> RestoreItem(int id)
+        {
+            Item item = _context.Items.SingleOrDefault(x => x.Id == id);
+            if (item != null && item.IsDeleted)
+            {
+                item.IsDeleted = false;
+                _context.Entry(item).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return Ok(item);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
         /// Vypíše detaily předmětu
         /// </summary>
         [HttpGet("{id}")]
@@ -158,7 +162,6 @@ namespace Rentals_API_NET6.Controllers
             {
                 return NotFound();
             }
-
         }
 
         /// <summary>
@@ -199,7 +202,7 @@ namespace Rentals_API_NET6.Controllers
         }
 
         /// <summary>
-        /// Vypíše všechny předměty + filtrování podle kategorie (nepovinné)
+        /// Vypíše všechny předměty
         /// </summary>
         [HttpGet]
         public async Task<ActionResult<List<Item>>> GetAllItems()
@@ -270,6 +273,9 @@ namespace Rentals_API_NET6.Controllers
 
         }
 
+        /// <summary>
+        /// Kontroluje zda má přihlášený uživatel daný předmět v oblíbených
+        /// </summary>
         [HttpGet("IsFavourite/{id}")]
         public async Task<ActionResult<bool>> IsItemFavourite(int id)
         {
@@ -286,6 +292,9 @@ namespace Rentals_API_NET6.Controllers
             }
         }
 
+        /// <summary>
+        /// Vrací data, kdy je předmět vypůjčen
+        /// </summary>
         [HttpGet("{id}/Dates")]
         public async Task<ActionResult<List<DatesResponse>>> GetItemDates(int id)
         {

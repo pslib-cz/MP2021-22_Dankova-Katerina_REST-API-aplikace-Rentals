@@ -128,31 +128,17 @@ namespace Rentals_API_NET6.Controllers
         }
 
         /// <summary>
-        /// Vypíše všechny oblíbené položky uživatele + filtrování podle kategorie (nepovinné)
+        /// Vypíše všechny oblíbené položky uživatele
         /// </summary>
         [HttpGet("Favourites")]
-        public async Task<ActionResult<List<Item>>> GetFavourites(int? filter)
+        public async Task<ActionResult<List<Item>>> GetFavourites()
         {
             var userId = UserId();
             User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
             if (user != null)
             {
-                Category category = _context.Categories.Find(filter);
                 IEnumerable<Item> Favourites = _context.FavouriteItems.Where(x => x.Item.IsDeleted == false && x.UserId == user.Id).Select(y => y.Item).AsEnumerable();
-                List<Item> List = new();
-                if (filter != null)
-                {
-                    foreach (var item in Favourites.Where(x => x.CategoryId == filter))
-                    {
-                        List.Add(item);
-                    }
-                }
-                else
-                {
-                    List = Favourites.ToList();
-                }
-
-                return Ok(List);
+                return Ok(Favourites);
             }
             else
             {
@@ -175,7 +161,7 @@ namespace Rentals_API_NET6.Controllers
                     FavouriteItem favouriteItem = new FavouriteItem { UserId = user.Id, ItemId = Item };
                     _context.FavouriteItems.Add(favouriteItem);
                     await _context.SaveChangesAsync();
-                    return await GetFavourites(null);
+                    return await GetFavourites();
                 }
                 else
                 {
@@ -203,7 +189,7 @@ namespace Rentals_API_NET6.Controllers
                     FavouriteItem favourite = _context.FavouriteItems.SingleOrDefault(x => x.UserId == user.Id && x.ItemId == Item);
                     _context.FavouriteItems.Remove(favourite);
                     await _context.SaveChangesAsync();
-                    return await GetFavourites(null);
+                    return await GetFavourites();
                 }
                 else
                 {
