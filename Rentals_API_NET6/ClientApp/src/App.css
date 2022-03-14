@@ -1,0 +1,303 @@
+:root {
+  font-size: 16px;
+  overflow: overlay;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: Poppins;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  scroll-behavior: smooth;
+  height: 100vh;
+
+  margin: 0;
+  padding: 0;
+
+  background-color: #f7f7f7;
+
+  scrollbar-width: none;
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+::-webkit-scrollbar {
+  width: 1rem;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background-color: rgba(64, 224, 208, 0);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #00000050;
+  transition: 250ms;
+  border-radius: 1rem;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #00000081;
+}
+
+.alerts {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 99999999999999999;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+#alerts,
+#messages,
+#ok {
+  display: grid;
+  place-items: center;
+}
+#alerts .proomka-alert {
+  margin-bottom: 1rem;
+}
+#alerts .proomka-alert:last-child {
+  margin-bottom: 0;
+}
+#messages .proomka-alert {
+  margin-bottom: 1rem;
+}
+#messages .proomka-alert:last-child {
+  margin-bottom: 0;
+}
+#ok .proomka-alert {
+  margin-bottom: 1rem;
+}
+#ok .proomka-alert:last-child {
+  margin-bottom: 0;
+}
+
+.proomka-alert {
+  animation: slide-up 0.5s ease;
+  transition: 250ms;
+}
+
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.unstyled {
+  color: unset;
+  text-decoration: none;
+}
+
+.unstyled {
+  color: unset;
+  text-decoration: none;
+}
+.header::after {
+  transform: scaleX(0) !important;
+}
+.header:hover:after {
+  transform: scaleX(0);
+}
+
+nav .react-wavy-link--active {
+  transform: scale(1.25);
+}
+
+.navbar .react-wavy-link--active:hover {
+  transform: scale(1.25) !important;
+  transition: none !important;
+}
+
+.navbar .react-wavy-link--active:after {
+  padding-top: 2px;
+  display: block;
+  content: "";
+  border-bottom: solid 2px black;
+  transform: scaleX(1);
+  transition: transform 250ms ease-in-out;
+}
+
+.navbar button:after {
+  padding-top: 2px;
+  display: block;
+  content: "";
+  border-bottom: solid 2px black;
+  transform: scaleX(0);
+  transition: transform 250ms ease-in-out;
+  margin: auto;
+  width: 65%;
+}
+
+.navbar button:hover:after {
+  padding-top: 2px;
+  transform: scaleX(1);
+  width: 65%;
+}
+
+.header::after {
+  display: none !important;
+}
+
+.rbc-today {
+  background-color: #00778469 !important;
+  color: #f7f7f7 !important;
+}
+
+.rbc-now {
+  color: #f7f7f7 !important;
+}
+
+button {
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  overflow: visible;
+
+  background: transparent;
+
+  /* inherit font & color from ancestor */
+  color: inherit;
+
+  /* Normalize `line-height`. Cannot be changed from `normal` in Firefox 4+. */
+  line-height: normal;
+
+  /* Corrects font smoothing for webkit */
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+
+  /* Corrects inability to style clickable `input` types in iOS */
+  -webkit-appearance: none;
+
+  cursor: pointer;
+}
+
+/* Remove excess padding and border in Firefox 4+ */
+button::moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+.abbr {
+  border-bottom: dashed 1px gray;
+}
+
+div.proomka-bar {
+  position: fixed;
+  background-color: #e9e9e9c2;
+  backdrop-filter: blur(6px);
+  height: 100%;
+  min-height: -webkit-fill-available;
+}
+
+.rentals p {
+  font-family: "Playfair Display";
+}
+
+.react-wavy-link--active {
+  background-color: #ffffff;
+  font-weight: 500 !important;
+}
+
+.react-wavy-link--active p {
+  font-weight: 500 !important;
+}
+
+#wavy-container {
+  position: relative;
+  z-index: 999999999999999999;
+}
+
+div.opener {
+  top: 1rem !important;
+  width: 4rem !important;
+  height: 4rem !important;
+  right: -4rem !important;
+  box-shadow: 0 8px 20px 0px #0000003b;
+}
+
+/*#myImg:before {
+  content: " ";
+  display: block;
+  position: absolute;
+  height: 5rem;
+  width: 5rem;
+  background-image: url("./per.png");
+  background-size: cover;
+  border-radius: 1rem;
+}*/
+
+.upgrade {
+  font-size: 1rem;
+  margin: 0 0.5rem;
+  min-width: 7rem;
+}
+
+.upgrade p {
+  border: 2px #007784 solid;
+  border-radius: 0.5rem;
+  text-decoration: underline;
+  padding: 0.5rem;
+  color: #007784;
+  transition: 150ms ease-in-out;
+  font-weight: 500;
+}
+
+.upgrade p.red {
+  border: 2px #d05555 solid;
+  border-radius: 0.5rem;
+  text-decoration: underline;
+  padding: 0.5rem;
+  color: #d05555;
+  font-weight: 500;
+  transition: 150ms ease-in-out;
+}
+
+.upgrade p.red:hover {
+  border: 2px #d05555 solid;
+  padding: 0.5rem;
+  background-color: #d05555;
+  color: white;
+  font-weight: 500;
+}
+.upgrade p:hover {
+  border: 2px #007784 solid;
+  padding: 0.5rem;
+  background-color: #007784;
+  color: white;
+  font-weight: 500;
+}
+
+.center-me {
+  display: grid;
+  place-items: center;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.center-me1 {
+  display: grid;
+  place-items: center;
+  grid-template-columns: repeat(1, 1fr);
+}
+
+.filled-heart {
+  color: #007784 !important;
+}
+
+.proomka-card.deleted {
+  border: #d05555 4px dashed;
+}

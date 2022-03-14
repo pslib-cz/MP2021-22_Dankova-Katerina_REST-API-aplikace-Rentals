@@ -206,7 +206,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše všechny uživatele
         /// </summary>
-        //[Authorize(Policy = "Employee")]
+        [Authorize(Policy = "Employee")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
         {
@@ -217,7 +217,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše inventář předmětů uživatele
         /// </summary>
-        //[Authorize(Policy = "Employee")]
+        [Authorize(Policy = "Employee")]
         [HttpGet("Inventory/{id}")]
         public async Task<ActionResult<IEnumerable<Item>>> GetInventoryByUser(string id)
         {

@@ -47,7 +47,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Úprava předmětu
         /// </summary>
-        //[Authorize(Policy = "Employee")]
+        [Authorize(Policy = "Employee")]
         [HttpPatch("{id}")]
         public async Task<ActionResult<Item>> ChangeItem(int id, [FromBody] JsonPatchDocument<Item> patch)
         {
@@ -118,7 +118,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše všechny předměty, které jsou smazané (pro případ navrácení)
         /// </summary>
-        //[Authorize(Policy = "Employee")]
+        [Authorize(Policy = "Employee")]
         [HttpGet("Deleted")]
         public async Task<ActionResult<IEnumerable<Item>>> DeletedItems()
         {

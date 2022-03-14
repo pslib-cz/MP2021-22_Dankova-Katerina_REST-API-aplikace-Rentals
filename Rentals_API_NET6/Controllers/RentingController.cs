@@ -92,7 +92,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vrácení předmětů dané výpůjčky
         /// </summary>
-        //[Authorize(Policy = "Employee")]
+        [Authorize(Policy = "Employee")]
         [HttpPut]
         public async Task<ActionResult<Renting>> ChangeRenting([FromBody] ChangeRentingRequest request)
         {
@@ -165,7 +165,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Zrušení neuskutečněné výpůjčky
         /// </summary>
-        //[Authorize(Policy = "Employee")]
+        [Authorize(Policy = "Employee")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Renting>> CancelRenting(int id)
         {
@@ -203,7 +203,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše všechny výpůjčky
         /// </summary>
-        //[Authorize(Policy = "Employee")]
+        [Authorize(Policy = "Employee")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Renting>>> GetAllRentings()
         {
@@ -234,7 +234,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Aktivuje výpůjčku
         /// </summary>
-        //[Authorize(Policy = "Employee")]
+        [Authorize(Policy = "Employee")]
         [HttpPut("Activate/{id}")]
         public async Task<ActionResult<Renting>> ActivateRenting(int id)
         {
