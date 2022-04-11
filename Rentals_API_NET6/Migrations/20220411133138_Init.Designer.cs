@@ -12,8 +12,8 @@ using Rentals_API_NET6.Context;
 namespace Rentals_API_NET6.Migrations
 {
     [DbContext(typeof(RentalsDbContext))]
-    [Migration("20220121104515_Accesories")]
-    partial class Accesories
+    [Migration("20220411133138_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -719,483 +719,6 @@ namespace Rentals_API_NET6.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.CategoryItem", b =>
-                {
-                    b.Property<int>("ItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ItemId", "CategoryId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("CategoryItems");
-
-                    b.HasData(
-                        new
-                        {
-                            ItemId = 1,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ItemId = 2,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ItemId = 5,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ItemId = 6,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ItemId = 7,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ItemId = 8,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ItemId = 9,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ItemId = 10,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ItemId = 11,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ItemId = 12,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ItemId = 15,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ItemId = 16,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ItemId = 18,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ItemId = 19,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ItemId = 20,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ItemId = 21,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ItemId = 45,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ItemId = 80,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ItemId = 13,
-                            CategoryId = 2
-                        },
-                        new
-                        {
-                            ItemId = 14,
-                            CategoryId = 2
-                        },
-                        new
-                        {
-                            ItemId = 17,
-                            CategoryId = 2
-                        },
-                        new
-                        {
-                            ItemId = 44,
-                            CategoryId = 2
-                        },
-                        new
-                        {
-                            ItemId = 46,
-                            CategoryId = 2
-                        },
-                        new
-                        {
-                            ItemId = 69,
-                            CategoryId = 2
-                        },
-                        new
-                        {
-                            ItemId = 79,
-                            CategoryId = 2
-                        },
-                        new
-                        {
-                            ItemId = 70,
-                            CategoryId = 3
-                        },
-                        new
-                        {
-                            ItemId = 71,
-                            CategoryId = 3
-                        },
-                        new
-                        {
-                            ItemId = 74,
-                            CategoryId = 3
-                        },
-                        new
-                        {
-                            ItemId = 75,
-                            CategoryId = 3
-                        },
-                        new
-                        {
-                            ItemId = 78,
-                            CategoryId = 3
-                        },
-                        new
-                        {
-                            ItemId = 81,
-                            CategoryId = 3
-                        },
-                        new
-                        {
-                            ItemId = 82,
-                            CategoryId = 3
-                        },
-                        new
-                        {
-                            ItemId = 83,
-                            CategoryId = 3
-                        },
-                        new
-                        {
-                            ItemId = 84,
-                            CategoryId = 3
-                        },
-                        new
-                        {
-                            ItemId = 87,
-                            CategoryId = 3
-                        },
-                        new
-                        {
-                            ItemId = 22,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 23,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 24,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 25,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 26,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 27,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 28,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 29,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 30,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 31,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 32,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 33,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 34,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 35,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 36,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 37,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 38,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 39,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 40,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 41,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 42,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 43,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 47,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 48,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 49,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 50,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 51,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 52,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 53,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 54,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 55,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 56,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 57,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 58,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 59,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 60,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 61,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 62,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 63,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 64,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 65,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 66,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 67,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 72,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ItemId = 3,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 4,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 76,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 77,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 85,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 86,
-                            CategoryId = 5
-                        },
-                        new
-                        {
-                            ItemId = 68,
-                            CategoryId = 6
-                        },
-                        new
-                        {
-                            ItemId = 73,
-                            CategoryId = 6
-                        },
-                        new
-                        {
-                            ItemId = 88,
-                            CategoryId = 6
-                        },
-                        new
-                        {
-                            ItemId = 89,
-                            CategoryId = 6
-                        },
-                        new
-                        {
-                            ItemId = 90,
-                            CategoryId = 6
-                        },
-                        new
-                        {
-                            ItemId = 91,
-                            CategoryId = 6
-                        },
-                        new
-                        {
-                            ItemId = 92,
-                            CategoryId = 6
-                        });
-                });
-
             modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.FavouriteItem", b =>
                 {
                     b.Property<int>("ItemId")
@@ -1234,11 +757,14 @@ namespace Rentals_API_NET6.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Img")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -1254,12 +780,17 @@ namespace Rentals_API_NET6.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("Img");
+
                     b.ToTable("Items");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
+                            CategoryId = 1,
                             Description = "Kamera",
                             IsDeleted = true,
                             Name = "Kamera",
@@ -1268,6 +799,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 2,
+                            CategoryId = 1,
                             Description = "Kamera",
                             IsDeleted = true,
                             Name = "Kamera",
@@ -1276,6 +808,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 3,
+                            CategoryId = 5,
                             Description = "Dobrý zvuk",
                             IsDeleted = true,
                             Name = "Mikrofon",
@@ -1284,6 +817,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 4,
+                            CategoryId = 5,
                             Description = "Dobrý zvuk",
                             IsDeleted = true,
                             Name = "Mikrofon",
@@ -1292,6 +826,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 5,
+                            CategoryId = 1,
                             Description = "24,1 Mpx",
                             IsDeleted = true,
                             Name = "Kamera Sony",
@@ -1300,6 +835,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 6,
+                            CategoryId = 1,
                             Description = "24,1 Mpx",
                             IsDeleted = true,
                             Name = "Kamera Sony",
@@ -1308,6 +844,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 7,
+                            CategoryId = 1,
                             Description = "24,1 Mpx",
                             IsDeleted = true,
                             Name = "Kamera Sony",
@@ -1316,6 +853,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 8,
+                            CategoryId = 1,
                             Description = "Lehké tělo, kompaktní, s možností až 4K videa",
                             IsDeleted = true,
                             Name = "Zrcadlovka SONY Alpha A6300",
@@ -1324,6 +862,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 9,
+                            CategoryId = 1,
                             Description = "Lehké tělo, kompaktní, s možností až 4K videa",
                             IsDeleted = true,
                             Name = "Zrcadlovka SONY Alpha A6300",
@@ -1332,6 +871,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 10,
+                            CategoryId = 1,
                             Description = "Lehké tělo, kompaktní, s možností až 4K videa",
                             IsDeleted = true,
                             Name = "Zrcadlovka SONY Alpha A6300",
@@ -1340,6 +880,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 11,
+                            CategoryId = 1,
                             Img = "EOS650D_5a40.jpg",
                             IsDeleted = false,
                             Name = "Fotoaparát Canon EOS 650D",
@@ -1349,6 +890,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 12,
+                            CategoryId = 1,
                             Img = "EOS650D_5a40.jpg",
                             IsDeleted = false,
                             Name = "Fotoaparát Canon EOS 650D",
@@ -1358,6 +900,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 13,
+                            CategoryId = 2,
                             Img = "Sigma18-50_f918.jpg",
                             IsDeleted = false,
                             Name = "Objektiv SIGMA 17-50 mm 1:2.8",
@@ -1367,6 +910,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 14,
+                            CategoryId = 2,
                             Img = "Sigma18-50_f918.jpg",
                             IsDeleted = false,
                             Name = "Objektiv SIGMA 17-50 mm 1:2.8",
@@ -1376,6 +920,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 15,
+                            CategoryId = 1,
                             Img = "EOS70D_b624.jpg",
                             IsDeleted = false,
                             Name = "Fotoaparát Canon EOS 70D",
@@ -1384,6 +929,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 16,
+                            CategoryId = 1,
                             Img = "EOS70D_b624.jpg",
                             IsDeleted = false,
                             Name = "Fotoaparát Canon EOS 70D",
@@ -1393,6 +939,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 17,
+                            CategoryId = 2,
                             Description = "FullFrame objektiv",
                             Img = "Sigma24-70_7bde.jpg",
                             IsDeleted = false,
@@ -1402,6 +949,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 18,
+                            CategoryId = 1,
                             Description = "Stříbrná",
                             IsDeleted = false,
                             Name = "Videokamera Sony 1.9/2.1-57",
@@ -1410,6 +958,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 19,
+                            CategoryId = 1,
                             Description = "Stříbrná",
                             IsDeleted = false,
                             Name = "Videokamera Sony 1.9/2.1-57",
@@ -1418,6 +967,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 20,
+                            CategoryId = 1,
                             Description = "Stříbrná",
                             IsDeleted = false,
                             Name = "Videokamera Sony 1.9/2.1-57",
@@ -1426,6 +976,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 21,
+                            CategoryId = 1,
                             Description = "F1.8/f1.9-57 (černá)",
                             Img = "SonyHDR-CX320_6824.jpg",
                             IsDeleted = false,
@@ -1435,6 +986,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 22,
+                            CategoryId = 4,
                             Img = "gripC70D_2982.jpg",
                             IsDeleted = false,
                             Name = "Bateriový grip Phottix BG 70D",
@@ -1443,6 +995,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 23,
+                            CategoryId = 4,
                             IsDeleted = true,
                             Name = "Knoflíková baterie GP Alkaline A76 LR44 V13GA 1.5 V",
                             State = 0
@@ -1450,6 +1003,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 24,
+                            CategoryId = 4,
                             Description = "90 MB/s",
                             Img = "SDSanDisk64GB_715b.jpg",
                             IsDeleted = false,
@@ -1459,6 +1013,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 25,
+                            CategoryId = 4,
                             Description = "90 MB/s",
                             Img = "SDSanDisk64GB_715b.jpg",
                             IsDeleted = false,
@@ -1468,6 +1023,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 26,
+                            CategoryId = 4,
                             IsDeleted = true,
                             Name = "Alkalická baterie Alkalisk 1.5 V LR03 AAA Ikea",
                             State = 0
@@ -1475,6 +1031,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 27,
+                            CategoryId = 4,
                             IsDeleted = true,
                             Name = "Alkalická baterie Alkalisk 1.5 V LR03 AAA Ikea",
                             State = 0
@@ -1482,6 +1039,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 28,
+                            CategoryId = 4,
                             IsDeleted = true,
                             Name = "Alkalická baterie Eneloop 1.2 V HR 3UTG AA",
                             State = 0
@@ -1489,6 +1047,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 29,
+                            CategoryId = 4,
                             IsDeleted = true,
                             Name = "Alkalická baterie Eneloop 1.2 V HR 4UTG AAA",
                             State = 0
@@ -1496,6 +1055,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 30,
+                            CategoryId = 4,
                             IsDeleted = true,
                             Name = "Alkalická baterie LSD 1.2 V AAA",
                             State = 0
@@ -1503,6 +1063,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 31,
+                            CategoryId = 4,
                             IsDeleted = true,
                             Name = "Alkalická baterie LSD 1.2 V AAA",
                             State = 0
@@ -1510,6 +1071,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 32,
+                            CategoryId = 4,
                             IsDeleted = true,
                             Name = "Alkalická baterie LSD 1.2 V AAA",
                             State = 0
@@ -1517,6 +1079,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 33,
+                            CategoryId = 4,
                             IsDeleted = true,
                             Name = "Alkalická baterie LSD 1.2 V AA",
                             State = 0
@@ -1524,6 +1087,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 34,
+                            CategoryId = 4,
                             IsDeleted = true,
                             Name = "Alkalická baterie LSD 1.2 V AA",
                             State = 0
@@ -1531,6 +1095,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 35,
+                            CategoryId = 4,
                             IsDeleted = true,
                             Name = "Alkalická baterie LSD 1.2 V AA",
                             State = 0
@@ -1538,6 +1103,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 36,
+                            CategoryId = 4,
                             IsDeleted = true,
                             Name = "Alkalická baterie LSD 1.2 V AA",
                             State = 0
@@ -1545,6 +1111,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 37,
+                            CategoryId = 4,
                             IsDeleted = true,
                             Name = "Alkalická baterie LSD 1.2 V AA",
                             State = 0
@@ -1552,6 +1119,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 38,
+                            CategoryId = 4,
                             Description = "Černý",
                             IsDeleted = true,
                             Name = "MicroSD karta adapter SAMSUNG",
@@ -1560,6 +1128,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 39,
+                            CategoryId = 4,
                             Description = "Černý",
                             IsDeleted = false,
                             Name = "SD karta Kingston SD10G3 32 GB",
@@ -1568,6 +1137,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 40,
+                            CategoryId = 4,
                             Description = "Průhledné",
                             IsDeleted = true,
                             Name = "Pouzdro na SD kartu",
@@ -1576,6 +1146,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 41,
+                            CategoryId = 4,
                             Description = "Průhledné",
                             IsDeleted = true,
                             Name = "Pouzdro na SD kartu",
@@ -1584,6 +1155,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 42,
+                            CategoryId = 4,
                             Description = "Průhledné",
                             IsDeleted = true,
                             Name = "Pouzdro na SD kartu",
@@ -1592,6 +1164,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 43,
+                            CategoryId = 4,
                             Description = "Průhledné",
                             IsDeleted = true,
                             Name = "Pouzdro na SD kartu",
@@ -1600,6 +1173,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 44,
+                            CategoryId = 2,
                             Description = "FullFrame",
                             Img = "CanonEF70-200_b2f2.jpg",
                             IsDeleted = false,
@@ -1609,6 +1183,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 45,
+                            CategoryId = 1,
                             Description = "Černý",
                             IsDeleted = false,
                             Name = "Fotoaparát Canon EOS 350D",
@@ -1617,6 +1192,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 46,
+                            CategoryId = 2,
                             Description = "FullFrame",
                             Img = "CanonEF50_0055.jpg",
                             IsDeleted = false,
@@ -1626,6 +1202,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 47,
+                            CategoryId = 4,
                             Description = "Černá",
                             IsDeleted = false,
                             Name = "Baterie SONY NP FV70A 1900mAh",
@@ -1634,6 +1211,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 48,
+                            CategoryId = 4,
                             Description = "Černá",
                             IsDeleted = true,
                             Name = "Baterie Canon LP E6N 1865mAh",
@@ -1642,6 +1220,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 49,
+                            CategoryId = 4,
                             Description = "Černá",
                             IsDeleted = true,
                             Name = "Baterie Canon LP E6 1800mAh",
@@ -1650,6 +1229,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 50,
+                            CategoryId = 4,
                             Description = "k 650D (šedá)",
                             Img = "BattLPE8_fd96.jpg",
                             IsDeleted = false,
@@ -1659,6 +1239,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 51,
+                            CategoryId = 4,
                             Description = "k 650D (šedá)",
                             Img = "BattLPE8_fd96.jpg",
                             IsDeleted = false,
@@ -1668,6 +1249,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 52,
+                            CategoryId = 4,
                             Description = "k 650D (šedá)",
                             Img = "BattLPE8_fd96.jpg",
                             IsDeleted = false,
@@ -1677,6 +1259,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 53,
+                            CategoryId = 4,
                             Description = "k C70D, C5D",
                             Img = "BattLPE6_03b5.jpg",
                             IsDeleted = false,
@@ -1686,6 +1269,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 54,
+                            CategoryId = 4,
                             Description = "k C70D, C5D",
                             Img = "BattLPE6_03b5.jpg",
                             IsDeleted = false,
@@ -1695,6 +1279,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 55,
+                            CategoryId = 4,
                             Description = "k C70D, C5D",
                             Img = "BattLPE6_03b5.jpg",
                             IsDeleted = false,
@@ -1704,6 +1289,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 56,
+                            CategoryId = 4,
                             Description = "Černá",
                             IsDeleted = true,
                             Name = "Baterie Canon LP E6 1865mAh",
@@ -1712,6 +1298,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 57,
+                            CategoryId = 4,
                             Description = "Černá",
                             IsDeleted = false,
                             Name = "Baterie SONY NP FV30 500mAh",
@@ -1720,6 +1307,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 58,
+                            CategoryId = 4,
                             Description = "Černá",
                             IsDeleted = false,
                             Name = "Baterie SONY NP FV30 500mAh",
@@ -1728,6 +1316,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 59,
+                            CategoryId = 4,
                             Description = "Černá",
                             IsDeleted = false,
                             Name = "Baterie SONY NP FV30 500mAh",
@@ -1736,6 +1325,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 60,
+                            CategoryId = 4,
                             Description = "náhradní akumulátor",
                             IsDeleted = false,
                             Name = "Baterie Panasonic VW VBN130 1250mAh",
@@ -1744,6 +1334,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 61,
+                            CategoryId = 4,
                             Description = "k C70D, C5D",
                             Img = "BattChgLC-E6E_27dd.jpg",
                             IsDeleted = false,
@@ -1753,6 +1344,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 62,
+                            CategoryId = 4,
                             Description = "k C70D, C5D",
                             Img = "BattChgLC-E6E_27dd.jpg",
                             IsDeleted = false,
@@ -1762,6 +1354,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 63,
+                            CategoryId = 4,
                             Description = "k C650D",
                             Img = "BattChgLC-E8E_02bb.jpg",
                             IsDeleted = false,
@@ -1771,6 +1364,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 64,
+                            CategoryId = 4,
                             Description = "k C650D",
                             Img = "BattChgLC-E8E_02bb.jpg",
                             IsDeleted = false,
@@ -1780,6 +1374,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 65,
+                            CategoryId = 4,
                             Description = "Černá",
                             IsDeleted = false,
                             Name = "Nabíječka baterií FK technics BC 450",
@@ -1788,6 +1383,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 66,
+                            CategoryId = 4,
                             Description = "Černý",
                             IsDeleted = true,
                             Name = "Napájecí kabel I SHENG 033",
@@ -1796,6 +1392,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 67,
+                            CategoryId = 4,
                             Description = "Černý",
                             IsDeleted = true,
                             Name = "Napájecí kabel I SHENG 033",
@@ -1804,6 +1401,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 68,
+                            CategoryId = 6,
                             IsDeleted = true,
                             Name = "Testujeme s.r.o.",
                             State = 0
@@ -1811,6 +1409,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 69,
+                            CategoryId = 2,
                             Description = "(Kz)",
                             Img = "Sigma18-200_cd74.jpg",
                             IsDeleted = false,
@@ -1820,6 +1419,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 70,
+                            CategoryId = 3,
                             Img = "StativVelbonC-600_b14c.jpg",
                             IsDeleted = false,
                             Name = "Stativ Velbon C-600",
@@ -1829,6 +1429,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 71,
+                            CategoryId = 3,
                             Img = "StativVelbonC-600_b14c.jpg",
                             IsDeleted = false,
                             Name = "Stativ Velbon C-600",
@@ -1837,6 +1438,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 72,
+                            CategoryId = 4,
                             Description = "95 MB/s",
                             Img = "SDLexar64GB_e4c2.jpg",
                             IsDeleted = false,
@@ -1846,6 +1448,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 73,
+                            CategoryId = 6,
                             Description = "Rezervace místnosti se studiovými světly a odpalovačem.",
                             Img = "atelier_a27b.jpg",
                             IsDeleted = false,
@@ -1855,6 +1458,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 74,
+                            CategoryId = 3,
                             Description = "Hlava má vůli; nevhodný na video",
                             Img = "hamaStar62_914d.jpg",
                             IsDeleted = false,
@@ -1864,6 +1468,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 75,
+                            CategoryId = 3,
                             Description = "Steadicam Camtree Wonder-3",
                             Img = "flycam_fd0f.jpg",
                             IsDeleted = false,
@@ -1873,6 +1478,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 76,
+                            CategoryId = 5,
                             Img = "ZoomH1_2ffd.jpg",
                             IsDeleted = false,
                             Name = "Rekordér Zoom H1",
@@ -1881,6 +1487,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 77,
+                            CategoryId = 5,
                             Img = "ZoomH1_2ffd.jpg",
                             IsDeleted = false,
                             Name = "Rekordér Zoom H1",
@@ -1889,6 +1496,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 78,
+                            CategoryId = 3,
                             Img = "MiniTripod_92cc.jpg",
                             IsDeleted = false,
                             Name = "stativ MiniTripod plochý",
@@ -1897,6 +1505,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 79,
+                            CategoryId = 2,
                             Img = "Sigma30_0caf.jpg",
                             IsDeleted = false,
                             Name = "Objektiv Sigma 30mm/F1.4",
@@ -1905,6 +1514,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 80,
+                            CategoryId = 1,
                             Description = "F1,5 f2,84-34,1mm (včetně akumulátoru)",
                             Img = "Panasonic_HC-X920_7ce7.jpg",
                             IsDeleted = false,
@@ -1914,6 +1524,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 81,
+                            CategoryId = 3,
                             Img = "RigSpider_ea93.jpg",
                             IsDeleted = false,
                             Name = "Stativ Rig Spider FT-10",
@@ -1922,6 +1533,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 82,
+                            CategoryId = 3,
                             Img = "RigSpider_ea93.jpg",
                             IsDeleted = false,
                             Name = "Stativ Rig Spider FT-10",
@@ -1930,6 +1542,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 83,
+                            CategoryId = 3,
                             Img = "RigSpider_ea93.jpg",
                             IsDeleted = false,
                             Name = "Stativ Rig Spider FT-10",
@@ -1938,6 +1551,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 84,
+                            CategoryId = 3,
                             Description = "(kulová hlava)",
                             Img = "StativMS-007H_3d14.jpg",
                             IsDeleted = false,
@@ -1948,6 +1562,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 85,
+                            CategoryId = 5,
                             Description = "bez předzesilovače, induktivní",
                             Img = "MikrofonKlopový_97b3.jpg",
                             IsDeleted = false,
@@ -1957,6 +1572,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 86,
+                            CategoryId = 5,
                             Description = "bez předzesilovače, induktivní",
                             Img = "MikrofonKlopový_97b3.jpg",
                             IsDeleted = false,
@@ -1966,6 +1582,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 87,
+                            CategoryId = 3,
                             Img = "SonyVct-d680rm_9d51.jpg",
                             IsDeleted = false,
                             Name = "Stativ Sony VCT-D680RM",
@@ -1974,6 +1591,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 88,
+                            CategoryId = 6,
                             Description = "Tento výrobek je zkonstruován z tenkého plátu ocelového plechu, který má patinovaný povrch. Díky tomuto hrubému povrchu působí výrobek surově, ale zároveň kvůli jednoduché až primitivní konstrukci nabývá minimalistického a elegantního vzhledu. ",
                             Img = "tn-techtips_f9dd.jpg",
                             IsDeleted = true,
@@ -1984,6 +1602,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 89,
+                            CategoryId = 6,
                             Description = "Tento výrobek je zkonstruován z tenkého plátu ocelového plechu, který má patinovaný povrch. Díky tomuto hrubému povrchu působí výrobek surově, ale zároveň kvůli jednoduché až primitivní konstrukci nabývá minimalistického a elegantního vzhledu. ",
                             Img = "kitt-design-illustration_73ad.png",
                             IsDeleted = true,
@@ -1994,6 +1613,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 90,
+                            CategoryId = 6,
                             Description = "Tento výrobek je zkonstruován z tenkého plátu ocelového plechu, který má patinovaný povrch. Díky tomuto hrubému povrchu působí výrobek surově, ale zároveň kvůli jednoduché až primitivní konstrukci nabývá minimalistického a elegantního vzhledu. ",
                             Img = "tn-techtips_f9dd.jpg",
                             IsDeleted = true,
@@ -2003,6 +1623,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 91,
+                            CategoryId = 6,
                             Description = "Tento výrobek je zkonstruován z tenkého plátu ocelového plechu, který má patinovaný povrch. Díky tomuto hrubému povrchu působí výrobek surově, ale zároveň kvůli jednoduché konstrukci nabývá minimalistického a elegantního vzhledu. ",
                             IsDeleted = true,
                             Name = "Fiktivní předmět",
@@ -2011,6 +1632,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 92,
+                            CategoryId = 6,
                             Description = "Tento výrobek je zkonstruován z tenkého plátu ocelového plechu, který má patinovaný povrch. Díky tomuto hrubému povrchu působí výrobek surově, ale zároveň kvůli jednoduché konstrukci nabývá minimalistického a elegantního vzhledu. ",
                             IsDeleted = true,
                             Name = "Fiktivní předmět",
@@ -2019,6 +1641,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 93,
+                            CategoryId = 4,
                             IsDeleted = true,
                             Name = "Alkalická baterie GP 2700 1.2 V AA",
                             State = 0
@@ -2026,6 +1649,7 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 94,
+                            CategoryId = 4,
                             IsDeleted = true,
                             Name = "Alkalická baterie GP 2700 1.2 V AA",
                             State = 0
@@ -2033,10 +1657,43 @@ namespace Rentals_API_NET6.Migrations
                         new
                         {
                             Id = 95,
+                            CategoryId = 4,
                             IsDeleted = true,
                             Name = "Alkalická baterie GP 2700 1.2 V AA",
                             State = 0
                         });
+                });
+
+            modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.ItemHistoryLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("Action")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ChangedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserInventoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserInventoryId");
+
+                    b.ToTable("ItemHistoryLogs");
                 });
 
             modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.Renting", b =>
@@ -2091,7 +1748,7 @@ namespace Rentals_API_NET6.Migrations
                     b.Property<int>("RentingId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -2126,21 +1783,279 @@ namespace Rentals_API_NET6.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ContentType")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("OriginalName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("Size")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("Uploaded")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.ToTable("Files");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "AsteroidSprite_ddff.png",
+                            OriginalName = "AsteroidSprite_ddff"
+                        },
+                        new
+                        {
+                            Id = "atelier_a27b.jpg",
+                            OriginalName = "atelier_a27b"
+                        },
+                        new
+                        {
+                            Id = "BattChgLC-E6E_27dd.jpg",
+                            OriginalName = "BattChgLC-E6E_27dd"
+                        },
+                        new
+                        {
+                            Id = "BattChgLC-E8E_02bb.jpg",
+                            OriginalName = "BattChgLC-E8E_02bb"
+                        },
+                        new
+                        {
+                            Id = "BattLPE6_03b5.jpg",
+                            OriginalName = "BattLPE6_03b5"
+                        },
+                        new
+                        {
+                            Id = "BattLPE8_fd96.jpg",
+                            OriginalName = "BattLPE8_fd96"
+                        },
+                        new
+                        {
+                            Id = "CanonEF50_0055.jpg",
+                            OriginalName = "CanonEF50_0055"
+                        },
+                        new
+                        {
+                            Id = "CanonEF70-200_b2f2.jpg",
+                            OriginalName = "CanonEF70-200_b2f2"
+                        },
+                        new
+                        {
+                            Id = "comica1_5b38.jpg",
+                            OriginalName = "comica1_5b38"
+                        },
+                        new
+                        {
+                            Id = "comica2_ed64.jpg",
+                            OriginalName = "comica2_ed64"
+                        },
+                        new
+                        {
+                            Id = "crane3Lab_1685.jpg",
+                            OriginalName = "crane3Lab_1685"
+                        },
+                        new
+                        {
+                            Id = "Cullmann3400_cd56.jpg",
+                            OriginalName = "Cullmann3400_cd56"
+                        },
+                        new
+                        {
+                            Id = "cvm-d02_8d19.jpg",
+                            OriginalName = "cvm-d02_8d19"
+                        },
+                        new
+                        {
+                            Id = "deity_v-mic-d3_e4bb.jpg",
+                            OriginalName = "deity_v-mic-d3_e4bb"
+                        },
+                        new
+                        {
+                            Id = "e890d2d1-ce7d-4b33-98ff-851e85ac4fd2_940c.jpg",
+                            OriginalName = "e890d2d1-ce7d-4b33-98ff-851e85ac4fd2_940c"
+                        },
+                        new
+                        {
+                            Id = "e890d2d1-ce7d-4b33-98ff-851e85ac4fd2_b249.jpg",
+                            OriginalName = "e890d2d1-ce7d-4b33-98ff-851e85ac4fd2_b249"
+                        },
+                        new
+                        {
+                            Id = "EOS_RP_e3fe.jpg",
+                            OriginalName = "EOS_RP_e3fe"
+                        },
+                        new
+                        {
+                            Id = "EOS650D_5a40.jpg",
+                            OriginalName = "EOS650D_5a40"
+                        },
+                        new
+                        {
+                            Id = "EOS70D_b624.jpg",
+                            OriginalName = "EOS70D_b624"
+                        },
+                        new
+                        {
+                            Id = "EOS90D_7dd9.jpg",
+                            OriginalName = "EOS90D_7dd9"
+                        },
+                        new
+                        {
+                            Id = "flycam_fd0f.jpg",
+                            OriginalName = "flycam_fd0f"
+                        },
+                        new
+                        {
+                            Id = "gripC70D_2982.jpg",
+                            OriginalName = "gripC70D_2982"
+                        },
+                        new
+                        {
+                            Id = "Group 1_0aad.jpg",
+                            OriginalName = "Group 1_0aad"
+                        },
+                        new
+                        {
+                            Id = "Group 612_3ac5.png",
+                            OriginalName = "Group 612_3ac5"
+                        },
+                        new
+                        {
+                            Id = "hamaStar62_914d.jpg",
+                            OriginalName = "hamaStar62_914d"
+                        },
+                        new
+                        {
+                            Id = "img_2_46b9.jpg",
+                            OriginalName = "img_2_46b9"
+                        },
+                        new
+                        {
+                            Id = "img_2_de6d.jpg",
+                            OriginalName = "img_2_de6d"
+                        },
+                        new
+                        {
+                            Id = "kitt-design-illustration_73ad.png",
+                            OriginalName = "kitt-design-illustration_73ad"
+                        },
+                        new
+                        {
+                            Id = "MikrofonKlopový_97b3.jpg",
+                            OriginalName = "MikrofonKlopový_97b3"
+                        },
+                        new
+                        {
+                            Id = "MiniTripod_92cc.jpg",
+                            OriginalName = "MiniTripod_92cc"
+                        },
+                        new
+                        {
+                            Id = "moza_912f.jpg",
+                            OriginalName = "moza_912f"
+                        },
+                        new
+                        {
+                            Id = "Panasonic_HC-X920_7ce7.jpg",
+                            OriginalName = "Panasonic_HC-X920_7ce7"
+                        },
+                        new
+                        {
+                            Id = "PanasonicVW-CT45E_cd22.jpg",
+                            OriginalName = "PanasonicVW-CT45E_cd22"
+                        },
+                        new
+                        {
+                            Id = "Placeholder.jpg",
+                            OriginalName = "Placeholder"
+                        },
+                        new
+                        {
+                            Id = "rigHawk_8fd1.jpg",
+                            OriginalName = "rigHawk_8fd1"
+                        },
+                        new
+                        {
+                            Id = "RigSpider_ea93.jpg",
+                            OriginalName = "RigSpider_ea93"
+                        },
+                        new
+                        {
+                            Id = "SDLexar64GB_e4c2.jpg",
+                            OriginalName = "SDLexar64GB_e4c2"
+                        },
+                        new
+                        {
+                            Id = "SDSanDisk64GB_2b06.jpg",
+                            OriginalName = "SDSanDisk64GB_2b06"
+                        },
+                        new
+                        {
+                            Id = "SDSanDisk64GB_715b.jpg",
+                            OriginalName = "SDSanDisk64GB_715b"
+                        },
+                        new
+                        {
+                            Id = "Sigma18-200_cd74.jpg",
+                            OriginalName = "Sigma18-200_cd74"
+                        },
+                        new
+                        {
+                            Id = "Sigma18-50_f918.jpg",
+                            OriginalName = "Sigma18-50_f918"
+                        },
+                        new
+                        {
+                            Id = "Sigma24-70_7bde.jpg",
+                            OriginalName = "Sigma24-70_7bde"
+                        },
+                        new
+                        {
+                            Id = "Sigma30_0caf.jpg",
+                            OriginalName = "Sigma30_0caf"
+                        },
+                        new
+                        {
+                            Id = "snoppa_4626.jpg",
+                            OriginalName = "snoppa_4626"
+                        },
+                        new
+                        {
+                            Id = "SonyHDR-CX320_6824.jpg",
+                            OriginalName = "SonyHDR-CX320_6824"
+                        },
+                        new
+                        {
+                            Id = "SonyVct-d680rm_9d51.jpg",
+                            OriginalName = "SonyVct-d680rm_9d51"
+                        },
+                        new
+                        {
+                            Id = "StativMS-007H_3d14.jpg",
+                            OriginalName = "StativMS-007H_3d14"
+                        },
+                        new
+                        {
+                            Id = "StativMS-007H_3d14_d8f7.png",
+                            OriginalName = "StativMS-007H_3d14_d8f7"
+                        },
+                        new
+                        {
+                            Id = "stativ-svetlo_98ea.jpg",
+                            OriginalName = "stativ-svetlo_98ea"
+                        },
+                        new
+                        {
+                            Id = "StativVelbonC-600_b14c.jpg",
+                            OriginalName = "StativVelbonC-600_b14c"
+                        },
+                        new
+                        {
+                            Id = "tn-techtips_f9dd.jpg",
+                            OriginalName = "tn-techtips_f9dd"
+                        },
+                        new
+                        {
+                            Id = "Viltrox_f0a5.jpg",
+                            OriginalName = "Viltrox_f0a5"
+                        },
+                        new
+                        {
+                            Id = "ZoomH1_2ffd.jpg",
+                            OriginalName = "ZoomH1_2ffd"
+                        });
                 });
 
             modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.User", b =>
@@ -2213,25 +2128,6 @@ namespace Rentals_API_NET6.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.CategoryItem", b =>
-                {
-                    b.HasOne("Rentals_API_NET6.Models.DatabaseModel.Category", "Category")
-                        .WithMany("Items")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Rentals_API_NET6.Models.DatabaseModel.Item", "Item")
-                        .WithMany("Categories")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Item");
-                });
-
             modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.FavouriteItem", b =>
                 {
                     b.HasOne("Rentals_API_NET6.Models.DatabaseModel.Item", "Item")
@@ -2270,6 +2166,45 @@ namespace Rentals_API_NET6.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.Item", b =>
+                {
+                    b.HasOne("Rentals_API_NET6.Models.DatabaseModel.Category", "Category")
+                        .WithMany("Items")
+                        .HasForeignKey("CategoryId");
+
+                    b.HasOne("Rentals_API_NET6.Models.DatabaseModel.UploadedFile", "ImgFile")
+                        .WithMany("Items")
+                        .HasForeignKey("Img");
+
+                    b.Navigation("Category");
+
+                    b.Navigation("ImgFile");
+                });
+
+            modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.ItemHistoryLog", b =>
+                {
+                    b.HasOne("Rentals_API_NET6.Models.DatabaseModel.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Rentals_API_NET6.Models.DatabaseModel.Item", "Item")
+                        .WithMany("Logs")
+                        .HasForeignKey("UserInventoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Rentals_API_NET6.Models.DatabaseModel.User", "UserInventory")
+                        .WithMany()
+                        .HasForeignKey("UserInventoryId");
+
+                    b.Navigation("Item");
+
+                    b.Navigation("User");
+
+                    b.Navigation("UserInventory");
+                });
+
             modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.Renting", b =>
                 {
                     b.HasOne("Rentals_API_NET6.Models.DatabaseModel.User", "Approver")
@@ -2298,8 +2233,7 @@ namespace Rentals_API_NET6.Migrations
                     b.HasOne("Rentals_API_NET6.Models.DatabaseModel.User", "User")
                         .WithMany("Logs")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Renting");
 
@@ -2336,11 +2270,11 @@ namespace Rentals_API_NET6.Migrations
 
                     b.Navigation("Carts");
 
-                    b.Navigation("Categories");
-
                     b.Navigation("Favourites");
 
                     b.Navigation("Inventories");
+
+                    b.Navigation("Logs");
 
                     b.Navigation("Rentings");
                 });
@@ -2350,6 +2284,11 @@ namespace Rentals_API_NET6.Migrations
                     b.Navigation("Items");
 
                     b.Navigation("Logs");
+                });
+
+            modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.UploadedFile", b =>
+                {
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.User", b =>

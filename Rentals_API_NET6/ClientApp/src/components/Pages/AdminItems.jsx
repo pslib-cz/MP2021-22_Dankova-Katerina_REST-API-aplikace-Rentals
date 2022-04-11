@@ -38,6 +38,8 @@ const AdminItems = (props) => {
 
   let history = useHistory();
 
+  document.title = "Rentals | Admin předměty";
+
   const [Categrories, updateCategories] = useState([]);
   const FetchItems = () => {
     return useQuery(
@@ -49,6 +51,7 @@ const AdminItems = (props) => {
       {
         // The query will not execute until the userId exists
         enabled: !!accessToken,
+        refetchOnWindowFocus: false,
       }
     );
   };

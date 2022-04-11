@@ -3,11 +3,13 @@ import styled from "styled-components";
 const StyledAdminListItemName = styled.div`
   height: auto;
 
-  margin: 0 1rem;
+  margin: 0 2rem;
   display: flex;
   flex-direction: column;
 
   text-align: center;
+
+  text-align: left;
 
   p {
     font-size: 0.75rem;

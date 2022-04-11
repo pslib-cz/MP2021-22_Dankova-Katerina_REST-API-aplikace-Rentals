@@ -6,9 +6,9 @@ import BagCard from "../BagCard/BagCard";
 import BagImage from "../BagCard/BagImage";
 import BagText from "../BagCard/BagText";
 import { Badge } from "proomkatest";
-import BagDate from "../BagCard/BagDate";
 import styled from "styled-components";
 import Button from "../Button/Button";
+import { createBrowserHistory } from "history";
 
 const StyledReturn = styled.div`
   input {
@@ -77,6 +77,8 @@ const StyledReturn = styled.div`
   }
 `;
 
+const history = createBrowserHistory();
+
 const Return = (props) => {
   const { id } = useParams();
   const [{ accessToken }] = useAppContext();
@@ -89,6 +91,8 @@ const Return = (props) => {
       Authorization: "Bearer " + accessToken,
     },
   };
+
+  document.title = `Rentals | Vrácení ${id}`;
 
   const fetchStoredFiles = async () => {
     const { data } = await Axios.get("/api/Renting/Items/" + id, config);
@@ -118,7 +122,7 @@ const Return = (props) => {
     }).then(
       setTimeout(() => {
         fetchStoredFiles();
-        console.log("UPDATE");
+        history.push("/admin");
       }, 1500)
     );
   };
@@ -132,9 +136,6 @@ const Return = (props) => {
               <BagCard key={i}>
                 <BagImage src={file.id}></BagImage>
                 <BagText text={file.name} description={file.desc}></BagText>
-                <BagDate isAvailable>
-                  <Badge className="time">28.1 2022 - 1.2 2022</Badge>
-                </BagDate>
                 <div className="delete">
                   <Badge>
                     <input

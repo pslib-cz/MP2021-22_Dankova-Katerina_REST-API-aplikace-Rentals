@@ -79,7 +79,7 @@ const AdminCalendar = (props) => {
       },
       {
         // The query will not execute until the userId exists
-        enabled: !!accessToken,
+        enabled: !!accessToken, refetchOnWindowFocus: false,
       }
     );
   };

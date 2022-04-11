@@ -18,6 +18,8 @@ const AdminUsers = (props) => {
     },
   };
 
+  document.title = "Rentals | Uživatelé";
+
   const fetchStoredFiles = async () => {
     const { data } = await Axios.get("/api/User", config);
     console.log(data);

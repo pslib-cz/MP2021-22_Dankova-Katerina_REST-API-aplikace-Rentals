@@ -16,19 +16,20 @@ const StyledAccountPhoto = styled.div`
   gap: 2rem;
 
   .img-wrapper {
-    width: auto;
+    width: 100%;
     max-width: 100%;
     border-radius: 1.5rem;
     display: flex;
-    flex-direction: flex;
+    flex-direction: column;
     justify-content: space-between;
     height: min-content;
 
     img {
+      aspect-ratio: 1/1;
       margin: 2rem;
       border-radius: 1.5rem;
-      max-width: 50%;
-      aspect-ratio: 1/1;
+      width: calc(100% - 4rem);
+      image-resolution: unset;
     }
 
     @media (max-width: 1600px) {
@@ -51,6 +52,7 @@ const StyledAccountPhoto = styled.div`
     }
 
     div {
+      width: 100%;
       margin-top: 1.5rem;
       display: flex;
       flex-direction: column;
@@ -170,16 +172,8 @@ const AccountPhoto = (props) => {
       {accessToken ? (
         <>
           <Card className="proomka-card img-wrapper">
-            <img
-              src=""
-              id="myImg2"
-              alt="login"
-              className="login"
-              onClick={() => {
-                userManager.signoutRedirect();
-              }}
-            ></img>
-            <div>
+            <img src="" id="myImg2" alt="login" className="login"></img>
+            <div id="acc-text">
               <p>Jméno</p>
               <p>{profile.name}</p>
               <p>Email</p>

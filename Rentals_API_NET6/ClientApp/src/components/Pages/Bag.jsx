@@ -11,6 +11,7 @@ import { useAppContext } from "../../providers/ApplicationProvider";
 import ReactDOM from "react-dom";
 import { useHistory } from "react-router-dom";
 import { useQuery, useQueryClient } from "react-query";
+import moment from "moment";
 
 const Bag = () => {
   const [{ accessToken }] = useAppContext();
@@ -23,6 +24,8 @@ const Bag = () => {
     },
   };
 
+  document.title = "Rentals | Košík";
+
   const FetchItems = () => {
     return useQuery(
       "bag",
@@ -33,6 +36,7 @@ const Bag = () => {
       {
         // The query will not execute until the userId exists
         enabled: !!accessToken,
+        refetchOnWindowFocus: false,
       }
     );
   };
@@ -43,26 +47,35 @@ const Bag = () => {
     }
   }, [status, data, accessToken]);
 
-  const handleClick = (id) => {
+  const handleClick = (id, i) => {
     Axios({
       method: "delete",
       url: "api/User/Cart/" + id,
       headers: { Authorization: "Bearer " + accessToken },
-    }).then(
-      queryClient.invalidateQueries("bag"),
-      ReactDOM.render(
-        <Alert
-          textColor="white"
-          width="16rem"
-          height="4rem"
-          color="#00ae7c"
-          delay="2000"
-        >
-          <i className="far fa-check-circle icon" /> Odebráno z košíku
-        </Alert>,
-        document.getElementById("ok")
+    })
+      .then(
+        queryClient.resetQueries("bag"),
+        setStoredFiles(
+          storedFiles.filter(function (v, index) {
+            return index !== i;
+          })
+        )
       )
-    );
+      .then(
+        ReactDOM.unmountComponentAtNode(document.getElementById("ok")),
+        ReactDOM.render(
+          <Alert
+            textColor="white"
+            width="16rem"
+            height="4rem"
+            color="#00ae7c"
+            delay="2000"
+          >
+            <i className="far fa-check-circle icon" /> Odebráno z košíku
+          </Alert>,
+          document.getElementById("ok")
+        )
+      );
   };
 
   const [start, setStart] = useState();
@@ -94,7 +107,7 @@ const Bag = () => {
             <Badge>
               <i
                 className="fas fa-times"
-                onClick={() => handleClick(file.id)}
+                onClick={() => handleClick(file.id, i)}
               ></i>
             </Badge>
           </div>
@@ -115,6 +128,7 @@ const Bag = () => {
               id="meeting-time"
               name="meeting-time"
               onChange={handleChange}
+              min={moment().format("YYYY-MM-DDThh:mm")}
             />
             <br /> Do:{" "}
             <input
@@ -122,6 +136,7 @@ const Bag = () => {
               id="meeting-time"
               name="meeting-time"
               onChange={handleChange2}
+              min={moment().format("YYYY-MM-DDThh:mm")}
             />
           </span>
         </p>
@@ -131,7 +146,7 @@ const Bag = () => {
           type="green"
           text="Vypůjčit"
           onClick={() => {
-            storedFiles && start && end
+            storedFiles.length && start && end
               ? Axios({
                   method: "post",
                   url: "/api/Renting",

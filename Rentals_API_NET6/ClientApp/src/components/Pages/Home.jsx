@@ -31,6 +31,8 @@ const Home = (props) => {
     },
   };
 
+  document.title = "Rentals | Domovská stránka";
+
   const FetchItems = () => {
     return useQuery(
       "items",
@@ -41,6 +43,7 @@ const Home = (props) => {
       {
         // The query will not execute until the userId exists
         enabled: !!accessToken,
+        refetchOnWindowFocus: false,
       }
     );
   };
@@ -48,18 +51,30 @@ const Home = (props) => {
   const { status, data } = FetchItems();
   useEffect(() => {
     if (status === "success") {
-      setStoredFiles(data);
+      function dynamicSort(property) {
+        var sortOrder = 1;
+        if (property[0] === "-") {
+          sortOrder = -1;
+          property = property.substr(1);
+        }
+        return function (a, b) {
+          /* next line works with strings and numbers,
+           * and you may want to customize it to your needs
+           */
+          var result =
+            a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
+          return result * sortOrder;
+        };
+      }
+
+      setStoredFiles(data.sort(dynamicSort("categoryId")));
     }
   }, [status, data, accessToken]);
 
   const [Categrories, updateCategories] = useState([]);
 
-  const handleClick = (id) => {
-    Axios({
-      method: "post",
-      url: "api/User/Cart/" + id,
-      headers: { Authorization: "Bearer " + accessToken },
-    });
+  const AddAlert = (id) => {
+    ReactDOM.unmountComponentAtNode(document.getElementById("ok"));
 
     ReactDOM.render(
       <Alert
@@ -71,9 +86,16 @@ const Home = (props) => {
       >
         <i className="far fa-check-circle icon" /> Přidáno do košíku
       </Alert>,
-
       document.getElementById("ok")
     );
+  };
+
+  const handleClick = (id) => {
+    Axios({
+      method: "post",
+      url: "api/User/Cart/" + id,
+      headers: { Authorization: "Bearer " + accessToken },
+    }).then(() => AddAlert(id));
   };
 
   // eslint-disable-next-line
@@ -196,21 +218,19 @@ const Home = (props) => {
                 )
                 .map((i, index) => {
                   return (
-                    <>
-                      <Card key={i}>
-                        <CardImage src={i.id}></CardImage>
-                        <p className="card-header">{i.name}</p>
-                        <p className="card-desc">{i.description}</p>
-                        <Badge
-                          color="#007784"
-                          colorHover="#009fb1"
-                          textColor="white"
-                          onClick={() => handleClick(i.id)}
-                        >
-                          <i className="fas fa-cart-plus"></i>
-                        </Badge>
-                      </Card>
-                    </>
+                    <Card key={index}>
+                      <CardImage src={i.id}></CardImage>
+                      <p className="card-header">{i.name}</p>
+                      <p className="card-desc">{i.description}</p>
+                      <Badge
+                        color="#007784"
+                        colorHover="#009fb1"
+                        textColor="white"
+                        onClick={() => handleClick(i.id)}
+                      >
+                        <i className="fas fa-cart-plus"></i>
+                      </Badge>
+                    </Card>
                   );
                 })}
             </StyledContentGrid>

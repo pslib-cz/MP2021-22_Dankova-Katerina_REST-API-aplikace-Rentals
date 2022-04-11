@@ -1,6 +1,5 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { WavyLink } from "react-wavy-transitions";
+import { Link, NavLink } from "react-router-dom";
 import { useState } from "react";
 
 const StyledCardImage = styled.div`
@@ -37,9 +36,17 @@ const CardImage = (props) => {
 
   return (
     <StyledCardImage {...props}>
-      {loaded ? null : <div className="loading-img"></div>}
-      <WavyLink
-        waveColor="#007784"
+      {loaded ? null : (
+        <NavLink
+          className="unstyled header"
+          tag={Link}
+          to={"/detail/" + props.src}
+          activeClassName={""}
+        >
+          <div className="loading-img"></div>
+        </NavLink>
+      )}
+      <NavLink
         className="unstyled header"
         tag={Link}
         to={"/detail/" + props.src}
@@ -54,7 +61,7 @@ const CardImage = (props) => {
             e.currentTarget.src = "/image.svg";
           }}
         />
-      </WavyLink>
+      </NavLink>
     </StyledCardImage>
   );
 };

@@ -11,8 +11,18 @@ const StyledAdminListItem = styled.div`
   display: flex;
   justify-content: space-between;
 
-  @media (max-width: 700px) {
+  & > * {
+    width: 100%;
+  }
+
+  @media (max-width: 1000px) {
     flex-direction: column;
+
+    * {
+      text-align: center !important;
+      margin: 0;
+      place-items: center;
+    }
   }
 `;
 

@@ -17,12 +17,13 @@ import { Alert, Badge, Card } from "proomkatest";
 import { useHistory } from "react-router-dom";
 import { ImpulseSpinner } from "react-spinners-kit";
 import { StyledDetail } from "../Pages/Detail";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 
 const AdminLanding = (props) => {
   const [{ accessToken }] = useAppContext();
   const [storedFiles, setStoredFiles] = useState([]);
   const [updater, Update] = useState(1);
+  const queryClient = useQueryClient();
 
   const config = {
     headers: {
@@ -37,6 +38,8 @@ const AdminLanding = (props) => {
     minute: "2-digit",
   };
 
+  document.title = "Rentals | Admin";
+
   const FetchItems = () => {
     return useQuery(
       "admin-when",
@@ -47,6 +50,7 @@ const AdminLanding = (props) => {
       {
         // The query will not execute until the userId exists
         enabled: !!accessToken,
+        refetchOnWindowFocus: false,
       }
     );
   };
@@ -71,27 +75,11 @@ const AdminLanding = (props) => {
         method: "put",
         url: "api/Renting/Activate/" + props.setId,
         headers: { Authorization: "Bearer " + accessToken },
-      });
+      }).then(queryClient.invalidateQueries("admin-when"));
       props.Update(updater + 1);
-
-      ReactDOM.render(
-        <Alert
-          textColor="white"
-          width="16rem"
-          height="4rem"
-          color="#00ae7c"
-          delay="2000"
-        >
-          <i className="far fa-check-circle icon" /> Přidáno do košíku
-        </Alert>,
-
-        document.getElementById("ok")
-      );
     };
 
-    const open = () => {
-      console.log("SHOOORT");
-    };
+    const open = () => {};
 
     const onClick = () => {
       open();
@@ -117,7 +105,7 @@ const AdminLanding = (props) => {
         method: "delete",
         url: "api/Renting/" + props.setId,
         headers: { Authorization: "Bearer " + accessToken },
-      });
+      }).then(queryClient.invalidateQueries("admin-when"));
       props.Update(updater + 1);
 
       ReactDOM.render(
@@ -135,7 +123,29 @@ const AdminLanding = (props) => {
       );
     };
 
-    const open = () => {};
+    const open = () => {
+      navigator.vibrate(65);
+      Axios({
+        method: "delete",
+        url: "api/Renting/" + props.setId,
+        headers: { Authorization: "Bearer " + accessToken },
+      });
+      props.Update(updater + 1);
+
+      ReactDOM.render(
+        <Alert
+          textColor="white"
+          width="16rem"
+          height="4rem"
+          color="#d05555"
+          delay="2000"
+        >
+          <i className="far fa-check-circle icon" /> Výpůjčka zrušena
+        </Alert>,
+
+        document.getElementById("ok")
+      );
+    };
 
     const onClick = () => {
       open();
@@ -184,33 +194,42 @@ const AdminLanding = (props) => {
     );
   };
 
-  const [inputText, setInputText] = useState("");
-  let inputHandler = (e) => {
-    //convert input text to lower case
-    var lowerCase = e.target.value.toLowerCase();
-    setInputText(lowerCase);
+  const ButtonBlank = (props) => {
+    return (
+      <button className="blank">
+        <p className="green">Bez akce</p>
+      </button>
+    );
   };
 
-  setTimeout(() => {
-    ReactDOM.render(
-      <StyledSearchBox>
-        <StyledSearchBoxWithin>
-          <input
-            id="searchField"
-            type="text"
-            placeholder="Hledat..."
-            onChange={inputHandler}
-          />
-          <span>
-            <i className="fas fa-search"></i>
-          </span>
-        </StyledSearchBoxWithin>
-      </StyledSearchBox>,
-      document.getElementById("searchme")
-    );
-  }, 250);
+  const [inputText, setInputText] = useState("");
 
   if (status === "success") {
+    let inputHandler = (e) => {
+      //convert input text to lower case
+      var lowerCase = e.target.value.toLowerCase();
+      setInputText(lowerCase);
+    };
+
+    setTimeout(() => {
+      ReactDOM.render(
+        <StyledSearchBox>
+          <StyledSearchBoxWithin>
+            <input
+              id="searchField"
+              type="text"
+              placeholder="Hledat..."
+              onChange={inputHandler}
+            />
+            <span>
+              <i className="fas fa-search"></i>
+            </span>
+          </StyledSearchBoxWithin>
+        </StyledSearchBox>,
+        document.getElementById("searchme")
+      );
+    }, 1000);
+
     return (
       <StyledMainGrid>
         <ContentMenu></ContentMenu>
@@ -244,12 +263,15 @@ const AdminLanding = (props) => {
                       <Button setId={i.id} Update={Update} updater={updater} />
                       <Button2 setId={i.id} Update={Update} updater={updater} />
                     </div>
-                  ) : null}
-                  {i.state === 1 ? (
+                  ) : i.state === 1 ? (
                     <div className="center-me1">
                       <Button3 setId={i.id} Update={Update} updater={updater} />
                     </div>
-                  ) : null}
+                  ) : (
+                    <div className="center-me1">
+                      <ButtonBlank />
+                    </div>
+                  )}
                 </AdminListItem>
               );
             })}

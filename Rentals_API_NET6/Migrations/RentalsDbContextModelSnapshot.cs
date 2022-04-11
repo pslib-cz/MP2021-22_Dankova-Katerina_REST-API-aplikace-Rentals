@@ -1662,6 +1662,38 @@ namespace Rentals_API_NET6.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.ItemHistoryLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("Action")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ChangedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserInventoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserInventoryId");
+
+                    b.ToTable("ItemHistoryLogs");
+                });
+
             modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.Renting", b =>
                 {
                     b.Property<int>("Id")
@@ -1714,7 +1746,7 @@ namespace Rentals_API_NET6.Migrations
                     b.Property<int>("RentingId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -2147,6 +2179,30 @@ namespace Rentals_API_NET6.Migrations
                     b.Navigation("ImgFile");
                 });
 
+            modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.ItemHistoryLog", b =>
+                {
+                    b.HasOne("Rentals_API_NET6.Models.DatabaseModel.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Rentals_API_NET6.Models.DatabaseModel.Item", "Item")
+                        .WithMany("Logs")
+                        .HasForeignKey("UserInventoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Rentals_API_NET6.Models.DatabaseModel.User", "UserInventory")
+                        .WithMany()
+                        .HasForeignKey("UserInventoryId");
+
+                    b.Navigation("Item");
+
+                    b.Navigation("User");
+
+                    b.Navigation("UserInventory");
+                });
+
             modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.Renting", b =>
                 {
                     b.HasOne("Rentals_API_NET6.Models.DatabaseModel.User", "Approver")
@@ -2175,8 +2231,7 @@ namespace Rentals_API_NET6.Migrations
                     b.HasOne("Rentals_API_NET6.Models.DatabaseModel.User", "User")
                         .WithMany("Logs")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Renting");
 
@@ -2216,6 +2271,8 @@ namespace Rentals_API_NET6.Migrations
                     b.Navigation("Favourites");
 
                     b.Navigation("Inventories");
+
+                    b.Navigation("Logs");
 
                     b.Navigation("Rentings");
                 });

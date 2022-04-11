@@ -27,24 +27,32 @@ const Favourite = () => {
     },
   };
 
-  const FetchItems = () => {
-    return useQuery("favourites", async () => {
-      const { data } = await Axios.get("/api/User/Favourites", config);
-      ReactDOM.render(
-        <Alert
-          textColor="white"
-          width="16rem"
-          height="4rem"
-          color="#00ae7c"
-          delay="2000"
-        >
-          <i className="far fa-check-circle icon" /> Data aktualizována
-        </Alert>,
+  document.title = "Rentals | Oblíbené položky";
 
-        document.getElementById("ok")
-      );
-      return data;
-    });
+  const FetchItems = () => {
+    return useQuery(
+      "favourites",
+      async () => {
+        const { data } = await Axios.get("/api/User/Favourites", config);
+        ReactDOM.render(
+          <Alert
+            textColor="white"
+            width="16rem"
+            height="4rem"
+            color="#00ae7c"
+            delay="2000"
+          >
+            <i className="far fa-check-circle icon" /> Data aktualizována
+          </Alert>,
+
+          document.getElementById("ok")
+        );
+        return data;
+      },
+      {
+        refetchOnWindowFocus: false,
+      }
+    );
   };
   const { status, data } = FetchItems();
   useEffect(() => {

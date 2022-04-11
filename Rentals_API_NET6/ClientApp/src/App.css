@@ -284,14 +284,16 @@ div.opener {
 
 .center-me {
   display: grid;
-  place-items: center;
+  place-items: center end;
   grid-template-columns: repeat(2, 1fr);
+  margin: 0 1rem;
 }
 
 .center-me1 {
   display: grid;
-  place-items: center;
+  place-items: center end;
   grid-template-columns: repeat(1, 1fr);
+  margin: 0 1rem;
 }
 
 .filled-heart {
@@ -300,4 +302,57 @@ div.opener {
 
 .proomka-card.deleted {
   border: #d05555 4px dashed;
+}
+
+.prace,
+.praxe,
+.soboty {
+  display: none !important;
+}
+
+.app-choice {
+  max-height: 10rem;
+}
+
+.blank {
+  font-size: 1rem;
+  margin: 0 0.5rem;
+  min-width: 7rem;
+}
+
+.blank p {
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  color: #959595;
+  transition: 150ms ease-in-out;
+  font-weight: 500;
+  background-color: rgb(228, 228, 228);
+  cursor: not-allowed;
+}
+
+.local-choice a{
+  color: black !important;
+  text-decoration: none;
+}
+
+@media (max-width: 1280px) {
+  .local-choice p {
+    display: none;
+  }
+
+  .sc-eCImPb.kFnasg.proomka-card.empty{
+    height: 16rem;
+  }
+}
+
+.card-header {
+  height: 70px;
+}
+
+.proomka-card {
+  cursor: default !important;
+}
+
+.proomka-badge {
+  cursor: pointer !important;
 }

@@ -7,6 +7,7 @@ using Rentals_API_NET6.Models.DatabaseModel;
 using Rentals_API_NET6.Models.InputModel;
 using Rentals_API_NET6.Models.OutputModel;
 using System.Security.Claims;
+using static Rentals_API_NET6.Models.DatabaseModel.ItemHistoryLog;
 
 namespace Rentals_API_NET6.Controllers
 {
@@ -38,9 +39,21 @@ namespace Rentals_API_NET6.Controllers
                 State = ItemState.Available,
                 Img = request.Img == null ? "Placeholder.bmp" : request.Img
             };
-
             _context.Items.Add(Item);
             await _context.SaveChangesAsync();
+
+            User user = _context.Users.SingleOrDefault(x => x.OauthId == User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
+            ItemHistoryLog log = new ItemHistoryLog
+            {
+                ItemId = Item.Id,
+                UserId = user.Id,
+                ChangedTime = DateTime.Now,
+                Action = ItemAction.Created
+            };
+
+            _context.ItemHistoryLogs.Add(log);
+            await _context.SaveChangesAsync();
+
             return Ok(Item);
         }
 
@@ -75,6 +88,19 @@ namespace Rentals_API_NET6.Controllers
                 }
 
                 _context.Entry(item).State = EntityState.Modified;
+
+                User user = _context.Users.SingleOrDefault(x => x.OauthId == User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
+                ItemHistoryLog log = new ItemHistoryLog
+                {
+                    ItemId = item.Id,
+                    UserId = user.Id,
+                    ChangedTime = DateTime.Now,
+                    Action = ItemAction.Changed,
+                    UserInventoryId = _context.InventoryItems.SingleOrDefault(x => x.ItemId == item.Id).UserId
+                };
+
+                _context.ItemHistoryLogs.Add(log);
+
                 await _context.SaveChangesAsync();
                 return Ok(item);
             }
@@ -106,6 +132,18 @@ namespace Rentals_API_NET6.Controllers
                 }
 
                 _context.Entry(item).State = EntityState.Modified;
+
+                User user = _context.Users.SingleOrDefault(x => x.OauthId == User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
+                ItemHistoryLog log = new ItemHistoryLog
+                {
+                    ItemId = item.Id,
+                    UserId = user.Id,
+                    ChangedTime = DateTime.Now,
+                    Action = ItemAction.Deleted,
+                    UserInventoryId = _context.InventoryItems.SingleOrDefault(x => x.ItemId == item.Id).UserId
+                };
+
+                _context.ItemHistoryLogs.Add(log);
                 await _context.SaveChangesAsync();
                 return Ok(item);
             }
@@ -138,6 +176,19 @@ namespace Rentals_API_NET6.Controllers
             {
                 item.IsDeleted = false;
                 _context.Entry(item).State = EntityState.Modified;
+
+                User user = _context.Users.SingleOrDefault(x => x.OauthId == User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
+                ItemHistoryLog log = new ItemHistoryLog
+                {
+                    ItemId = item.Id,
+                    UserId = user.Id,
+                    ChangedTime = DateTime.Now,
+                    Action = ItemAction.Changed,
+                    UserInventoryId = _context.InventoryItems.SingleOrDefault(x => x.ItemId == item.Id).UserId
+                };
+
+                _context.ItemHistoryLogs.Add(log);
+
                 await _context.SaveChangesAsync();
                 return Ok(item);
             }
@@ -258,6 +309,18 @@ namespace Rentals_API_NET6.Controllers
                 }
                 if (errors == 0)
                 {
+                    User user = _context.Users.SingleOrDefault(x => x.OauthId == User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
+                    ItemHistoryLog log = new ItemHistoryLog
+                    {
+                        ItemId = itemForAccesory.Id,
+                        UserId = user.Id,
+                        ChangedTime = DateTime.Now,
+                        Action = ItemAction.Changed,
+                        UserInventoryId = _context.InventoryItems.SingleOrDefault(x => x.ItemId == itemForAccesory.Id).UserId
+                    };
+
+                    _context.ItemHistoryLogs.Add(log);
+
                     await _context.SaveChangesAsync();
                     return Ok(_context.Items.Find(request.Id));
                 }
@@ -402,6 +465,14 @@ namespace Rentals_API_NET6.Controllers
             {
                 return NotFound();
             }
+        }
+
+        [HttpGet("History")]
+        public async Task<ActionResult<List<ItemHistoryLog>>> GetHistory(int id)
+        {
+            Item item = _context.Items.SingleOrDefault(x => x.Id == id);
+            List<ItemHistoryLog> history = _context.ItemHistoryLogs.Include(x => x.User).Include(x => x.UserInventory).Where(x => x.ItemId == item.Id).ToList();
+            return Ok(history);
         }
     }
 }

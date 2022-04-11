@@ -174,6 +174,7 @@ const Detail = (props) => {
       {
         // The query will not execute until the userId exists
         enabled: !!accessToken,
+        refetchOnWindowFocus: false,
       }
     );
   };
@@ -189,6 +190,7 @@ const Detail = (props) => {
 
   useEffect(() => {
     if (status === "success") {
+      document.title = `Rentals | ${data.name}`;
       setItem(data);
     }
   }, [status, data]);
@@ -229,20 +231,21 @@ const Detail = (props) => {
       url: "/api/User/Favourites/" + id,
       headers: { Authorization: "Bearer " + accessToken },
     }).then(
-      fetchLike() &&
-        ReactDOM.render(
-          <Alert
-            textColor="white"
-            width="16rem"
-            height="4rem"
-            color="#00ae7c"
-            delay="2000"
-          >
-            <i className="far fa-check-circle icon" /> Přidáno do oblíbených
-          </Alert>,
+      fetchLike(),
+      ReactDOM.unmountComponentAtNode(document.getElementById("ok")),
+      ReactDOM.render(
+        <Alert
+          textColor="white"
+          width="16rem"
+          height="4rem"
+          color="#00ae7c"
+          delay="2000"
+        >
+          <i className="far fa-check-circle icon" /> Přidáno do oblíbených
+        </Alert>,
 
-          document.getElementById("ok")
-        )
+        document.getElementById("ok")
+      )
     );
   };
 
@@ -252,20 +255,21 @@ const Detail = (props) => {
       url: "/api/User/Favourites/" + id,
       headers: { Authorization: "Bearer " + accessToken },
     }).then(
-      fetchLike() &&
-        ReactDOM.render(
-          <Alert
-            textColor="white"
-            width="16rem"
-            height="4rem"
-            color="#00ae7c"
-            delay="2000"
-          >
-            <i className="far fa-check-circle icon" /> Odebráno z oblíbených
-          </Alert>,
+      fetchLike(),
+      ReactDOM.unmountComponentAtNode(document.getElementById("ok")),
+      ReactDOM.render(
+        <Alert
+          textColor="white"
+          width="16rem"
+          height="4rem"
+          color="#d05555"
+          delay="2000"
+        >
+          <i className="far fa-check-circle icon" /> Odebráno z oblíbených
+        </Alert>,
 
-          document.getElementById("ok")
-        )
+        document.getElementById("ok")
+      )
     );
   };
 

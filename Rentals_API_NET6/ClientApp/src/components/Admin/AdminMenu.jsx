@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import styled from "styled-components";
-import WavyLink from "react-wavy-transitions/dist/WavyLink";
 
 const StyledAdminMenu = styled.div`
   position: fixed;
@@ -142,12 +141,11 @@ const StyledAdminMenu = styled.div`
 const AdminMenu = (props) => {
   return (
     <StyledAdminMenu>
-      <WavyLink waveColor="#007784" tag={Link} to="/admin" className="selector">
+      <NavLink waveColor="#007784" tag={Link} to="/admin" className="selector">
         <i className="fas fa-globe-europe"></i>
         <p>Přehled</p>
-      </WavyLink>
-      <WavyLink
-        waveColor="#007784"
+      </NavLink>
+      <NavLink
         activeClassName="active-link"
         tag={Link}
         to="/admin/calendar"
@@ -155,9 +153,8 @@ const AdminMenu = (props) => {
       >
         <i className="far fa-calendar"></i>
         <p>Kalendář</p>
-      </WavyLink>
-      <WavyLink
-        waveColor="#007784"
+      </NavLink>
+      <NavLink
         activeClassName="active-link"
         tag={Link}
         to="/admin/list"
@@ -165,9 +162,8 @@ const AdminMenu = (props) => {
       >
         <i className="fas fa-clipboard-list"></i>
         <p>Položky</p>
-      </WavyLink>
-      <WavyLink
-        waveColor="#007784"
+      </NavLink>
+      <NavLink
         activeClassName="active-link"
         tag={Link}
         to="/admin/users"
@@ -175,7 +171,7 @@ const AdminMenu = (props) => {
       >
         <i className="fas fa-user-shield"></i>
         <p>Uživatelé</p>
-      </WavyLink>
+      </NavLink>
     </StyledAdminMenu>
   );
 };

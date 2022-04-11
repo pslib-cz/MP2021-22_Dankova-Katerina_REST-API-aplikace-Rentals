@@ -25,7 +25,7 @@ const SignButton = (props) => {
             userManager.signoutRedirect();
           }}
         >
-          Odhlásit
+          Odhlásit se
         </button>
       ) : (
         <button
@@ -35,7 +35,7 @@ const SignButton = (props) => {
             userManager.signinRedirect();
           }}
         >
-          Přihlásit
+          Přihlásit se
         </button>
       )}
     </StyledSignButton>

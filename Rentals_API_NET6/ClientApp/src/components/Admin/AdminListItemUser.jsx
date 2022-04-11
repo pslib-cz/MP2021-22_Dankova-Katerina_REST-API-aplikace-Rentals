@@ -4,16 +4,16 @@ const StyledAdminListItemUser = styled.div`
   height: auto;
 
   margin: 0 1rem;
-  
-  text-align: center;
 
   display: grid;
   justify-items: center;
   align-items: center;
 
   p {
+    width: 80%;
     font-size: 1.5rem;
     font-weight: 500;
+    text-align: left;
   }
 `;
 

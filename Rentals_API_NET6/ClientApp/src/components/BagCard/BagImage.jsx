@@ -14,7 +14,6 @@ const StyledBagImage = styled.div`
 `;
 
 const BagImage = (props) => {
-  console.log(props);
   return (
     <StyledBagImage className="image-container" {...props}>
       <img

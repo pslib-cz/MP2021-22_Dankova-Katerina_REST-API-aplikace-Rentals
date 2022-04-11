@@ -41,7 +41,6 @@ const NavbarMenu = (props) => {
           <StyledList>
             <StyledListItem>
               <WavyLink
-                waveColor="#007784"
                 className="unstyled header"
                 tag={Link}
                 to={"/"}
@@ -52,7 +51,6 @@ const NavbarMenu = (props) => {
             </StyledListItem>
             <StyledListItem>
               <WavyLink
-                waveColor="#007784"
                 className="unstyled"
                 tag={Link}
                 to={"/favorite"}
@@ -63,7 +61,6 @@ const NavbarMenu = (props) => {
             </StyledListItem>
             <StyledListItem>
               <WavyLink
-                waveColor="#007784"
                 className="unstyled"
                 tag={Link}
                 to={"/bag"}
@@ -74,7 +71,6 @@ const NavbarMenu = (props) => {
             </StyledListItem>
             <StyledListItem>
               <WavyLink
-                waveColor="#007784"
                 className="unstyled"
                 tag={Link}
                 to={"/account"}
@@ -85,7 +81,6 @@ const NavbarMenu = (props) => {
             </StyledListItem>
             <StyledListItem>
               <WavyLink
-                waveColor="#007784"
                 className="unstyled"
                 tag={Link}
                 to={"/admin"}
@@ -103,7 +98,6 @@ const NavbarMenu = (props) => {
           <StyledList>
             <StyledListItem>
               <WavyLink
-                waveColor="#007784"
                 className="unstyled header"
                 tag={Link}
                 to={"/"}
@@ -114,7 +108,6 @@ const NavbarMenu = (props) => {
             </StyledListItem>
             <StyledListItem>
               <WavyLink
-                waveColor="#007784"
                 className="unstyled"
                 tag={Link}
                 to={"/account"}
@@ -132,7 +125,6 @@ const NavbarMenu = (props) => {
           <StyledList>
             <StyledListItem>
               <WavyLink
-                waveColor="#007784"
                 className="unstyled header"
                 tag={Link}
                 to={"/"}
@@ -143,7 +135,6 @@ const NavbarMenu = (props) => {
             </StyledListItem>
             <StyledListItem>
               <WavyLink
-                waveColor="#007784"
                 className="unstyled"
                 tag={Link}
                 to={"/favorite"}
@@ -154,7 +145,6 @@ const NavbarMenu = (props) => {
             </StyledListItem>
             <StyledListItem>
               <WavyLink
-                waveColor="#007784"
                 className="unstyled"
                 tag={Link}
                 to={"/bag"}
@@ -165,7 +155,6 @@ const NavbarMenu = (props) => {
             </StyledListItem>
             <StyledListItem>
               <WavyLink
-                waveColor="#007784"
                 className="unstyled"
                 tag={Link}
                 to={"/account"}
@@ -188,7 +177,6 @@ const NavbarMenu = (props) => {
           <StyledList>
             <StyledListItem>
               <WavyLink
-                waveColor="#007784"
                 className="unstyled"
                 tag={Link}
                 to={"/favorite"}
@@ -199,7 +187,6 @@ const NavbarMenu = (props) => {
             </StyledListItem>
             <StyledListItem>
               <WavyLink
-                waveColor="#007784"
                 className="unstyled"
                 tag={Link}
                 to={"/bag"}
@@ -210,7 +197,6 @@ const NavbarMenu = (props) => {
             </StyledListItem>
             <StyledListItem>
               <WavyLink
-                waveColor="#007784"
                 className="unstyled"
                 tag={Link}
                 to={"/account"}
@@ -221,7 +207,6 @@ const NavbarMenu = (props) => {
             </StyledListItem>
             <StyledListItem>
               <WavyLink
-                waveColor="#007784"
                 className="unstyled"
                 tag={Link}
                 to={"/admin"}
@@ -239,7 +224,6 @@ const NavbarMenu = (props) => {
           <StyledList>
             <StyledListItem>
               <WavyLink
-                waveColor="#007784"
                 className="unstyled"
                 tag={Link}
                 to={"/account"}
@@ -257,7 +241,6 @@ const NavbarMenu = (props) => {
           <StyledList>
             <StyledListItem>
               <WavyLink
-                waveColor="#007784"
                 className="unstyled"
                 tag={Link}
                 to={"/favorite"}
@@ -268,7 +251,6 @@ const NavbarMenu = (props) => {
             </StyledListItem>
             <StyledListItem>
               <WavyLink
-                waveColor="#007784"
                 className="unstyled"
                 tag={Link}
                 to={"/bag"}
@@ -279,7 +261,6 @@ const NavbarMenu = (props) => {
             </StyledListItem>
             <StyledListItem>
               <WavyLink
-                waveColor="#007784"
                 className="unstyled"
                 tag={Link}
                 to={"/account"}

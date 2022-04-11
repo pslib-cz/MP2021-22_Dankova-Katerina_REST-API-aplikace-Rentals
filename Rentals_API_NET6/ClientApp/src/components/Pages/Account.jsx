@@ -3,6 +3,8 @@ import { StyledMainGrid, StyledIntroImage } from "../Content/Content";
 import wave from "../media/Wave.svg";
 
 const Account = () => {
+  document.title = "Rentals | Profil";
+
   return (
     <StyledMainGrid>
       <StyledIntroImage bgImage={wave}>

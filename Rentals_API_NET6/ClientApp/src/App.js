@@ -1,10 +1,10 @@
-import { Router, Route, Switch, Link } from "react-router-dom";
+import { Router, Route, Switch, Link, NavLink } from "react-router-dom";
 import "./App.css";
 import Content from "./components/Content/Content";
 import Footer from "./components/Footer/Footer";
 import { createBrowserHistory } from "history";
 import ScrollToTop from "./ScrollToTop";
-import { WavyContainer, WavyLink } from "react-wavy-transitions";
+import { WavyContainer } from "react-wavy-transitions";
 import SignInCallback from "./components/auth/SignInCallback";
 import SilentRenew from "./components/auth/SilentRenew";
 import SignOutCallback from "./components/auth/SignOutCallback";
@@ -34,18 +34,45 @@ function App() {
           <div id="scroll">
             <Proomkabar className="indexed">
               {accessToken ? (
-                <img
-                  src="./per.png"
-                  id="myImg"
-                  alt="me"
-                  className="login"
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    fontSize: "24px",
+                    cursor: "pointer",
+                  }}
                   onClick={() => {
-                    userManager.signoutRedirect();
+                    history.push("/account");
                   }}
-                  onError={(e) => {
-                    e.currentTarget.src = "per.png";
-                  }}
-                ></img>
+                >
+                  <img
+                    src="./per.png"
+                    id="myImg"
+                    alt="me"
+                    className="login"
+                    onError={(e) => {
+                      e.currentTarget.src = "per.png";
+                    }}
+                  ></img>
+                  <div
+                    style={{
+                      display: "grid",
+                      placeItems: "center",
+                      width: "100%",
+                    }}
+                  >
+                    <p
+                      style={{
+                        maxWidth: "100%",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {profile?.name}
+                    </p>
+                  </div>
+                </div>
               ) : (
                 <i
                   className="fas fa-user login"
@@ -55,11 +82,11 @@ function App() {
                 ></i>
               )}
 
-              <WavyLink
-                waveColor="#007784"
+              <NavLink
                 className="navigation-item"
                 tag={Link}
                 to={"/"}
+                exact={true}
                 activeClassName={"active"}
               >
                 {w < 1280 ? (
@@ -70,10 +97,9 @@ function App() {
                     <p>Domů</p>
                   </>
                 )}
-              </WavyLink>
+              </NavLink>
 
-              <WavyLink
-                waveColor="#007784"
+              <NavLink
                 className="navigation-item"
                 tag={Link}
                 to={"/favorite"}
@@ -87,9 +113,8 @@ function App() {
                     <p>Oblíbené</p>
                   </>
                 )}
-              </WavyLink>
-              <WavyLink
-                waveColor="#007784"
+              </NavLink>
+              <NavLink
                 className="navigation-item"
                 tag={Link}
                 to={"/account"}
@@ -103,9 +128,8 @@ function App() {
                     <p>Profil</p>
                   </>
                 )}
-              </WavyLink>
-              <WavyLink
-                waveColor="#007784"
+              </NavLink>
+              <NavLink
                 className="navigation-item"
                 tag={Link}
                 to={"/bag"}
@@ -119,10 +143,9 @@ function App() {
                     <p>Košík</p>
                   </>
                 )}
-              </WavyLink>
+              </NavLink>
               {admin ? (
-                <WavyLink
-                  waveColor="#007784"
+                <NavLink
                   className="navigation-item"
                   tag={Link}
                   to={"/admin"}
@@ -136,7 +159,7 @@ function App() {
                       <p>Admin</p>
                     </>
                   )}
-                </WavyLink>
+                </NavLink>
               ) : null}
             </Proomkabar>
             <Content />
@@ -161,5 +184,4 @@ function App() {
 window.screen.orientation.addEventListener("change", function (e) {
   window.location.reload(false);
 });
-
 export default App;

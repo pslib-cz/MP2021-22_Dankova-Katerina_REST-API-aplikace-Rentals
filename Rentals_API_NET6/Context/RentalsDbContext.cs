@@ -21,6 +21,7 @@ namespace Rentals_API_NET6.Context
         public DbSet<User> Users { get; set; }
         public DbSet<RentingHistoryLog> RentingHistoryLogs { get; set; }
         public DbSet<UploadedFile> Files { get; set; }
+        public DbSet<ItemHistoryLog> ItemHistoryLogs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -99,6 +100,22 @@ namespace Rentals_API_NET6.Context
                 .HasOne(x => x.User)
                 .WithMany(x => x.Logs)
                 .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ItemHistoryLog>()
+                .HasOne(x => x.Item)
+                .WithMany(x => x.Logs)
+                .HasForeignKey(x => x.ItemId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ItemHistoryLog>()
+                .HasOne(x => x.Item)
+                .WithMany(x => x.Logs)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ItemHistoryLog>()
+                .HasOne(x => x.Item)
+                .WithMany(x => x.Logs)
+                .HasForeignKey(x => x.UserInventoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<User>()

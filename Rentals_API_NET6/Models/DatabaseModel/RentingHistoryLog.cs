@@ -12,17 +12,17 @@ namespace Rentals_API_NET6.Models.DatabaseModel
         public int RentingId { get; set; }
         public User User { get; set; }
         [ForeignKey("User")]
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         public DateTime ChangedTime { get; set; }
         public Action Action { get; set; }
     }
 
     public enum Action
     {
-        Rented,
-        PickedUpItems,
-        Change,
-        Delete,
-        Cancel
+        Created,
+        Activated,
+        Changed,
+        Canceled,
+        Returned,
     }
 }

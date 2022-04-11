@@ -67,7 +67,6 @@ const Navbar = (props) => {
       <StyledNavbar>
         <StyledNavbarContent className="navbar">
           <WavyLink
-            waveColor="#007784"
             className="unstyled header"
             tag={Link}
             to={"/"}

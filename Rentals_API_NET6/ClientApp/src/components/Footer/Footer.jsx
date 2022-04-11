@@ -12,7 +12,6 @@ const StyledFooter = styled.footer`
   @media (max-width: 700px) {
     height: auto;
     flex-direction: column-reverse;
-    background-color: unset;
   }
 
   p {
@@ -57,22 +56,12 @@ const StyledFooter = styled.footer`
 `;
 
 const Footer = (props) => {
-  var w = window.innerWidth;
-
-  if (w < 700) {
-    return (
-      <StyledFooter>
-        <div className="dummy-footer"></div>
-      </StyledFooter>
-    );
-  } else {
-    return (
-      <StyledFooter>
-        <p>© Aplikace pro správu vybavení školního ateliéru</p>
-        <SignButton></SignButton>
-      </StyledFooter>
-    );
-  }
+  return (
+    <StyledFooter>
+      <p>© Aplikace pro správu vybavení školního ateliéru</p>
+      <SignButton></SignButton>
+    </StyledFooter>
+  );
 };
 
 export default Footer;

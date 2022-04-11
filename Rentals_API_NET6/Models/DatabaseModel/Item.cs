@@ -23,5 +23,6 @@ namespace Rentals_API_NET6.Models.DatabaseModel
         public ICollection<FavouriteItem> Favourites { get; set; }
         public ICollection<AccessoryItem> Accessories { get; set; }
         public ICollection<CartItem> Carts { get; set; }
+        public ICollection<ItemHistoryLog> Logs { get; set; }
     }
 }

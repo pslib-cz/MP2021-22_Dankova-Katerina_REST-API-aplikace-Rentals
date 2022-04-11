@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using static Rentals_API_NET6.Models.DatabaseModel.ItemHistoryLog;
 using Action = Rentals_API_NET6.Models.DatabaseModel.Action;
 
 namespace Rentals_API_NET6.Controllers
@@ -73,6 +74,14 @@ namespace Rentals_API_NET6.Controllers
 
                 if (error == 0)
                 {
+                    RentingHistoryLog log = new RentingHistoryLog
+                    {
+                        RentingId = newRenting.Id,
+                        UserId = owner.Id,
+                        ChangedTime = DateTime.Now,
+                        Action = Action.Created
+                    };
+                    _context.RentingHistoryLogs.Add(log);
                     await _context.SaveChangesAsync();
                     return Ok(newRenting);
                 }
@@ -118,6 +127,16 @@ namespace Rentals_API_NET6.Controllers
                             var itemToReturn = _context.Items.Find(item);
                             itemToReturn.State = ItemState.Available;
                             _context.Entry(itemToReturn).State = EntityState.Modified;
+
+                            ItemHistoryLog Itemlog = new ItemHistoryLog
+                            {
+                                ItemId = item,
+                                UserId = _context.Users.SingleOrDefault(x => x.OauthId == UserId()).Id,
+                                UserInventoryId = null,
+                                ChangedTime = DateTime.Now,
+                                Action = ItemAction.DeletedFromInventory
+                            };
+                            _context.ItemHistoryLogs.Add(Itemlog);
                         }
                         else
                         {
@@ -130,21 +149,23 @@ namespace Rentals_API_NET6.Controllers
                     //nelze ukončit pokud se neprojeví vrácení
                     await _context.SaveChangesAsync();
 
+                    var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+                    RentingHistoryLog log = new RentingHistoryLog
+                    {
+                        RentingId = renting.Id,
+                        UserId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id,
+                        ChangedTime = DateTime.Now,
+                        Action = Action.Changed
+                    };
+
                     //Ukončení pokud vše vráceno
                     if (!_context.RentingItems.Any(x => x.RentingId == request.Id && x.Returned == false))
                     {
                         renting.State = RentingState.Ended;
                         renting.End = DateTime.Now;
+                        log.Action = Action.Returned;
                     }
 
-                    var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-                    RentingHistoryLog log = new RentingHistoryLog
-                    {
-                        RentingId = request.Id,
-                        UserId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id,
-                        ChangedTime = DateTime.Now,
-                        Action = Action.PickedUpItems
-                    };
                     _context.RentingHistoryLogs.Add(log);
 
                     await _context.SaveChangesAsync();
@@ -177,6 +198,16 @@ namespace Rentals_API_NET6.Controllers
                 foreach (var item in _context.RentingItems.Where(x => x.RentingId == id))
                 {
                     _context.RentingItems.Remove(item);
+
+                    ItemHistoryLog Itemlog = new ItemHistoryLog
+                    {
+                        ItemId = item.ItemId,
+                        UserId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id,
+                        UserInventoryId = null,
+                        ChangedTime = DateTime.Now,
+                        Action = ItemAction.DeletedFromInventory
+                    };
+                    _context.ItemHistoryLogs.Add(Itemlog);
                 }
 
                 renting.State = RentingState.Cancelled;
@@ -184,10 +215,10 @@ namespace Rentals_API_NET6.Controllers
 
                 RentingHistoryLog log = new RentingHistoryLog
                 {
-                    RentingId = id,
+                    RentingId = renting.Id,
                     UserId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id,
                     ChangedTime = DateTime.Now,
-                    Action = Action.Cancel
+                    Action = Action.Canceled
                 };
                 _context.RentingHistoryLogs.Add(log);
 
@@ -260,6 +291,16 @@ namespace Rentals_API_NET6.Controllers
                         var rentedItem = _context.Items.Find(item.Id);
                         rentedItem.State = ItemState.Rented;
                         _context.Entry(rentedItem).State = EntityState.Modified;
+
+                        ItemHistoryLog Itemlog = new ItemHistoryLog
+                        {
+                            ItemId = item.Id,
+                            UserId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id,
+                            UserInventoryId = null,
+                            ChangedTime = DateTime.Now,
+                            Action = ItemAction.AddedToInventory
+                        };
+                        _context.ItemHistoryLogs.Add(Itemlog);
                     }
                     else
                     {
@@ -271,10 +312,10 @@ namespace Rentals_API_NET6.Controllers
                 {
                     RentingHistoryLog log = new RentingHistoryLog
                     {
-                        RentingId = id,
+                        RentingId = renting.Id,
                         UserId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id,
                         ChangedTime = DateTime.Now,
-                        Action = Action.Rented
+                        Action = Action.Activated
                     };
                     _context.RentingHistoryLogs.Add(log);
 
@@ -329,6 +370,14 @@ namespace Rentals_API_NET6.Controllers
             {
                 return NotFound();
             }
+        }
+
+        [HttpGet("History")]
+        public async Task<ActionResult<List<RentingHistoryLog>>> GetHistory(int id)
+        {
+            Item item = _context.Items.SingleOrDefault(x => x.Id == id);
+            List<RentingHistoryLog> history = _context.RentingHistoryLogs.Include(x => x.User).Where(x => x.RentingId == item.Id).ToList();
+            return Ok(history);
         }
 
         private string UserId()

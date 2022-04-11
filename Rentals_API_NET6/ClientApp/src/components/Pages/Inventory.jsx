@@ -65,7 +65,9 @@ const Inventory = (props) => {
       setUser(data);
       setLoading(false);
     };
-    fetchUser();
+    fetchUser().then((document.title = `Rentals | Inventář ${user.name}`));
+
+    // eslint-disable-next-line
   }, [id, accessToken]);
 
   return (

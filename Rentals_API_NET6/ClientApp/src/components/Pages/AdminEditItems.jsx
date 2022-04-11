@@ -103,6 +103,8 @@ const AdminEditItems = (props) => {
     },
   };
 
+  document.title = `Rentals | Úprava ${id}`;
+
   useEffect(() => {
     const fetchItem = async () => {
       const { data } = await Axios.get("/api/Item/" + id, config).then(
