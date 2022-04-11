@@ -17,17 +17,19 @@ using Action = Rentals_API_NET6.Models.DatabaseModel.Action;
 
 namespace Rentals_API_NET6.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RentingController : ControllerBase
     {
         private readonly RentalsDbContext _context;
         private readonly IAuthorizationService _authorizationService;
-        public RentingController(RentalsDbContext context, IAuthorizationService authorizationService)
+        private readonly ILogger<RentingController> _logger;
+        public RentingController(RentalsDbContext context, IAuthorizationService authorizationService, ILogger<RentingController> logger)
         {
             _context = context;
             _authorizationService = authorizationService;
+            _logger = logger;
         }
 
         /// <summary>

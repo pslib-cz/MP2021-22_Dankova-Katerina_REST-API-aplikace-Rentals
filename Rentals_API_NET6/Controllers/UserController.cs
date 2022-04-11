@@ -22,10 +22,13 @@ namespace Rentals_API_NET6.Controllers
     {
         private readonly RentalsDbContext _context;
         private readonly IAuthorizationService _authorizationService;
-        public UserController(RentalsDbContext context, IAuthorizationService authorizationService)
+        private readonly ILogger<RentingController> _logger;
+
+        public UserController(RentalsDbContext context, IAuthorizationService authorizationService, ILogger<RentingController> logger)
         {
             _context = context;
             _authorizationService = authorizationService;
+            _logger = logger;
         }
 
         /// <summary>

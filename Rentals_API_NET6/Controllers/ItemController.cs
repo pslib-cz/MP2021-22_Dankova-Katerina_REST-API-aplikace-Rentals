@@ -11,17 +11,19 @@ using static Rentals_API_NET6.Models.DatabaseModel.ItemHistoryLog;
 
 namespace Rentals_API_NET6.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ItemController : ControllerBase
     {
         private readonly RentalsDbContext _context;
         private readonly IAuthorizationService _authorizationService;
-        public ItemController(RentalsDbContext context, IAuthorizationService authorizationService)
+        private readonly ILogger<ItemController> _logger;
+        public ItemController(RentalsDbContext context, IAuthorizationService authorizationService, ILogger<ItemController> logger)
         {
             _context = context;
             _authorizationService = authorizationService;
+            _logger = logger;
         }
 
         /// <summary>

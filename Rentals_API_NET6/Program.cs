@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using Rentals_API_NET6.Context;
 using Rentals_API_NET6.Models;
 using Rentals_API_NET6.Services;
+using Serilog;
 using System.Reflection;
 using tusdotnet;
 using tusdotnet.Interfaces;
@@ -23,13 +24,22 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
-    builder => {builder
-        .SetIsOriginAllowedToAllowWildcardSubdomains()
-        .WithOrigins(new string[] { "https://*.pslib.cloud", "https://rentals.pslib.cz" })
-        .AllowAnyHeader()
-        .AllowAnyMethod();
+    builder =>
+    {
+        builder
+.SetIsOriginAllowedToAllowWildcardSubdomains()
+.WithOrigins(new string[] { "https://*.pslib.cloud", "https://rentals.pslib.cz" })
+.AllowAnyHeader()
+.AllowAnyMethod();
     });
 });
+
+var logger = new LoggerConfiguration()
+  .ReadFrom.Configuration(builder.Configuration)
+  .Enrich.FromLogContext()
+  .CreateLogger();
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 builder.Services.AddControllersWithViews(options =>
 {
