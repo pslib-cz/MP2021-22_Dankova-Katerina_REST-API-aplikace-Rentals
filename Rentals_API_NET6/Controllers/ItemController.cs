@@ -220,6 +220,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Získá náhled předmětu
         /// </summary>
+        [AllowAnonymous]
         [HttpGet("Img/{id}")]
         public async Task<ActionResult<FileStream>> GetItemImg(int id)
         {
