@@ -18,7 +18,7 @@ import CardImage from "../ContentCard/CardImage";
 import Axios from "axios";
 import ReactDOM from "react-dom";
 import CategoryButton from "../Button/CategoryButton";
-import { Route, Switch, useHistory } from "react-router-dom";
+import { Link, Route, Switch, useHistory } from "react-router-dom";
 import AdminEditItems from "./AdminEditItems";
 import { useQuery } from "react-query";
 import Button from "../Button/Button";
@@ -212,7 +212,9 @@ const AdminItems = (props) => {
                       <Card key={i}>
                         <CardImage src={i.id}></CardImage>
                         <p className="card-header">{i.name}</p>
-                        <p className="card-desc">{i.description}</p>
+                        <p className="card-desc">
+                          <Link to={"/admin/item/" + i.id}>Historie</Link>
+                        </p>
                         <Badge
                           color="#007784"
                           colorHover="#009fb1"
@@ -241,7 +243,9 @@ const AdminItems = (props) => {
                         <Card key={i}>
                           <CardImage src={i.id}></CardImage>
                           <p className="card-header">{i.name}</p>
-                          <p className="card-desc">{i.description}</p>
+                          <p className="card-desc">
+                            <Link to={"/admin/item/" + i.id}>Historie</Link>
+                          </p>
                           <Badge
                             color="#007784"
                             colorHover="#009fb1"

@@ -773,6 +773,9 @@ namespace Rentals_API_NET6.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("RentingHistoryLogId")
+                        .HasColumnType("int");
+
                     b.Property<int>("State")
                         .HasColumnType("int");
 
@@ -781,6 +784,8 @@ namespace Rentals_API_NET6.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("Img");
+
+                    b.HasIndex("RentingHistoryLogId");
 
                     b.ToTable("Items");
 
@@ -1694,6 +1699,63 @@ namespace Rentals_API_NET6.Migrations
                     b.ToTable("ItemHistoryLogs");
                 });
 
+            modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.ItemChange", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ChangedProperty")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ChangedValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ItemHistoryLogId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PreviousValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemHistoryLogId");
+
+                    b.ToTable("ItemChanges");
+                });
+
+            modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.ItemChangeConnection", b =>
+                {
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ItemChangeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ItemId", "ItemChangeId");
+
+                    b.HasIndex("ItemChangeId");
+
+                    b.ToTable("ItemChangeConnections");
+                });
+
+            modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.ItemPreChangeConnection", b =>
+                {
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ItemChangeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ItemId", "ItemChangeId");
+
+                    b.HasIndex("ItemChangeId");
+
+                    b.ToTable("ItemPreChangeConnections");
+                });
+
             modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.Renting", b =>
                 {
                     b.Property<int>("Id")
@@ -2174,6 +2236,10 @@ namespace Rentals_API_NET6.Migrations
                         .WithMany("Items")
                         .HasForeignKey("Img");
 
+                    b.HasOne("Rentals_API_NET6.Models.DatabaseModel.RentingHistoryLog", null)
+                        .WithMany("ReturnedItems")
+                        .HasForeignKey("RentingHistoryLogId");
+
                     b.Navigation("Category");
 
                     b.Navigation("ImgFile");
@@ -2201,6 +2267,55 @@ namespace Rentals_API_NET6.Migrations
                     b.Navigation("User");
 
                     b.Navigation("UserInventory");
+                });
+
+            modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.ItemChange", b =>
+                {
+                    b.HasOne("Rentals_API_NET6.Models.DatabaseModel.ItemHistoryLog", "ItemHistoryLog")
+                        .WithMany("ItemChanges")
+                        .HasForeignKey("ItemHistoryLogId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ItemHistoryLog");
+                });
+
+            modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.ItemChangeConnection", b =>
+                {
+                    b.HasOne("Rentals_API_NET6.Models.DatabaseModel.ItemChange", "ItemChange")
+                        .WithMany("ChangedAccessories")
+                        .HasForeignKey("ItemChangeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Rentals_API_NET6.Models.DatabaseModel.Item", "Item")
+                        .WithMany("ChangeAccessory")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+
+                    b.Navigation("ItemChange");
+                });
+
+            modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.ItemPreChangeConnection", b =>
+                {
+                    b.HasOne("Rentals_API_NET6.Models.DatabaseModel.ItemChange", "ItemChange")
+                        .WithMany("PreviousAccessories")
+                        .HasForeignKey("ItemChangeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Rentals_API_NET6.Models.DatabaseModel.Item", "Item")
+                        .WithMany("PreChangeAccessory")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+
+                    b.Navigation("ItemChange");
                 });
 
             modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.Renting", b =>
@@ -2268,13 +2383,29 @@ namespace Rentals_API_NET6.Migrations
 
                     b.Navigation("Carts");
 
+                    b.Navigation("ChangeAccessory");
+
                     b.Navigation("Favourites");
 
                     b.Navigation("Inventories");
 
                     b.Navigation("Logs");
 
+                    b.Navigation("PreChangeAccessory");
+
                     b.Navigation("Rentings");
+                });
+
+            modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.ItemHistoryLog", b =>
+                {
+                    b.Navigation("ItemChanges");
+                });
+
+            modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.ItemChange", b =>
+                {
+                    b.Navigation("ChangedAccessories");
+
+                    b.Navigation("PreviousAccessories");
                 });
 
             modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.Renting", b =>
@@ -2282,6 +2413,11 @@ namespace Rentals_API_NET6.Migrations
                     b.Navigation("Items");
 
                     b.Navigation("Logs");
+                });
+
+            modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.RentingHistoryLog", b =>
+                {
+                    b.Navigation("ReturnedItems");
                 });
 
             modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.UploadedFile", b =>

@@ -7,6 +7,7 @@ using Rentals_API_NET6.Models.DatabaseModel;
 using Rentals_API_NET6.Models.InputModel;
 using Rentals_API_NET6.Models.OutputModel;
 using System.Security.Claims;
+using static Rentals_API_NET6.Models.DatabaseModel.ItemChange;
 using static Rentals_API_NET6.Models.DatabaseModel.ItemHistoryLog;
 
 namespace Rentals_API_NET6.Controllers
@@ -44,7 +45,8 @@ namespace Rentals_API_NET6.Controllers
             _context.Items.Add(Item);
             await _context.SaveChangesAsync();
 
-            User user = _context.Users.SingleOrDefault(x => x.OauthId == User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
+            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
             ItemHistoryLog log = new ItemHistoryLog
             {
                 ItemId = Item.Id,
@@ -67,15 +69,23 @@ namespace Rentals_API_NET6.Controllers
         public async Task<ActionResult<Item>> ChangeItem(int id, [FromBody] JsonPatchDocument<Item> patch)
         {
             var isAdmin = await _authorizationService.AuthorizeAsync(User, "Administrator");
-            Item item = _context.Items.SingleOrDefault(x => x.Id == id);
+            Item item = _context.Items.Include(x => x.Category).SingleOrDefault(x => x.Id == id);
             if (item != null && !item.IsDeleted)
             {
-                patch.ApplyTo(item, ModelState);
-
-                if (!ModelState.IsValid)
+                var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+                var userInvId = _context.InventoryItems.SingleOrDefault(x => x.ItemId == item.Id)?.UserId;
+                User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
+                ItemHistoryLog log = new ItemHistoryLog
                 {
-                    return BadRequest(ModelState);
-                }
+                    ItemId = item.Id,
+                    UserId = user.Id,
+                    ChangedTime = DateTime.Now,
+                    Action = ItemAction.Changed,
+                    UserInventoryId = userInvId
+                };
+
+                _context.ItemHistoryLogs.Add(log);
+                await _context.SaveChangesAsync();
 
                 foreach (var op in patch.Operations)
                 {
@@ -87,21 +97,43 @@ namespace Rentals_API_NET6.Controllers
                     {
                         return Unauthorized();
                     }
+
+                    var change = new ItemChange { ItemHistoryLogId = log.Id };
+                    switch (op.path)
+                    {
+                        case "/note":
+                            change.ChangedProperty = Property.Note;
+                            change.PreviousValue = item.Note;
+                            change.ChangedValue = op.value.ToString();
+                            break;
+                        case "/description":
+                            change.ChangedProperty = Property.Description;
+                            change.PreviousValue = item.Description;
+                            change.ChangedValue = op.value.ToString();
+                            break;
+                        case "/name":
+                            change.ChangedProperty = Property.Name;
+                            change.PreviousValue = item.Name;
+                            change.ChangedValue = op.value.ToString();
+                            break;
+                        case "/categoryId":
+                            change.ChangedProperty = Property.Category;
+                            change.PreviousValue = item.Category.Name;
+                            change.ChangedValue = _context.Categories.SingleOrDefault(x => x.Id == int.Parse(op.value.ToString())).Name;
+                            break;
+                        default:
+                            break;
+                    }
+                    _context.ItemChanges.Add(change);
+
                 }
+                patch.ApplyTo(item, ModelState);
 
-                _context.Entry(item).State = EntityState.Modified;
-
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
-                ItemHistoryLog log = new ItemHistoryLog
+                if (!ModelState.IsValid)
                 {
-                    ItemId = item.Id,
-                    UserId = user.Id,
-                    ChangedTime = DateTime.Now,
-                    Action = ItemAction.Changed,
-                    UserInventoryId = _context.InventoryItems.SingleOrDefault(x => x.ItemId == item.Id).UserId
-                };
-
-                _context.ItemHistoryLogs.Add(log);
+                    return BadRequest(ModelState);
+                }
+                _context.Entry(item).State = EntityState.Modified;
 
                 await _context.SaveChangesAsync();
                 return Ok(item);
@@ -135,14 +167,16 @@ namespace Rentals_API_NET6.Controllers
 
                 _context.Entry(item).State = EntityState.Modified;
 
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
+                var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+                var userInvId = _context.InventoryItems.SingleOrDefault(x => x.ItemId == item.Id)?.UserId;
+                User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
                 ItemHistoryLog log = new ItemHistoryLog
                 {
                     ItemId = item.Id,
                     UserId = user.Id,
                     ChangedTime = DateTime.Now,
                     Action = ItemAction.Deleted,
-                    UserInventoryId = _context.InventoryItems.SingleOrDefault(x => x.ItemId == item.Id).UserId
+                    UserInventoryId = userInvId
                 };
 
                 _context.ItemHistoryLogs.Add(log);
@@ -179,14 +213,16 @@ namespace Rentals_API_NET6.Controllers
                 item.IsDeleted = false;
                 _context.Entry(item).State = EntityState.Modified;
 
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
+                var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+                var userInvId = _context.InventoryItems.SingleOrDefault(x => x.ItemId == item.Id)?.UserId;
+                User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
                 ItemHistoryLog log = new ItemHistoryLog
                 {
                     ItemId = item.Id,
                     UserId = user.Id,
                     ChangedTime = DateTime.Now,
-                    Action = ItemAction.Changed,
-                    UserInventoryId = _context.InventoryItems.SingleOrDefault(x => x.ItemId == item.Id).UserId
+                    Action = ItemAction.Restored,
+                    UserInventoryId = userInvId
                 };
 
                 _context.ItemHistoryLogs.Add(log);
@@ -294,8 +330,35 @@ namespace Rentals_API_NET6.Controllers
             Item itemForAccesory = _context.Items.SingleOrDefault(x => x.Id == request.Id);
             if (itemForAccesory != null && !itemForAccesory.IsDeleted)
             {
+                var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+                var userInvId = _context.InventoryItems.SingleOrDefault(x => x.ItemId == itemForAccesory.Id)?.UserId;
+                User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
+                ItemHistoryLog log = new ItemHistoryLog
+                {
+                    ItemId = itemForAccesory.Id,
+                    UserId = user.Id,
+                    ChangedTime = DateTime.Now,
+                    Action = ItemAction.ChangedAccessories,
+                    UserInventoryId = userInvId
+                };
+
+                _context.ItemHistoryLogs.Add(log);
+                await _context.SaveChangesAsync();
+                var change = new ItemChange
+                {
+                    ItemHistoryLogId = log.Id,
+                    ChangedProperty = Property.Accessories
+                };
+
+                _context.ItemChanges.Add(change);
+                await _context.SaveChangesAsync();
+
+                List<int> preItems = new List<int>();
+                List<int> afterItems = new List<int>();
+
                 foreach (var item in _context.AccessoryItems.Where(x => x.ItemId == itemForAccesory.Id).ToList())
                 {
+                    preItems.Add(item.AccessoryId);
                     _context.Remove(item);
                 }
                 foreach (var item in request.Items)
@@ -303,6 +366,7 @@ namespace Rentals_API_NET6.Controllers
                     Item tempItem = _context.Items.SingleOrDefault(x => x.Id == item);
                     if (tempItem != null && !tempItem.IsDeleted)
                     {
+                        afterItems.Add(item);
                         _context.AccessoryItems.Add(new AccessoryItem { ItemId = itemForAccesory.Id, AccessoryId = item });
                     }
                     else
@@ -312,17 +376,16 @@ namespace Rentals_API_NET6.Controllers
                 }
                 if (errors == 0)
                 {
-                    User user = _context.Users.SingleOrDefault(x => x.OauthId == User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
-                    ItemHistoryLog log = new ItemHistoryLog
-                    {
-                        ItemId = itemForAccesory.Id,
-                        UserId = user.Id,
-                        ChangedTime = DateTime.Now,
-                        Action = ItemAction.Changed,
-                        UserInventoryId = _context.InventoryItems.SingleOrDefault(x => x.ItemId == itemForAccesory.Id).UserId
-                    };
 
-                    _context.ItemHistoryLogs.Add(log);
+                    foreach (var item in preItems)
+                    {
+                        _context.ItemPreChangeConnections.Add(new ItemPreChangeConnection { ItemChangeId = change.Id, ItemId = item, });
+                    }
+
+                    foreach (var item in afterItems)
+                    {
+                        _context.ItemChangeConnections.Add(new ItemChangeConnection { ItemChangeId = change.Id, ItemId = item, });
+                    }
 
                     await _context.SaveChangesAsync();
                     return Ok(_context.Items.Find(request.Id));
@@ -471,11 +534,26 @@ namespace Rentals_API_NET6.Controllers
         }
 
         [HttpGet("History")]
-        public async Task<ActionResult<List<ItemHistoryLog>>> GetHistory(int id)
+        public async Task<ActionResult<List<ItemHistory>>> GetHistory(int id)
         {
             Item item = _context.Items.SingleOrDefault(x => x.Id == id);
-            List<ItemHistoryLog> history = _context.ItemHistoryLogs.Include(x => x.User).Include(x => x.UserInventory).Where(x => x.ItemId == item.Id).ToList();
-            return Ok(history);
+            List<ItemHistoryLog> list = _context.ItemHistoryLogs.Include(x => x.User).Include(x => x.UserInventory).Include(x => x.ItemChanges).Where(x => x.ItemId == item.Id).ToList();
+            List<ItemHistory> result = new List<ItemHistory>();
+            foreach(var i in list)
+            {
+                var itemHistory = new ItemHistory
+                {
+                    ItemHistoryLog = i,
+                };
+                if (i.Action == ItemAction.ChangedAccessories)
+                {
+                    itemHistory.PreviousAccessories = _context.ItemPreChangeConnections.Where(x => x.ItemChangeId == i.ItemChanges.ToList()[0].Id).Select(y => y.Item).ToList();
+                    itemHistory.ChangedAccessories = _context.ItemChangeConnections.Where(x => x.ItemChangeId == i.ItemChanges.ToList()[0].Id).Select(y => y.Item).ToList();
+                }
+                result.Add(itemHistory);
+            }
+
+            return Ok(result);
         }
     }
 }

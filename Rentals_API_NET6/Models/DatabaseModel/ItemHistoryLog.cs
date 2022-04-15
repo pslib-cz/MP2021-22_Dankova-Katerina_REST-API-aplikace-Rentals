@@ -18,15 +18,17 @@ namespace Rentals_API_NET6.Models.DatabaseModel
         public User UserInventory { get; set; }
         [ForeignKey("UserInventory")]
         public int? UserInventoryId { get; set; }
+        public ICollection<ItemChange> ItemChanges { get; set; }
 
         public enum ItemAction
         {
             Created,
             Changed,
+            ChangedAccessories,
             Deleted,
+            Restored,
             AddedToInventory,
             DeletedFromInventory,
-            DeletedF,
         }
     }
 }

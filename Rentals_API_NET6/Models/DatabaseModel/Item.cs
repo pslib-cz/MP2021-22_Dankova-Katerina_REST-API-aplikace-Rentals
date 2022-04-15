@@ -24,5 +24,8 @@ namespace Rentals_API_NET6.Models.DatabaseModel
         public ICollection<AccessoryItem> Accessories { get; set; }
         public ICollection<CartItem> Carts { get; set; }
         public ICollection<ItemHistoryLog> Logs { get; set; }
+
+        public ICollection<ItemPreChangeConnection> PreChangeAccessory { get; set; }
+        public ICollection<ItemChangeConnection> ChangeAccessory { get; set; }
     }
 }

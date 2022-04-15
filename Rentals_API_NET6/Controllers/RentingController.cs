@@ -111,6 +111,14 @@ namespace Rentals_API_NET6.Controllers
             Renting renting = _context.Rentings.SingleOrDefault(x => x.Id == request.Id);
             if (renting != null)
             {
+                var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+                RentingHistoryLog log = new RentingHistoryLog
+                {
+                    RentingId = renting.Id,
+                    UserId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id,
+                    ChangedTime = DateTime.Now,
+                    Action = Action.Changed
+                };
                 if (request.ReturnedItems != null)
                 {
                     foreach (var item in request.ReturnedItems)
@@ -139,6 +147,7 @@ namespace Rentals_API_NET6.Controllers
                                 Action = ItemAction.DeletedFromInventory
                             };
                             _context.ItemHistoryLogs.Add(Itemlog);
+                            //log.ReturnedItems.Add(itemToReturn);
                         }
                         else
                         {
@@ -150,15 +159,6 @@ namespace Rentals_API_NET6.Controllers
                 {
                     //nelze ukončit pokud se neprojeví vrácení
                     await _context.SaveChangesAsync();
-
-                    var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-                    RentingHistoryLog log = new RentingHistoryLog
-                    {
-                        RentingId = renting.Id,
-                        UserId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id,
-                        ChangedTime = DateTime.Now,
-                        Action = Action.Changed
-                    };
 
                     //Ukončení pokud vše vráceno
                     if (!_context.RentingItems.Any(x => x.RentingId == request.Id && x.Returned == false))
@@ -363,7 +363,7 @@ namespace Rentals_API_NET6.Controllers
         public async Task<ActionResult<List<Item>>> RentingDetail(int id)
         {
             Renting renting = _context.Rentings.SingleOrDefault(x => x.Id == id);
-            if(renting != null && renting.State == RentingState.InProgress)
+            if (renting != null && renting.State == RentingState.InProgress)
             {
                 List<Item> items = _context.RentingItems.Where(x => x.RentingId == id && x.Returned == false).Select(x => x.Item).ToList();
                 return Ok(items);

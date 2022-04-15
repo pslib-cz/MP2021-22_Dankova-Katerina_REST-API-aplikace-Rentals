@@ -22,6 +22,9 @@ namespace Rentals_API_NET6.Context
         public DbSet<RentingHistoryLog> RentingHistoryLogs { get; set; }
         public DbSet<UploadedFile> Files { get; set; }
         public DbSet<ItemHistoryLog> ItemHistoryLogs { get; set; }
+        public DbSet<ItemChange> ItemChanges { get; set; }
+        public DbSet<ItemPreChangeConnection> ItemPreChangeConnections { get; set; }
+        public DbSet<ItemChangeConnection> ItemChangeConnections { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -118,6 +121,15 @@ namespace Rentals_API_NET6.Context
                 .HasForeignKey(x => x.UserInventoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<ItemHistoryLog>()
+                .HasMany(x => x.ItemChanges)
+                .WithOne(x => x.ItemHistoryLog);
+
+            modelBuilder.Entity<ItemChange>()
+                .HasOne(x => x.ItemHistoryLog)
+                .WithMany(x => x.ItemChanges)
+                .HasForeignKey(x=> x.ItemHistoryLogId);
+
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.OauthId)
                 .IsUnique();
@@ -131,6 +143,31 @@ namespace Rentals_API_NET6.Context
                 .HasOne(x => x.ImgFile)
                 .WithMany(x => x.Items)
                 .HasForeignKey(x => x.Img);
+
+            modelBuilder.Entity<ItemPreChangeConnection>().HasKey(sc => new { sc.ItemId, sc.ItemChangeId });
+            modelBuilder.Entity<ItemPreChangeConnection>()
+                .HasOne(x => x.Item)
+                .WithMany(x => x.PreChangeAccessory)
+                .HasForeignKey(x => x.ItemId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ItemPreChangeConnection>()
+                .HasOne(x => x.ItemChange)
+                .WithMany(x => x.PreviousAccessories)
+                .HasForeignKey(x => x.ItemChangeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ItemChangeConnection>().HasKey(sc => new { sc.ItemId, sc.ItemChangeId });
+            modelBuilder.Entity<ItemChangeConnection>()
+                .HasOne(x => x.Item)
+                .WithMany(x => x.ChangeAccessory)
+                .HasForeignKey(x => x.ItemId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ItemChangeConnection>()
+                .HasOne(x => x.ItemChange)
+                .WithMany(x => x.ChangedAccessories)
+                .HasForeignKey(x => x.ItemChangeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
 
             //Kategorie
             modelBuilder.Entity<Category>().HasData(new Category { Id = 1, Name = "Přístroje" });

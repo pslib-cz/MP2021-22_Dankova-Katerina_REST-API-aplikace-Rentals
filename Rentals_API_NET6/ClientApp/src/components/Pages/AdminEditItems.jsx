@@ -151,6 +151,7 @@ const AdminEditItems = (props) => {
     favourites: item.favourites,
     accessories: item.accessories,
     carts: item.carts,
+    logs: item.logs,
   });
 
   const sendPatch = () => {

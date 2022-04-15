@@ -218,7 +218,7 @@ const AdminLanding = (props) => {
             <input
               id="searchField"
               type="text"
-              placeholder="Hledat..."
+              placeholder="Jméno uživatele..."
               onChange={inputHandler}
             />
             <span>
@@ -237,7 +237,7 @@ const AdminLanding = (props) => {
           {storedFiles
             .filter(
               (obj) =>
-                obj.owner.fullName
+                obj.owner?.fullName
                   .toLowerCase()
                   .indexOf(inputText.toLowerCase()) >= 0
             )
@@ -245,12 +245,13 @@ const AdminLanding = (props) => {
               return (
                 <AdminListItem key={index}>
                   <AdminListItemName
+                    id={i.id}
                     items={i.items}
                     name={"Výpůjčka #" + i.id}
                     note={i.note ? i.note : "Bez poznámky"}
                   ></AdminListItemName>
                   <AdminListItemUser
-                    name={i.owner.fullName}
+                    name={i.owner?.fullName}
                   ></AdminListItemUser>
                   <AdminListItemDate
                     from={handleTime(i.start)}

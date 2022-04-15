@@ -13,6 +13,8 @@ import AdminReturn from "../Pages/AdminReturn";
 import AdminItems from "../Pages/AdminItems";
 import AdminUsers from "../Pages/AdminUsers";
 import { useAppContext } from "../../providers/ApplicationProvider";
+import Renting from "../Pages/Renting";
+import Item from "../Pages/Item";
 
 const StyledContent = styled.div`
   width: 80%;
@@ -360,6 +362,14 @@ const Content = (props) => {
             </Route>
             <Route exact path="/return/:id">
               <AdminReturn />
+            </Route>
+            <Route exact path="/admin/renting/:id">
+              <AdminMenu></AdminMenu>
+              <Renting />
+            </Route>
+            <Route exact path="/admin/item/:id">
+              <AdminMenu></AdminMenu>
+              <Item />
             </Route>
             <Route exact path="/admin/calendar">
               <AdminMenu></AdminMenu>

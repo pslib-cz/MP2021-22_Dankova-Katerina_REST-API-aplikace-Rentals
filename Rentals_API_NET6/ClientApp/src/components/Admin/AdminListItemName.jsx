@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const StyledAdminListItemName = styled.div`
@@ -31,7 +32,9 @@ const AdminListItemName = (props) => {
   if (props.items) {
     return (
       <StyledAdminListItemName>
-        <h3>{props.name}</h3>
+        <Link to={"/admin/renting/" + props.id}>
+          <h3>{props.name}</h3>
+        </Link>
         <div>
           {props.items.slice(0, 3).map((i, index) => {
             return (
