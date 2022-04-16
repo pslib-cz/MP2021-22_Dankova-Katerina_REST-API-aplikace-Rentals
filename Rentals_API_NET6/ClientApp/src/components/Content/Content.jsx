@@ -15,6 +15,7 @@ import AdminUsers from "../Pages/AdminUsers";
 import { useAppContext } from "../../providers/ApplicationProvider";
 import Renting from "../Pages/Renting";
 import Item from "../Pages/Item";
+import Accesories from "../Pages/Accesories";
 
 const StyledContent = styled.div`
   width: 80%;
@@ -360,7 +361,12 @@ const Content = (props) => {
               <AdminMenu></AdminMenu>
               <AdminLanding />
             </Route>
+            <Route exact path="/accesories/:id">
+              <Accesories></Accesories>
+              <AdminLanding />
+            </Route>
             <Route exact path="/return/:id">
+              <AdminMenu></AdminMenu>
               <AdminReturn />
             </Route>
             <Route exact path="/admin/renting/:id">

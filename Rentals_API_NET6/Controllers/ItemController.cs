@@ -87,13 +87,13 @@ namespace Rentals_API_NET6.Controllers
                 _context.ItemHistoryLogs.Add(log);
                 await _context.SaveChangesAsync();
 
-                foreach (var op in patch.Operations)
+                foreach (var op in patch.Operations.Where(x => x.path == "/note" || x.path == "/description" || x.path == "/name" || x.path == "/categoryId"))
                 {
                     if (op.path.ToLower() == "/id" || op.path.ToLower() == "/isdeleted")
                     {
                         return BadRequest();
                     }
-                    else if ((op.path.ToLower() != "note" || op.path.ToLower() != "description") && !isAdmin.Succeeded)
+                    else if (!isAdmin.Succeeded)
                     {
                         return Unauthorized();
                     }
@@ -323,36 +323,13 @@ namespace Rentals_API_NET6.Controllers
         /// Přidá (nevybranné odebere) k předmětu příslušenství
         /// </summary>
         [Authorize(Policy = "Administrator")]
-        [HttpPatch("Accesories")]
+        [HttpPut("Accesories")]
         public async Task<ActionResult<Item>> PutAccesories([FromBody] ItemAccesoriesRequest request)
         {
             var errors = 0;
             Item itemForAccesory = _context.Items.SingleOrDefault(x => x.Id == request.Id);
             if (itemForAccesory != null && !itemForAccesory.IsDeleted)
             {
-                var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-                var userInvId = _context.InventoryItems.SingleOrDefault(x => x.ItemId == itemForAccesory.Id)?.UserId;
-                User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
-                ItemHistoryLog log = new ItemHistoryLog
-                {
-                    ItemId = itemForAccesory.Id,
-                    UserId = user.Id,
-                    ChangedTime = DateTime.Now,
-                    Action = ItemAction.ChangedAccessories,
-                    UserInventoryId = userInvId
-                };
-
-                _context.ItemHistoryLogs.Add(log);
-                await _context.SaveChangesAsync();
-                var change = new ItemChange
-                {
-                    ItemHistoryLogId = log.Id,
-                    ChangedProperty = Property.Accessories
-                };
-
-                _context.ItemChanges.Add(change);
-                await _context.SaveChangesAsync();
-
                 List<int> preItems = new List<int>();
                 List<int> afterItems = new List<int>();
 
@@ -364,7 +341,7 @@ namespace Rentals_API_NET6.Controllers
                 foreach (var item in request.Items)
                 {
                     Item tempItem = _context.Items.SingleOrDefault(x => x.Id == item);
-                    if (tempItem != null && !tempItem.IsDeleted)
+                    if (tempItem != null)
                     {
                         afterItems.Add(item);
                         _context.AccessoryItems.Add(new AccessoryItem { ItemId = itemForAccesory.Id, AccessoryId = item });
@@ -376,7 +353,28 @@ namespace Rentals_API_NET6.Controllers
                 }
                 if (errors == 0)
                 {
+                    var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+                    var userInvId = _context.InventoryItems.SingleOrDefault(x => x.ItemId == itemForAccesory.Id)?.UserId;
+                    User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
+                    ItemHistoryLog log = new ItemHistoryLog
+                    {
+                        ItemId = itemForAccesory.Id,
+                        UserId = user.Id,
+                        ChangedTime = DateTime.Now,
+                        Action = ItemAction.ChangedAccessories,
+                        UserInventoryId = userInvId
+                    };
 
+                    _context.ItemHistoryLogs.Add(log);
+                    await _context.SaveChangesAsync();
+                    var change = new ItemChange
+                    {
+                        ItemHistoryLogId = log.Id,
+                        ChangedProperty = Property.Accessories
+                    };
+
+                    _context.ItemChanges.Add(change);
+                    await _context.SaveChangesAsync();
                     foreach (var item in preItems)
                     {
                         _context.ItemPreChangeConnections.Add(new ItemPreChangeConnection { ItemChangeId = change.Id, ItemId = item, });

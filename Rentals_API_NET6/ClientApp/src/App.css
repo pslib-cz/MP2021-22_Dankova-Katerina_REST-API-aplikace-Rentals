@@ -267,6 +267,23 @@ div.opener {
   transition: 150ms ease-in-out;
 }
 
+.upgrade p.yellow:hover {
+  border: 2px #d0b055 solid;
+  padding: 0.5rem;
+  background-color: #d0b055;
+  color: white;
+  font-weight: 500;
+}
+.upgrade p.yellow {
+  border: 2px #d0b055 solid;
+  border-radius: 0.5rem;
+  text-decoration: underline;
+  padding: 0.5rem;
+  color: #d0b055;
+  font-weight: 500;
+  transition: 150ms ease-in-out;
+}
+
 .upgrade p.red:hover {
   border: 2px #d05555 solid;
   padding: 0.5rem;

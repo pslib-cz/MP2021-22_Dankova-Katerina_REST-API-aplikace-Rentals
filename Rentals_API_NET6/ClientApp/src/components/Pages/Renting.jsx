@@ -61,15 +61,15 @@ const Renting = (props) => {
   function actionType(type) {
     switch (type) {
       case 0:
-        return " Vytvoření";
+        return " Vytvoření ";
       case 1:
-        return " Aktivování";
+        return " Aktivování ";
       case 2:
-        return " Změna";
+        return " Změna ";
       case 3:
-        return " Zamítnutí";
+        return " Zamítnutí ";
       case 4:
-        return " Vrácení";
+        return " Vrácení ";
       default:
         return "";
     }
@@ -100,7 +100,14 @@ const Renting = (props) => {
             return (
               <AdminListItem key={index}>
                 <NormalName
-                  name={"#" + i.id + actionType(i.action)}
+                  name={
+                    "#" +
+                    index +
+                    actionType(i.action) +
+                    i.returnedItems.map((i, index) => {
+                      return i.name;
+                    })
+                  }
                 ></NormalName>
                 <NormalName
                   name={i.changedTime ? handleTime(i.changedTime) : null}

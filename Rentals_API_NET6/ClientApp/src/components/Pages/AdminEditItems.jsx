@@ -152,6 +152,8 @@ const AdminEditItems = (props) => {
     accessories: item.accessories,
     carts: item.carts,
     logs: item.logs,
+    preChangeAccessory: item.preChangeAccessory,
+    changeAccessory: item.changeAccessory,
   });
 
   const sendPatch = () => {
@@ -176,6 +178,9 @@ const AdminEditItems = (props) => {
         favourites: item.favourites,
         accessories: item.accessories,
         carts: item.carts,
+        logs: item.logs,
+        preChangeAccessory: item.preChangeAccessory,
+        changeAccessory: item.changeAccessory,
       }),
       config
     );
@@ -304,6 +309,13 @@ const AdminEditItems = (props) => {
                 <p className="red">Smazat předmět</p>
               </button>
             )}
+            <button
+              className="upgrade"
+              onClick={() => history.push("/accesories/" + id)}
+              type="button"
+            >
+              <p className="yellow">Odstranit příslušenství</p>
+            </button>
             <button
               className="upgrade"
               onClick={() => sendPatch()}

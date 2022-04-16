@@ -117,7 +117,8 @@ namespace Rentals_API_NET6.Controllers
                     RentingId = renting.Id,
                     UserId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id,
                     ChangedTime = DateTime.Now,
-                    Action = Action.Changed
+                    Action = Action.Returned,
+                    ReturnedItems = new List<Item>()
                 };
                 if (request.ReturnedItems != null)
                 {
@@ -147,7 +148,7 @@ namespace Rentals_API_NET6.Controllers
                                 Action = ItemAction.DeletedFromInventory
                             };
                             _context.ItemHistoryLogs.Add(Itemlog);
-                            //log.ReturnedItems.Add(itemToReturn);
+                            log.ReturnedItems.Add(itemToReturn);
                         }
                         else
                         {
@@ -378,7 +379,7 @@ namespace Rentals_API_NET6.Controllers
         public async Task<ActionResult<List<RentingHistoryLog>>> GetHistory(int id)
         {
             Item item = _context.Items.SingleOrDefault(x => x.Id == id);
-            List<RentingHistoryLog> history = _context.RentingHistoryLogs.Include(x => x.User).Where(x => x.RentingId == item.Id).ToList();
+            List<RentingHistoryLog> history = _context.RentingHistoryLogs.Include(x => x.ReturnedItems).Include(x => x.User).Where(x => x.RentingId == item.Id).ToList();
             return Ok(history);
         }
 
