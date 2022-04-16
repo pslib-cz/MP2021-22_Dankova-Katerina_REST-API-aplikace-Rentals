@@ -281,7 +281,8 @@ const AdminAdd = (props) => {
               });
             }}
           />
-          <button className="upgrade" onClick={() => sendPatch()} type="button">
+          <button className="upgrade" onClick={() => {name && category && img
+            ? sendPatch() : alert("Některá data nejsou správně zadána");}} type="button">
             <p className="green">Přidat předmět</p>
           </button>
         </form>

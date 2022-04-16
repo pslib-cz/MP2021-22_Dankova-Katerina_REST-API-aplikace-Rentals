@@ -155,8 +155,10 @@ const ContentMenu = (props) => {
     return (
       <StyledContentMenu>
         <div id="searchme"></div>
-        <div id="filter"></div>
-        <div id="buttonme"></div>
+        <div>
+          <div id="filter"></div>
+          <div id="buttonme"></div>
+        </div>
       </StyledContentMenu>
     );
   } else if (props.isView) {

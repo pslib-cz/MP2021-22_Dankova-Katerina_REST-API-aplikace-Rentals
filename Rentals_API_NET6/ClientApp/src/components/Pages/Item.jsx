@@ -13,6 +13,7 @@ import { ImpulseSpinner } from "react-spinners-kit";
 import { StyledDetail } from "../Pages/Detail";
 import { useQuery } from "react-query";
 import useLongPress from "../helpers/UseLongPress";
+import ToolTip from "../ToolTip/ToolTip";
 
 const Item = (props) => {
   const [{ accessToken }] = useAppContext();
@@ -61,9 +62,9 @@ const Item = (props) => {
       case 0:
         return " Vytvoření";
       case 1:
-        return " Změna";
+        return " Změna: ";
       case 2:
-        return " Změna příslušenství";
+        return " Změna příslušenství: ";
       case 3:
         return " Smazán";
       case 4:
@@ -129,6 +130,7 @@ const Item = (props) => {
       </button>
     );
   };
+  
 
   if (status === "success") {
     return (
@@ -154,7 +156,7 @@ const Item = (props) => {
                     index +
                     actionType(i?.itemHistoryLog?.action) +
                     i?.itemHistoryLog?.itemChanges?.map((i, index) => {
-                      return actionType2(i?.changedProperty);
+                      return actionType2(i?.changedProperty)
                     })
                   }
                 ></NormalName>

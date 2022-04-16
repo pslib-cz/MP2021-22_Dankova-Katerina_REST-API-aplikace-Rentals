@@ -361,7 +361,11 @@ const Content = (props) => {
               <AdminMenu></AdminMenu>
               <AdminLanding />
             </Route>
-            <Route exact path="/accesories/:id">
+            <Route exact path="/delaccesories/:id">
+              <Accesories isDelete></Accesories>
+              <AdminLanding />
+            </Route>
+            <Route exact path="/addaccesories/:id">
               <Accesories></Accesories>
               <AdminLanding />
             </Route>

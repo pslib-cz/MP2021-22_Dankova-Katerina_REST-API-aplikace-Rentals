@@ -96,7 +96,7 @@ const Renting = (props) => {
             <BoldName name={"Kdy"}></BoldName>
             <BoldName name={"Kdo"}></BoldName>
           </AdminListItem>
-          {storedFiles.map((i, index) => {
+          {storedFiles && storedFiles.map((i, index) => {
             return (
               <AdminListItem key={index}>
                 <NormalName
@@ -104,7 +104,7 @@ const Renting = (props) => {
                     "#" +
                     index +
                     actionType(i.action) +
-                    i.returnedItems.map((i, index) => {
+                    i?.returnedItems?.map((i, index) => {
                       return i.name;
                     })
                   }

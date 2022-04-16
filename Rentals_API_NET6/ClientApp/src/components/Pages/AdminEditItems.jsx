@@ -34,7 +34,7 @@ const StyledModal = styled.div`
     cursor: default;
 
     width: 80vw;
-    height: 80vh;
+    height: 90vh;
 
     display: grid;
     place-items: center;
@@ -311,10 +311,17 @@ const AdminEditItems = (props) => {
             )}
             <button
               className="upgrade"
-              onClick={() => history.push("/accesories/" + id)}
+              onClick={() => history.push("/delaccesories/" + id)}
               type="button"
             >
               <p className="yellow">Odstranit příslušenství</p>
+            </button>
+            <button
+              className="upgrade"
+              onClick={() => history.push("/addaccesories/" + id)}
+              type="button"
+            >
+              <p className="yellow">Přidat příslušenství</p>
             </button>
             <button
               className="upgrade"

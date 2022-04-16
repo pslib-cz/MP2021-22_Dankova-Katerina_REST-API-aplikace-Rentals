@@ -40,7 +40,8 @@ namespace Rentals_API_NET6.Controllers
                 Description = request.Description,
                 Note = request.Note,
                 State = ItemState.Available,
-                Img = request.Img == null ? "Placeholder.bmp" : request.Img
+                Img = request.Img == null ? "Placeholder.jpg" : request.Img,
+                
             };
             _context.Items.Add(Item);
             await _context.SaveChangesAsync();

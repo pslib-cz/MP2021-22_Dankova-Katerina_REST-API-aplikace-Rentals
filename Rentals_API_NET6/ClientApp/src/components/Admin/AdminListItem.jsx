@@ -17,6 +17,10 @@ const StyledAdminListItem = styled.div`
 
   @media (max-width: 1000px) {
     flex-direction: column;
+    & > * {
+      width: 100%;
+      margin: 1rem 0 !important;
+    }
 
     * {
       text-align: center !important;
