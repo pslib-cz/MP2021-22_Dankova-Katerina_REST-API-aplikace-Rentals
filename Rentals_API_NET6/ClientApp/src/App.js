@@ -181,7 +181,12 @@ function App() {
 
 // Force reload when mobile
 // orientation changes
-window.screen.orientation.addEventListener("change", function (e) {
-  window.location.reload(false);
-});
+
+try {
+    window.screen.orientation.addEventListener("change", function (e) {
+        window.location.reload(false);
+    });
+} catch (error) {
+    alert("IOS USER: " + error);
+}
 export default App;
