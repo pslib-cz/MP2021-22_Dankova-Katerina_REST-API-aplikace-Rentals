@@ -69,17 +69,26 @@ const AdminLanding = (props) => {
   }
 
   const Button = (props) => {
+    let history = useHistory();
     const onLongPress = () => {
       navigator.vibrate(65);
       Axios({
         method: "put",
         url: "api/Renting/Activate/" + props.setId,
         headers: { Authorization: "Bearer " + accessToken },
-      }).then(queryClient.invalidateQueries("admin-when"));
+      }).then(history.push("/admin/renting/" + props.setId));
       props.Update(updater + 1);
     };
 
-    const open = () => {};
+    const open = () => {
+      navigator.vibrate(65);
+      Axios({
+        method: "put",
+        url: "api/Renting/Activate/" + props.setId,
+        headers: { Authorization: "Bearer " + accessToken },
+      }).then(history.push("/admin/renting/" + props.setId));
+      props.Update(updater + 1);
+    };
 
     const onClick = () => {
       open();
@@ -99,13 +108,14 @@ const AdminLanding = (props) => {
   };
 
   const Button2 = (props) => {
+    let history = useHistory();
     const onLongPress = () => {
       navigator.vibrate(65);
       Axios({
         method: "delete",
         url: "api/Renting/" + props.setId,
         headers: { Authorization: "Bearer " + accessToken },
-      }).then(queryClient.invalidateQueries("admin-when"));
+      }).then(history.push("/admin/renting/" + props.setId));
       props.Update(updater + 1);
 
       ReactDOM.render(
@@ -129,7 +139,7 @@ const AdminLanding = (props) => {
         method: "delete",
         url: "api/Renting/" + props.setId,
         headers: { Authorization: "Bearer " + accessToken },
-      });
+      }).then(history.push("/admin/renting/" + props.setId));
       props.Update(updater + 1);
 
       ReactDOM.render(

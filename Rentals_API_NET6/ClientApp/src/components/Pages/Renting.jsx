@@ -96,26 +96,27 @@ const Renting = (props) => {
             <BoldName name={"Kdy"}></BoldName>
             <BoldName name={"Kdo"}></BoldName>
           </AdminListItem>
-          {storedFiles && storedFiles.map((i, index) => {
-            return (
-              <AdminListItem key={index}>
-                <NormalName
-                  name={
-                    "#" +
-                    index +
-                    actionType(i.action) +
-                    i?.returnedItems?.map((i, index) => {
-                      return i.name;
-                    })
-                  }
-                ></NormalName>
-                <NormalName
-                  name={i.changedTime ? handleTime(i.changedTime) : null}
-                ></NormalName>
-                <NormalName name={i.user?.fullName}></NormalName>
-              </AdminListItem>
-            );
-          })}
+          {storedFiles &&
+            storedFiles.map((i, index) => {
+              return (
+                <AdminListItem key={index}>
+                  <NormalName
+                    name={
+                      "#" +
+                      index +
+                      actionType(i.action) +
+                      i?.returnedItems?.map((i, index) => {
+                        return i.name;
+                      })
+                    }
+                  ></NormalName>
+                  <NormalName
+                    name={i.changedTime ? handleTime(i.changedTime) : null}
+                  ></NormalName>
+                  <NormalName name={i.user?.fullName}></NormalName>
+                </AdminListItem>
+              );
+            })}
         </AdminList>
       </StyledMainGrid>
     );

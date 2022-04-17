@@ -119,12 +119,7 @@ const Return = (props) => {
       url: "/api/Renting/",
       data: { id: id, returnedItems: selectedFiles },
       headers: { Authorization: "Bearer " + accessToken },
-    }).then(
-      setTimeout(() => {
-        fetchStoredFiles();
-        history.push("/admin");
-      }, 1500)
-    );
+    }).then(history.go("/admin/renting/" + id));
   };
 
   return (

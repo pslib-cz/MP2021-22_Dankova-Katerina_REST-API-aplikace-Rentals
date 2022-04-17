@@ -369,10 +369,6 @@ const Content = (props) => {
               <Accesories></Accesories>
               <AdminLanding />
             </Route>
-            <Route exact path="/return/:id">
-              <AdminMenu></AdminMenu>
-              <AdminReturn />
-            </Route>
             <Route exact path="/admin/renting/:id">
               <AdminMenu></AdminMenu>
               <Renting />
@@ -380,6 +376,10 @@ const Content = (props) => {
             <Route exact path="/admin/item/:id">
               <AdminMenu></AdminMenu>
               <Item />
+            </Route>
+            <Route exact path="/return/:id">
+              <AdminMenu></AdminMenu>
+              <AdminReturn />
             </Route>
             <Route exact path="/admin/calendar">
               <AdminMenu></AdminMenu>
