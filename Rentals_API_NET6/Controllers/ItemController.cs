@@ -41,7 +41,7 @@ namespace Rentals_API_NET6.Controllers
                 Note = request.Note,
                 State = ItemState.Available,
                 Img = request.Img == null ? "Placeholder.jpg" : request.Img,
-                
+
             };
             _context.Items.Add(Item);
             await _context.SaveChangesAsync();
@@ -430,7 +430,7 @@ namespace Rentals_API_NET6.Controllers
             if (item != null && !item.IsDeleted)
             {
                 List<DatesResponse> dates = new();
-                foreach (var i in _context.RentingItems.Where(x => x.ItemId == id).Select(x => x.Renting))
+                foreach (var i in _context.RentingItems.Where(x => x.ItemId == id).Include(x => x.Renting.Owner).Select(x => x.Renting))
                 {
                     dates.Add(new DatesResponse
                     {
@@ -438,7 +438,7 @@ namespace Rentals_API_NET6.Controllers
                         State = i.State,
                         Start = i.Start,
                         End = i.End,
-                        Title = _context.Users.SingleOrDefault(x => x.Id == i.OwnerId).FullName
+                        Title = i.Owner.FullName
                     });
                 }
                 return Ok(dates);
@@ -538,7 +538,7 @@ namespace Rentals_API_NET6.Controllers
             Item item = _context.Items.SingleOrDefault(x => x.Id == id);
             List<ItemHistoryLog> list = _context.ItemHistoryLogs.Include(x => x.User).Include(x => x.UserInventory).Include(x => x.ItemChanges).Where(x => x.ItemId == item.Id).ToList();
             List<ItemHistory> result = new List<ItemHistory>();
-            foreach(var i in list)
+            foreach (var i in list)
             {
                 var itemHistory = new ItemHistory
                 {

@@ -117,9 +117,10 @@ namespace Rentals_API_NET6.Controllers
                     RentingId = renting.Id,
                     UserId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id,
                     ChangedTime = DateTime.Now,
-                    Action = Action.Returned,
+                    Action = Action.Changed,
                     ReturnedItems = new List<Item>()
                 };
+
                 if (request.ReturnedItems != null)
                 {
                     foreach (var item in request.ReturnedItems)
@@ -138,17 +139,6 @@ namespace Rentals_API_NET6.Controllers
                             var itemToReturn = _context.Items.Find(item);
                             itemToReturn.State = ItemState.Available;
                             _context.Entry(itemToReturn).State = EntityState.Modified;
-
-                            ItemHistoryLog Itemlog = new ItemHistoryLog
-                            {
-                                ItemId = item,
-                                UserId = _context.Users.SingleOrDefault(x => x.OauthId == UserId()).Id,
-                                UserInventoryId = null,
-                                ChangedTime = DateTime.Now,
-                                Action = ItemAction.DeletedFromInventory
-                            };
-                            _context.ItemHistoryLogs.Add(Itemlog);
-                            log.ReturnedItems.Add(itemToReturn);
                         }
                         else
                         {
@@ -159,6 +149,22 @@ namespace Rentals_API_NET6.Controllers
                 if (errors == 0)
                 {
                     //nelze ukončit pokud se neprojeví vrácení
+                    _context.RentingHistoryLogs.Add(log);
+                    await _context.SaveChangesAsync();
+
+                    foreach (var item in request.ReturnedItems)
+                    {
+                        ItemHistoryLog Itemlog = new ItemHistoryLog
+                        {
+                            ItemId = item,
+                            UserId = _context.Users.SingleOrDefault(x => x.OauthId == UserId()).Id,
+                            UserInventoryId = null,
+                            ChangedTime = DateTime.Now,
+                            Action = ItemAction.DeletedFromInventory
+                        };
+                        _context.ItemHistoryLogs.Add(Itemlog);
+                        log.ReturnedItems.Add(_context.Items.SingleOrDefault(x => x.Id == item));
+                    }
                     await _context.SaveChangesAsync();
 
                     //Ukončení pokud vše vráceno
@@ -167,12 +173,9 @@ namespace Rentals_API_NET6.Controllers
                         renting.State = RentingState.Ended;
                         renting.End = DateTime.Now;
                         log.Action = Action.Returned;
+                        _context.Entry(log).State = EntityState.Modified;
                     }
-
-                    _context.RentingHistoryLogs.Add(log);
-
                     await _context.SaveChangesAsync();
-
                     return Ok(renting);
                 }
                 else
@@ -195,16 +198,23 @@ namespace Rentals_API_NET6.Controllers
         {
             var userId = UserId();
             Renting renting = _context.Rentings.SingleOrDefault(x => x.Id == id);
-            if (renting != null)
+            if (renting != null && renting.State == RentingState.WillStart)
             {
                 //Odebrání itemů
                 foreach (var item in _context.RentingItems.Where(x => x.RentingId == id))
                 {
                     _context.RentingItems.Remove(item);
+                }
 
+                renting.State = RentingState.Cancelled;
+                _context.Entry(renting).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                foreach (var item in _context.RentingItems.Where(x => x.RentingId == id).Select(c => c.ItemId))
+                {
                     ItemHistoryLog Itemlog = new ItemHistoryLog
                     {
-                        ItemId = item.ItemId,
+                        ItemId = item,
                         UserId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id,
                         UserInventoryId = null,
                         ChangedTime = DateTime.Now,
@@ -213,8 +223,7 @@ namespace Rentals_API_NET6.Controllers
                     _context.ItemHistoryLogs.Add(Itemlog);
                 }
 
-                renting.State = RentingState.Cancelled;
-                _context.Entry(renting).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
 
                 RentingHistoryLog log = new RentingHistoryLog
                 {
@@ -294,7 +303,18 @@ namespace Rentals_API_NET6.Controllers
                         var rentedItem = _context.Items.Find(item.Id);
                         rentedItem.State = ItemState.Rented;
                         _context.Entry(rentedItem).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        error++;
+                    }
+                }
 
+                if (error == 0)
+                {
+                    await _context.SaveChangesAsync();
+                    foreach (var item in _context.RentingItems.Where(x => x.RentingId == id).Select(y => y.Item))
+                    {
                         ItemHistoryLog Itemlog = new ItemHistoryLog
                         {
                             ItemId = item.Id,
@@ -305,14 +325,9 @@ namespace Rentals_API_NET6.Controllers
                         };
                         _context.ItemHistoryLogs.Add(Itemlog);
                     }
-                    else
-                    {
-                        error++;
-                    }
-                }
 
-                if (error == 0)
-                {
+                    await _context.SaveChangesAsync();
+
                     RentingHistoryLog log = new RentingHistoryLog
                     {
                         RentingId = renting.Id,
