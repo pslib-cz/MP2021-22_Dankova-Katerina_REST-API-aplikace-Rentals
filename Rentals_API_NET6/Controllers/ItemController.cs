@@ -19,12 +19,14 @@ namespace Rentals_API_NET6.Controllers
     {
         private readonly RentalsDbContext _context;
         private readonly IAuthorizationService _authorizationService;
+        private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _environment;
         private readonly ILogger<ItemController> _logger;
-        public ItemController(RentalsDbContext context, IAuthorizationService authorizationService, ILogger<ItemController> logger)
+        public ItemController(RentalsDbContext context, IAuthorizationService authorizationService, ILogger<ItemController> logger, Microsoft.AspNetCore.Hosting.IHostingEnvironment environment)
         {
             _context = context;
             _authorizationService = authorizationService;
             _logger = logger;
+            _environment = environment;
         }
 
         /// <summary>
@@ -259,31 +261,21 @@ namespace Rentals_API_NET6.Controllers
         /// </summary>
         [AllowAnonymous]
         [HttpGet("Img/{id}")]
-        public async Task<ActionResult<FileStream>> GetItemImg(int id)
+        public async Task<IActionResult> GetItemImg(int id)
         {
             Item item = _context.Items.SingleOrDefault(x => x.Id == id);
-            if (item != null && !item.IsDeleted)
+            UploadedFile image = _context.Files.SingleOrDefault(x => x.Id == item.Img);
+            if (item != null)
             {
-                var path = "";
-
-                if (item.Img == null)
+                var file = item.Img == null ?
+                    Path.Combine(_environment.ContentRootPath,"Images", "Placeholder.jpg") : Path.Combine(_environment.ContentRootPath, "Images", item.Img);
+                if (System.IO.File.Exists(file))
                 {
-                    path = "Images/Placeholder.jpg";
+                    return PhysicalFile(file, image.ContentType);
                 }
                 else
                 {
-                    path = $"Images/{item.Img}";
-                }
-
-                //Exituje fyzicky soubor?
-                try
-                {
-                    FileStream img = new FileStream(path, FileMode.Open);
-                    return Ok(img);
-                }
-                catch (Exception)
-                {
-                    return BadRequest();
+                    return NotFound();
                 }
             }
             else
@@ -429,18 +421,16 @@ namespace Rentals_API_NET6.Controllers
             Item item = _context.Items.SingleOrDefault(x => x.Id == id);
             if (item != null && !item.IsDeleted)
             {
-                List<DatesResponse> dates = new();
-                foreach (var i in _context.RentingItems.Where(x => x.ItemId == id).Include(x => x.Renting.Owner).Select(x => x.Renting))
+                IEnumerable<Renting> rentings = _context.RentingItems.Where(x => x.ItemId == id).Include(x => x.Renting).ThenInclude(x => x.Owner).AsNoTracking().Select(x => x.Renting).ToList().AsEnumerable();
+                List<DatesResponse> dates = rentings.Select(x => new DatesResponse
                 {
-                    dates.Add(new DatesResponse
-                    {
-                        Id = i.Id,
-                        State = i.State,
-                        Start = i.Start,
-                        End = i.End,
-                        Title = i.Owner.FullName
-                    });
-                }
+                    Id = x.Id,
+                    State = x.State,
+                    Start = x.Start,
+                    End = x.End,
+                    Title = x.Owner.FullName
+                }).ToList();
+
                 return Ok(dates);
             }
             else

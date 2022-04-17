@@ -22,13 +22,13 @@ namespace Rentals_API_NET6.Models.DatabaseModel
 
         public enum ItemAction
         {
-            Created,
-            Changed,
-            ChangedAccessories,
-            Deleted,
-            Restored,
-            AddedToInventory,
-            DeletedFromInventory,
+            Created = 0,
+            Changed = 1,
+            ChangedAccessories = 2,
+            Deleted = 3,
+            Restored = 4,
+            AddedToInventory = 5,
+            DeletedFromInventory = 6,
         }
     }
 }

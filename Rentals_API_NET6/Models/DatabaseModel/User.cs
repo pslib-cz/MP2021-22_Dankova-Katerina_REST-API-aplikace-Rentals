@@ -17,5 +17,8 @@ namespace Rentals_API_NET6.Models.DatabaseModel
         public ICollection<CartItem> Cart { get; set; }
         public ICollection<Renting> Rentings { get; set; }
         public ICollection<RentingHistoryLog> Logs { get; set; }
+        public string Class { get; set; }
+        public string Specialization { get;set;}
+        public int? YearOfEntry { get; set; }
     }
 }

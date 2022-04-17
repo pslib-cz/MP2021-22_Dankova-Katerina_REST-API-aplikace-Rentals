@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Rentals_API_NET6.Context;
 using Rentals_API_NET6.Models.DatabaseModel;
 using Rentals_API_NET6.Models.InputModel;
+using Rentals_API_NET6.Models.OutputModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +48,19 @@ namespace Rentals_API_NET6.Controllers
                     LastName = request.LastName,
                     Username = request.Username,
                 };
+
+                try
+                {
+                    //P-2021-2025(kz)A
+                    var department = request.Department.Split("-");
+                    user.Class = department[0];
+                    user.Specialization = department[2].Last() != ')' ? department[2].Last().ToString() : null;
+                    user.YearOfEntry = int.Parse(department[1]);
+                }
+                catch (Exception)
+                {
+                    user.Class = "ZAM";
+                }
 
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
@@ -211,9 +225,15 @@ namespace Rentals_API_NET6.Controllers
         /// </summary>
         [Authorize(Policy = "Employee")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
+        public async Task<ActionResult<List<UserObject>>> GetAllUsers()
         {
-            IEnumerable<User> users = _context.Users.AsEnumerable();
+            List<UserObject> users = _context.Users
+                .Select(x => new UserObject {
+                    Id = x.OauthId, 
+                    Name = x.FullName, 
+                    Username = x.Username, 
+                    Class = x.Class + (DateTime.Now.Year - x.YearOfEntry).ToString() + x.Specialization 
+                }).ToList();
             return Ok(users);
         }
 

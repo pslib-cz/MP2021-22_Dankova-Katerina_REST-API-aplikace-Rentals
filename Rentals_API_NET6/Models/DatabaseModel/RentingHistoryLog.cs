@@ -20,10 +20,10 @@ namespace Rentals_API_NET6.Models.DatabaseModel
 
     public enum Action
     {
-        Created,
-        Activated,
-        Changed,
-        Canceled,
-        Returned,
+        Created = 0,
+        Activated = 1,
+        Changed = 2,
+        Canceled = 3,
+        Returned = 4,
     }
 }

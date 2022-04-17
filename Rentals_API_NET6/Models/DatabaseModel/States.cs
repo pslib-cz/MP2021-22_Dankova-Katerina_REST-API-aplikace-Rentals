@@ -2,15 +2,15 @@
 {
     public enum ItemState
     {
-        Available,
-        Rented,
-        Unavailable,
+        Available = 0,
+        Rented = 1,
+        Unavailable = 2,
     }
     public enum RentingState
     {
-        WillStart,
-        InProgress,
-        Ended,
-        Cancelled,
+        WillStart = 0,
+        InProgress = 1,
+        Ended = 2,
+        Cancelled = 3,
     }
 }

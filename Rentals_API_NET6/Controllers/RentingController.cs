@@ -255,6 +255,17 @@ namespace Rentals_API_NET6.Controllers
         }
 
         /// <summary>
+        /// Vypíše všechny výpůjčky podle stavu
+        /// </summary>
+        [Authorize(Policy = "Employee")]
+        [HttpGet("AllByState")]
+        public async Task<ActionResult<IEnumerable<Renting>>> GetAllRentingsByState(int state)
+        {
+            IEnumerable<Renting> rentings = _context.Rentings.Include(o => o.Owner).Include(x => x.Items).Where(x => x.State == (RentingState)state).OrderBy(x => x.Start).AsEnumerable();
+            return Ok(rentings);
+        }
+
+        /// <summary>
         /// Vypíše všechny výpůjčky daného uživatele
         /// </summary>
         [HttpGet("RentingsByUser/{id}")]

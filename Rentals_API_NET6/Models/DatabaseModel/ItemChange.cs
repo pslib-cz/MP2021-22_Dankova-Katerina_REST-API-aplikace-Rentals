@@ -18,11 +18,11 @@ namespace Rentals_API_NET6.Models.DatabaseModel
         public ICollection<ItemChangeConnection> ChangedAccessories { get; set; }
         public enum Property
         {
-            Name,
-            Category,
-            Description,
-            Note,
-            Accessories
+            Name = 0,
+            Category = 1,
+            Description = 2,
+            Note = 3,
+            Accessories = 4
         }
     }
 }
