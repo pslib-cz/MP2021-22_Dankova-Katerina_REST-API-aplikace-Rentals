@@ -100,7 +100,10 @@ namespace Rentals_API_NET6.Controllers
             }
         }
 
-        [HttpPut("/Change")]
+        /// <summary>
+        /// Upravení výpůjčky
+        /// </summary>
+        [HttpPut("Change")]
         public async Task<ActionResult<Renting>> PutRenting([FromBody] UpdateRentingRequest request)
         {
             Renting renting = _context.Rentings.SingleOrDefault(x => x.Id == request.RentingId);

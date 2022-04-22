@@ -265,7 +265,7 @@ namespace Rentals_API_NET6.Controllers
         {
             Item item = _context.Items.SingleOrDefault(x => x.Id == id);
             UploadedFile image = _context.Files.SingleOrDefault(x => x.Id == item.Img);
-            if (item != null)
+            if (item != null && image != null)
             {
                 var file = item.Img == null ?
                     Path.Combine(_environment.ContentRootPath,"Images", "Placeholder.jpg") : Path.Combine(_environment.ContentRootPath, "Images", item.Img);
@@ -297,7 +297,7 @@ namespace Rentals_API_NET6.Controllers
         /// <summary>
         /// Vypíše všechny dostupné předměty (k úpravě výpůjčky)
         /// </summary>
-        [HttpGet("/Available")]
+        [HttpGet("Available")]
         public async Task<ActionResult<List<Item>>> GetAllAvailableItems()
         {
             IEnumerable<Item> Items = _context.Items.Where(x => !x.IsDeleted && x.State == ItemState.Available).AsEnumerable();
