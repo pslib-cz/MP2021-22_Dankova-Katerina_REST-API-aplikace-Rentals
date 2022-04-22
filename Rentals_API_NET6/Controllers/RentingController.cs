@@ -100,6 +100,75 @@ namespace Rentals_API_NET6.Controllers
             }
         }
 
+        [HttpPut("/Change")]
+        public async Task<ActionResult<Renting>> PutRenting([FromBody] UpdateRentingRequest request)
+        {
+            Renting renting = _context.Rentings.SingleOrDefault(x => x.Id == request.RentingId);
+            int errors = 0;
+            if (renting != null && renting.State == RentingState.WillStart)
+            {
+                if (request.Start != null)
+                {
+                    renting.Start = (DateTime)request.Start;
+                }
+                if (request.End != null)
+                {
+                    renting.End = (DateTime)request.End;
+                }
+                if (request.Note != null)
+                {
+                    renting.Note = request.Note;
+                }
+                if (request.Items != null)
+                {
+                    foreach (var item in _context.RentingItems.Where(x => x.RentingId == renting.Id))
+                    {
+                        _context.Remove(item);
+                    }
+
+                    foreach (var id in request.Items)
+                    {
+                        Item item = _context.Items.SingleOrDefault(x => x.Id == id);
+                        if (item != null && !item.IsDeleted && item.State == ItemState.Available)
+                        {
+                            _context.RentingItems.Add(new RentingItem { RentingId = renting.Id, ItemId = id });
+                        }
+                        else
+                        {
+                            errors++;
+                        }
+                    }
+                }
+
+                if (errors == 0)
+                {
+                    _context.Entry(renting).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+
+                    var userId = UserId();
+                    RentingHistoryLog log = new RentingHistoryLog
+                    {
+                        RentingId = renting.Id,
+                        UserId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id,
+                        ChangedTime = DateTime.Now,
+                        Action = Action.Updated
+                    };
+                    _context.RentingHistoryLogs.Add(log);
+                    await _context.SaveChangesAsync();
+
+                    return Ok(renting);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         /// <summary>
         /// Vrácení předmětů dané výpůjčky
         /// </summary>
@@ -208,21 +277,6 @@ namespace Rentals_API_NET6.Controllers
 
                 renting.State = RentingState.Cancelled;
                 _context.Entry(renting).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-
-                foreach (var item in _context.RentingItems.Where(x => x.RentingId == id).Select(c => c.ItemId))
-                {
-                    ItemHistoryLog Itemlog = new ItemHistoryLog
-                    {
-                        ItemId = item,
-                        UserId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id,
-                        UserInventoryId = null,
-                        ChangedTime = DateTime.Now,
-                        Action = ItemAction.DeletedFromInventory
-                    };
-                    _context.ItemHistoryLogs.Add(Itemlog);
-                }
-
                 await _context.SaveChangesAsync();
 
                 RentingHistoryLog log = new RentingHistoryLog

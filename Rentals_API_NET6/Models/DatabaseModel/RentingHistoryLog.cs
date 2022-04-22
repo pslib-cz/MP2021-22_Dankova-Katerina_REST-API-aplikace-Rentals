@@ -25,5 +25,6 @@ namespace Rentals_API_NET6.Models.DatabaseModel
         Changed = 2,
         Canceled = 3,
         Returned = 4,
+        Updated = 5,
     }
 }

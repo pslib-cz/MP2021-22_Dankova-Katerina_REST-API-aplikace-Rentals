@@ -295,6 +295,16 @@ namespace Rentals_API_NET6.Controllers
         }
 
         /// <summary>
+        /// Vypíše všechny dostupné předměty (k úpravě výpůjčky)
+        /// </summary>
+        [HttpGet("/Available")]
+        public async Task<ActionResult<List<Item>>> GetAllAvailableItems()
+        {
+            IEnumerable<Item> Items = _context.Items.Where(x => !x.IsDeleted && x.State == ItemState.Available).AsEnumerable();
+            return Ok(Items);
+        }
+
+        /// <summary>
         /// Vypíše všechny předměty, které jsou příslušenstvím k danému předmětu
         /// </summary>
         [HttpGet("Accesories/{id}")]
