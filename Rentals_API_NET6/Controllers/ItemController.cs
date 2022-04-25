@@ -532,6 +532,9 @@ namespace Rentals_API_NET6.Controllers
             }
         }
 
+        /// <summary>
+        /// Vypíše historii předmětu (co se s ním dělo)
+        /// </summary>
         [HttpGet("History")]
         public async Task<ActionResult<List<ItemHistory>>> GetHistory(int id)
         {

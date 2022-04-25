@@ -52,14 +52,21 @@ namespace Rentals_API_NET6.Controllers
                 try
                 {
                     //P-2021-2025(kz)A
-                    var department = request.Department.Split("-");
-                    user.Class = department[0];
-                    user.Specialization = department[2].Last() != ')' ? department[2].Last().ToString() : null;
-                    user.YearOfEntry = int.Parse(department[1]);
+                    if (request.Department != null)
+                    {
+                        var department = request.Department.Split("-");
+                        user.Specialization = department[0];
+                        user.Class = department[2].Last() != ')' ? department[2].Last().ToString() : null;
+                        user.YearOfEntry = int.Parse(department[1]);
+                    }
+                    else
+                    {
+                        user.Specialization = "ZAM";
+                    }
                 }
                 catch (Exception)
                 {
-                    user.Class = "ZAM";
+                    user.Specialization = "ZAM";
                 }
 
                 _context.Users.Add(user);
@@ -232,7 +239,7 @@ namespace Rentals_API_NET6.Controllers
                     Id = x.OauthId, 
                     Name = x.FullName, 
                     Username = x.Username, 
-                    Class = x.Class + (DateTime.Now.Year - x.YearOfEntry).ToString() + x.Specialization 
+                    Class = x.Specialization + (DateTime.Now.Year - x.YearOfEntry).ToString() + x.Class
                 }).ToList();
             return Ok(users);
         }

@@ -41,6 +41,22 @@ namespace Rentals_API_NET6.Controllers
             var error = 0;
             var userId = UserId();
             User owner = _context.Users.SingleOrDefault(x => x.OauthId == userId);
+
+            if (renting.Start < DateTime.Now || renting.End < renting.Start)
+            {
+                return BadRequest("Špatně zadaná data (od kdy do kdy) výpůjčky");
+            }
+
+            foreach (var item in renting.Items)
+            {
+                var rentingsWhereItemIs = _context.RentingItems.Include(x => x.Renting).Where(x => x.ItemId == item).Select(x => x.Renting);
+                var rentingsWithStates = rentingsWhereItemIs.Where(x => x.State == RentingState.WillStart || x.State == RentingState.InProgress);
+                if (rentingsWithStates.Any(x => x.Start < renting.End && renting.Start < x.End))
+                {
+                    return BadRequest($"Předmět {_context.Items.SingleOrDefault(x => x.Id == item).Name} není v této době dostupný");
+                }
+            }
+
             if (owner != null)
             {
                 Renting newRenting = new Renting
@@ -301,45 +317,120 @@ namespace Rentals_API_NET6.Controllers
         }
 
         /// <summary>
-        /// Vypíše všechny výpůjčky
+        /// Vypsání detailu výpůjčky
         /// </summary>
-        [Authorize(Policy = "Employee")]
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Renting>>> GetAllRentings()
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Renting>> GetRentingDetail(int id)
         {
-            IEnumerable<Renting> rentings = _context.Rentings.Include(o => o.Owner).Include(x => x.Items).OrderBy(x => x.State).AsEnumerable();
-            return Ok(rentings);
-        }
-
-        /// <summary>
-        /// Vypíše všechny výpůjčky podle stavu
-        /// </summary>
-        [Authorize(Policy = "Employee")]
-        [HttpGet("AllByState")]
-        public async Task<ActionResult<IEnumerable<Renting>>> GetAllRentingsByState(int state)
-        {
-            IEnumerable<Renting> rentings = _context.Rentings.Include(o => o.Owner).Include(x => x.Items).Where(x => x.State == (RentingState)state).OrderBy(x => x.Start).AsEnumerable();
-            return Ok(rentings);
-        }
-
-        /// <summary>
-        /// Vypíše všechny výpůjčky daného uživatele
-        /// </summary>
-        [HttpGet("RentingsByUser/{id}")]
-        public async Task<ActionResult<IEnumerable<Renting>>> GetRentings(string id)
-        {
+            Renting renting = _context.Rentings.Include(x => x.Owner).Include(x => x.Approver).SingleOrDefault(x => x.Id == id);
             var userId = UserId();
+            var user = renting.Owner.OauthId;
             var isEmployee = await _authorizationService.AuthorizeAsync(User, "Employee");
-            User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
-            if (user != null && (userId == user.OauthId || isEmployee.Succeeded))
+            if (renting != null && (isEmployee.Succeeded || user == userId))
             {
-                IEnumerable<Renting> rentings = _context.Rentings.Include(x => x.Items).Where(y => y.OwnerId == user.Id).OrderBy(x => x.State).AsEnumerable();
-                return Ok(rentings);
+                RentingDetail detail = new RentingDetail
+                {
+                    Renting = renting
+                };
+                detail.Items = _context.RentingItems.Where(x => x.RentingId == renting.Id).Select(x => x.Item).ToList();
+                return Ok(detail);
             }
             else
             {
                 return NotFound();
             }
+        }
+
+        /// <summary>
+        /// Dat pro kalendář - daný měsíc a rok + filtrace předmětů
+        /// </summary>
+        [HttpPost("Calendar")]
+        public async Task<ActionResult<List<Renting>>> GetCalendarRentings([FromBody] CalendarRequest request)
+        {
+            List<Renting> rentings = _context.Rentings
+                .Where(x =>
+                (request.Year >= x.Start.Year && request.Year <= x.End.Year)
+                && (request.Month >= x.Start.Month && request.Month <= x.End.Month))
+                .ToList();
+
+            if (request.Items != null)
+            {
+                List<Renting> result = new();
+                foreach (var renting in rentings)
+                {
+                    foreach (var item in _context.RentingItems.Where(x => x.RentingId == renting.Id))
+                    {
+                        if (request.Items.Contains(item.ItemId))
+                        {
+                            result.Add(renting);
+                            break;
+                        }
+                    }
+                }
+
+                return Ok(result);
+            }
+            else
+            {
+                return Ok(rentings);
+            }
+        }
+
+        /// <summary>
+        /// Vypíše všechny výpůjčky (nepoviný parametr id uživatele)
+        /// </summary>
+        [HttpGet("All")]
+        public async Task<ActionResult<IEnumerable<Renting>>> GetAllRentings(string id = null)
+        {
+            if (id != null)
+            {
+                var userId = UserId();
+                var isEmployee = await _authorizationService.AuthorizeAsync(User, "Employee");
+                User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
+                if (user != null && (userId == user.OauthId || isEmployee.Succeeded))
+                {
+                    IEnumerable<Renting> rentings = _context.Rentings.Include(x => x.Items).Where(y => y.OwnerId == user.Id).OrderBy(x => x.Start).AsEnumerable();
+                    return Ok(rentings);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            else
+            {
+                IEnumerable<Renting> rentings = _context.Rentings.Include(o => o.Owner).Include(x => x.Items).OrderBy(x => x.Start).AsEnumerable();
+                return Ok(rentings);
+            }
+        }
+
+        /// <summary>
+        /// Vypíše všechny výpůjčky podle stavu + (nepovinný parametr rok pro filtraci)
+        /// </summary>
+        [Authorize(Policy = "Employee")]
+        [HttpGet("AllByState")]
+        public async Task<ActionResult<List<Renting>>> GetAllRentingsByState(int state, int? year = null)
+        {
+            List<Renting> rentings = new();
+            if (year != null)
+            {
+                rentings = _context.Rentings
+                    .Include(o => o.Owner)
+                    .Include(x => x.Items)
+                    .Where(x => (year >= x.Start.Year && year <= x.End.Year) && x.State == (RentingState)state)
+                    .OrderBy(x => x.State == RentingState.InProgress ? x.End : x.Start)
+                    .ToList();
+            }
+            else
+            {
+                rentings = _context.Rentings
+                    .Include(o => o.Owner)
+                    .Include(x => x.Items)
+                    .Where(x => x.State == (RentingState)state)
+                    .OrderBy(x => x.State == RentingState.InProgress ? x.End : x.Start)
+                    .ToList();
+            }
+            return Ok(rentings);
         }
 
         /// <summary>
@@ -458,6 +549,9 @@ namespace Rentals_API_NET6.Controllers
             }
         }
 
+        /// <summary>
+        /// Vypíše historii výpůjčky (co se s ní dělo)
+        /// </summary>
         [HttpGet("History")]
         public async Task<ActionResult<List<RentingHistoryLog>>> GetHistory(int id)
         {
