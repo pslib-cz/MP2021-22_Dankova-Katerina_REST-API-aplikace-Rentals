@@ -342,25 +342,25 @@ namespace Rentals_API_NET6.Controllers
         }
 
         /// <summary>
-        /// Dat pro kalendář - daný měsíc a rok + filtrace předmětů
+        /// Data pro kalendář - daný měsíc a rok + filtrace předmětů
         /// </summary>
-        [HttpPost("Calendar")]
-        public async Task<ActionResult<List<Renting>>> GetCalendarRentings([FromBody] CalendarRequest request)
+        [HttpGet("Calendar")]
+        public async Task<ActionResult<List<Renting>>> GetCalendarRentings(int month, int year, [FromQuery]int[] items)
         {
             List<Renting> rentings = _context.Rentings
                 .Where(x =>
-                (request.Year >= x.Start.Year && request.Year <= x.End.Year)
-                && (request.Month >= x.Start.Month && request.Month <= x.End.Month))
+                (year >= x.Start.Year && year <= x.End.Year)
+                && (month >= x.Start.Month && month <= x.End.Month))
                 .ToList();
 
-            if (request.Items != null)
+            if (items != null)
             {
                 List<Renting> result = new();
                 foreach (var renting in rentings)
                 {
                     foreach (var item in _context.RentingItems.Where(x => x.RentingId == renting.Id))
                     {
-                        if (request.Items.Contains(item.ItemId))
+                        if (items.Contains(item.ItemId))
                         {
                             result.Add(renting);
                             break;
@@ -517,7 +517,7 @@ namespace Rentals_API_NET6.Controllers
         public async Task<ActionResult<List<DatesResponse>>> GetDates()
         {
             List<DatesResponse> dates = new();
-            foreach (var item in _context.Rentings.Include(y => y.Owner).Where(x => x.State == RentingState.WillStart || x.State == RentingState.InProgress))
+            foreach (var item in _context.Rentings.Include(y => y.Owner).Where(x => x.State == RentingState.Ended || x.State == RentingState.InProgress))
             {
                 dates.Add(new DatesResponse
                 {
