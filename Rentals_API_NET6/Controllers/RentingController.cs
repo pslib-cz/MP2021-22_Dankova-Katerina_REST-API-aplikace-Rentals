@@ -288,12 +288,6 @@ namespace Rentals_API_NET6.Controllers
             Renting renting = _context.Rentings.SingleOrDefault(x => x.Id == id);
             if (renting != null && renting.State == RentingState.WillStart)
             {
-                //Odebrání itemů
-                foreach (var item in _context.RentingItems.Where(x => x.RentingId == id))
-                {
-                    _context.RentingItems.Remove(item);
-                }
-
                 renting.State = RentingState.Cancelled;
                 _context.Entry(renting).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
@@ -348,21 +342,28 @@ namespace Rentals_API_NET6.Controllers
         public async Task<ActionResult<List<Renting>>> GetCalendarRentings(int month, int year, [FromQuery]int[] items)
         {
             List<Renting> rentings = _context.Rentings
+                .Include(x => x.Owner)
                 .Where(x =>
                 (year >= x.Start.Year && year <= x.End.Year)
                 && (month >= x.Start.Month && month <= x.End.Month))
                 .ToList();
 
-            if (items != null)
+            if (items.Length > 0)
             {
-                List<Renting> result = new();
+                List<DatesResponse> result = new();
                 foreach (var renting in rentings)
                 {
                     foreach (var item in _context.RentingItems.Where(x => x.RentingId == renting.Id))
                     {
                         if (items.Contains(item.ItemId))
                         {
-                            result.Add(renting);
+                            result.Add(new DatesResponse {
+                                Id = renting.Id, 
+                                End = renting.End, 
+                                Start = renting.Start, 
+                                State = renting.State, 
+                                Title = renting.Owner.FullName
+                            });
                             break;
                         }
                     }
