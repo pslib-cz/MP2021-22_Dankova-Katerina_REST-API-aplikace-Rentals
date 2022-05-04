@@ -339,7 +339,7 @@ namespace Rentals_API_NET6.Controllers
         /// Data pro kalendář - daný měsíc a rok + filtrace předmětů
         /// </summary>
         [HttpGet("Calendar")]
-        public async Task<ActionResult<List<Renting>>> GetCalendarRentings(int month, int year, [FromQuery]int[] items)
+        public async Task<ActionResult<List<Renting>>> GetCalendarRentings(int month, int year, [FromQuery] int[] items)
         {
             List<Renting> rentings = _context.Rentings
                 .Include(x => x.Owner)
@@ -348,20 +348,22 @@ namespace Rentals_API_NET6.Controllers
                 && (month >= x.Start.Month && month <= x.End.Month))
                 .ToList();
 
+            List<DatesResponse> result = new();
+
             if (items.Length > 0)
             {
-                List<DatesResponse> result = new();
                 foreach (var renting in rentings)
                 {
                     foreach (var item in _context.RentingItems.Where(x => x.RentingId == renting.Id))
                     {
                         if (items.Contains(item.ItemId))
                         {
-                            result.Add(new DatesResponse {
-                                Id = renting.Id, 
-                                End = renting.End, 
-                                Start = renting.Start, 
-                                State = renting.State, 
+                            result.Add(new DatesResponse
+                            {
+                                Id = renting.Id,
+                                End = renting.End,
+                                Start = renting.Start,
+                                State = renting.State,
                                 Title = renting.Owner.FullName
                             });
                             break;
@@ -373,6 +375,14 @@ namespace Rentals_API_NET6.Controllers
             }
             else
             {
+                result = rentings.Select(x => new DatesResponse
+                {
+                    Id = x.Id,
+                    End = x.End,
+                    Start = x.Start,
+                    State = x.State,
+                    Title = x.Owner.FullName
+                }).ToList();
                 return Ok(rentings);
             }
         }
