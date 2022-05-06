@@ -400,7 +400,7 @@ namespace Rentals_API_NET6.Controllers
                 User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
                 if (user != null && (userId == user.OauthId || isEmployee.Succeeded))
                 {
-                    IEnumerable<Renting> rentings = _context.Rentings.Include(x => x.Items).Where(y => y.OwnerId == user.Id).OrderByDescending(x => x.End).Skip(page * 15).Take(15).AsEnumerable();
+                    IEnumerable<Renting> rentings = _context.Rentings.Include(x => x.Items).Where(y => y.OwnerId == user.Id).OrderByDescending(x => x.End).AsEnumerable();
                     return Ok(rentings);
                 }
                 else
@@ -410,7 +410,7 @@ namespace Rentals_API_NET6.Controllers
             }
             else
             {
-                IEnumerable<Renting> rentings = _context.Rentings.Include(o => o.Owner).Include(x => x.Items).OrderByDescending(x => x.End).Skip(page * 15).Take(15).AsEnumerable();
+                IEnumerable<Renting> rentings = _context.Rentings.Include(o => o.Owner).Include(x => x.Items).OrderByDescending(x => x.End).Skip(page * 10).Take(10).AsEnumerable();
                 return Ok(rentings);
             }
         }
