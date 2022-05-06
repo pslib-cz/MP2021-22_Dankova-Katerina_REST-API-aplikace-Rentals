@@ -16,6 +16,7 @@ import { useAppContext } from "../../providers/ApplicationProvider";
 import Renting from "../Pages/Renting";
 import Item from "../Pages/Item";
 import Accesories from "../Pages/Accesories";
+import AdminEditItems from "../Pages/AdminEditItems";
 
 const StyledContent = styled.div`
   width: 80%;
@@ -382,9 +383,17 @@ const Content = (props) => {
               <AdminReturn />
             </Route>
             <Route exact path="/admin/calendar">
+              <Switch>
+                <Route path="/admin/calendar/:id">
+                  <AdminEditItems />
+                </Route>
+              </Switch>
               <AdminMenu></AdminMenu>
               <StyledMainGrid>
-                <AdminCalendar sources={"/api/Renting/Dates"}></AdminCalendar>
+                <AdminCalendar
+                  big
+                  sources={"/api/Renting/Dates"}
+                ></AdminCalendar>
               </StyledMainGrid>
             </Route>
             <Route path="/admin/list">

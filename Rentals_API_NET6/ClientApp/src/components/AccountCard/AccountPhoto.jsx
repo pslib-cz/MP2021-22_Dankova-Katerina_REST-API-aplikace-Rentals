@@ -141,7 +141,7 @@ const AccountPhoto = (props) => {
   const fetchStoredFiles = async (profile) => {
     try {
       const { data } = await Axios.get(
-        "/api/Renting/RentingsByUser/" + profile.sub,
+        "/api/Renting/All/?id=" + profile.sub,
         config
       );
       setStoredFiles(data);

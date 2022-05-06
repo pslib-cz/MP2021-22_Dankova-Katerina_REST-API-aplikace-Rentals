@@ -40,7 +40,7 @@ const AdminListItemDate = (props) => {
         <p>
           {props.from} - {props.to}
         </p>
-        <p className="red">Zrušeno</p>
+        <p className="red">Zamítnuto</p>
       </StyledAdminListItemDate>
     );
   }
@@ -59,7 +59,7 @@ const AdminListItemDate = (props) => {
         <p>
           {props.from} - {props.to}
         </p>
-        <p className="orange">Probíhá</p>
+        <p className="orange">Vypůjčeno</p>
       </StyledAdminListItemDate>
     );
   } else if (props.state === 0) {
@@ -68,7 +68,7 @@ const AdminListItemDate = (props) => {
         <p>
           {props.from} - {props.to}
         </p>
-        <p className="orange">Čeká potvrzení</p>
+        <p className="orange">Rezervované</p>
       </StyledAdminListItemDate>
     );
   }

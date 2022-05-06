@@ -50,11 +50,12 @@ const AdminUsers = (props) => {
               <AdminListItem>
                 <button
                   className="upgrade"
-                  onClick={() => history.push("/admin/users/" + i.oauthId)}
+                  onClick={() => history.push("/admin/users/" + i.id)}
                 >
-                  <p className="green">Inventář</p>
+                  <p className="green">Předměty/Výpůjčky</p>
                 </button>
-                <AdminListItemUser name={i.fullName}></AdminListItemUser>
+                <AdminListItemUser name={i.name}></AdminListItemUser>
+                <AdminListItemUser name={i.class}></AdminListItemUser>
               </AdminListItem>
             </AdminList>
           </>

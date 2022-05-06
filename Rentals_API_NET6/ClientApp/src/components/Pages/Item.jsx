@@ -13,7 +13,6 @@ import { ImpulseSpinner } from "react-spinners-kit";
 import { StyledDetail } from "../Pages/Detail";
 import { useQuery } from "react-query";
 import useLongPress from "../helpers/UseLongPress";
-import ToolTip from "../ToolTip/ToolTip";
 
 const Item = (props) => {
   const [{ accessToken }] = useAppContext();
@@ -130,7 +129,6 @@ const Item = (props) => {
       </button>
     );
   };
-  
 
   if (status === "success") {
     return (
@@ -156,7 +154,7 @@ const Item = (props) => {
                     index +
                     actionType(i?.itemHistoryLog?.action) +
                     i?.itemHistoryLog?.itemChanges?.map((i, index) => {
-                      return actionType2(i?.changedProperty)
+                      return actionType2(i?.changedProperty);
                     })
                   }
                 ></NormalName>

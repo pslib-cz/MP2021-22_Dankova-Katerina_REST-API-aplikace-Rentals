@@ -73,7 +73,6 @@ const Accesories = (props) => {
   };
 
   useEffect(() => {
-
     fetchUser().then((document.title = `Rentals | Příslušenství ${id}`));
     fetchAll().then((document.title = `Rentals | Příslušenství ${id}`));
     // eslint-disable-next-line
@@ -99,7 +98,7 @@ const Accesories = (props) => {
       "/api/Item/Accesories",
       {
         id: parseInt(id),
-        items: [...user.map((i) => i.id),...add],
+        items: [...user.map((i) => i.id), ...add],
       },
       {
         headers: {
@@ -109,13 +108,11 @@ const Accesories = (props) => {
     );
   };
 
-  useEffect(()=> {
+  useEffect(() => {
     if (add.length) {
-      fetchUser().then(
-        sendPutAdd()
-      )
-    }
-  }, [add])
+      fetchUser().then(sendPutAdd());
+    } // eslint-disable-next-line
+  }, [add]);
 
   if (props.isDelete) {
     return (
@@ -140,12 +137,12 @@ const Accesories = (props) => {
                             onClick={() => {
                               try {
                                 const arr = user;
-                                arr.splice(index, 1)
+                                arr.splice(index, 1);
                                 setUser(arr);
                               } finally {
                                 sendPut();
                                 fetchUser();
-                                history.push("/admin/list/"+id)
+                                history.push("/admin/list/" + id);
                               }
                             }}
                           >
@@ -198,7 +195,7 @@ const Accesories = (props) => {
                               try {
                                 setAdd(add.concat([i.id]));
                               } finally {
-                               console.log(add);
+                                console.log(add);
                               }
                             }}
                           >
@@ -228,8 +225,6 @@ const Accesories = (props) => {
       </StyledModal>
     );
   }
-
-  
 };
 
 export default Accesories;

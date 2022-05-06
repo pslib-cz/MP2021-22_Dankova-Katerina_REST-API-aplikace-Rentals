@@ -277,7 +277,13 @@ const Detail = (props) => {
     return (
       <>
         <StyledDetail>
-          <img src={"/api/Item/Img/" + id} alt="detailedpicture" />
+          <img
+            src={"/api/Item/Img/" + id}
+            alt="detailedpicture"
+            onError={(e) => {
+              e.currentTarget.src = "/image.svg";
+            }}
+          />
           <StyledDetailText>
             <h1>{item.name}</h1>
             <div>

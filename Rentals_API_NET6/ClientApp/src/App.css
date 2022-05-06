@@ -373,3 +373,99 @@ div.opener {
 .proomka-badge {
   cursor: pointer !important;
 }
+
+.bs-popover-top {
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 1.5rem;
+  border: 1px solid grey;
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+}
+
+.arrow-down-popover {
+  position: absolute;
+  top: 100%;
+  right: 50%;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid rgb(0, 0, 0);
+}
+
+.mygreen {
+  color: #00ae7c;
+}
+  
+.myorange {
+  color: #d0b055;
+}
+  
+.myred {
+  color: #d05555;
+}
+
+.searchp:nth-of-type(1) {
+  margin-top: 3rem;
+}
+.searchp:nth-of-type(even) {
+  background-color: #f7f7f7;
+}
+.searchp{
+  padding: 1rem;
+  border-top: #000 solid 1px;
+
+  height: auto;
+
+  display: flex;
+  gap: 8px;
+
+  cursor: pointer;
+}
+
+.sc-bBHxTw.iPSZrc {
+  max-height: 50vh;
+  overflow: auto;
+}
+
+.searchp.true {
+  padding: 1rem;
+  border-top: #000 solid 1px;
+
+  height: auto;
+
+  background-color: #007784;
+  color: white;
+
+  cursor: pointer;
+
+  display: flex;
+  gap: 8px;
+
+  align-self: flex-start;
+}
+
+.searchp.active {
+    background-color: #007784;
+    color: white;
+}
+
+.trashdiv > .proomka-badge {
+  position: static;
+}
+
+.trashdiv {
+  display: grid;
+  align-items: center;
+  max-width: 6rem;
+  padding: 0 1rem !important;
+}
+
+textarea,
+input {
+  outline: none;
+  border: none;
+}

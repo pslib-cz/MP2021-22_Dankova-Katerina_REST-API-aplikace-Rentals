@@ -157,7 +157,11 @@ const Bag = () => {
                     note: "",
                   },
                   headers: { Authorization: "Bearer " + accessToken },
-                }) && history.push("/account")
+                })
+                  .catch(() => {
+                    alert("Některá data nejsou správně zadána");
+                  })
+                  .then(history.push("/account"))
               : alert("Některá data nejsou správně zadána");
           }}
         ></Button>

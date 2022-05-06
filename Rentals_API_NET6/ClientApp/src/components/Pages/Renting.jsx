@@ -8,7 +8,7 @@ import Axios from "axios";
 import { useEffect, useState } from "react";
 import { useAppContext } from "../../providers/ApplicationProvider";
 import { Badge, Card } from "proomkatest";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { ImpulseSpinner } from "react-spinners-kit";
 import { StyledDetail } from "../Pages/Detail";
 import { useQuery } from "react-query";
@@ -16,6 +16,7 @@ import { useQuery } from "react-query";
 const Renting = (props) => {
   const [{ accessToken }] = useAppContext();
   const [storedFiles, setStoredFiles] = useState([]);
+  const [items, setItems] = useState([]);
 
   const { id } = useParams();
 
@@ -70,6 +71,8 @@ const Renting = (props) => {
         return " Zamítnutí ";
       case 4:
         return " Vrácení ";
+      case 5:
+        return " Editace ";
       default:
         return "";
     }
@@ -83,13 +86,31 @@ const Renting = (props) => {
     }
   }, [status, data, accessToken]);
 
+  useEffect(() => {
+    Axios.get("/api/Renting/" + id, config)
+      .then((res) => {
+        setItems(res.data.items);
+      })
+      .catch((err) => console.log(err)); // eslint-disable-next-line
+  }, []);
+
   if (status === "success") {
     return (
       <StyledMainGrid>
         <ContentMenu></ContentMenu>
         <AdminList isSmall>
           <AdminListItem>
-            <BoldName name={"Výpůjčka #" + id}></BoldName>
+            <BoldName
+              name={
+                "Výpůjčka #" +
+                id +
+                " " +
+                items.map((item) => {
+                  return item.name + ", ";
+                })
+              }
+            ></BoldName>
+            <Link to={"/return/" + id}>Upravit předměty</Link>
           </AdminListItem>
           <AdminListItem>
             <BoldName name={"Akce"}></BoldName>
