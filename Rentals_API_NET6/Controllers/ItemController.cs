@@ -245,8 +245,9 @@ namespace Rentals_API_NET6.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Item>> GetItem(int id)
         {
+            var isEmployee = await _authorizationService.AuthorizeAsync(User, "Employee");
             Item item = _context.Items.SingleOrDefault(x => x.Id == id);
-            if (item != null && !item.IsDeleted)
+            if (item != null && (!item.IsDeleted || isEmployee.Succeeded))
             {
                 return Ok(item);
             }
@@ -265,13 +266,14 @@ namespace Rentals_API_NET6.Controllers
         {
             Item item = _context.Items.SingleOrDefault(x => x.Id == id);
             UploadedFile image = _context.Files.SingleOrDefault(x => x.Id == item.Img);
-            if (item != null && image != null)
+            if (item != null)
             {
                 var file = item.Img == null ?
-                    Path.Combine(_environment.ContentRootPath,"Images", "Placeholder.jpg") : Path.Combine(_environment.ContentRootPath, "Images", item.Img);
+                    Path.Combine(_environment.ContentRootPath, "Images", "Placeholder.jpg") 
+                    : Path.Combine(_environment.ContentRootPath, "Images", item.Img);
                 if (System.IO.File.Exists(file))
                 {
-                    return PhysicalFile(file, image.ContentType);
+                    return PhysicalFile(file, image != null ? image.ContentType : "image/jpeg");
                 }
                 else
                 {

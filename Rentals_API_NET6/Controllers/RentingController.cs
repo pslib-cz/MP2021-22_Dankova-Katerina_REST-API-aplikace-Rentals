@@ -391,7 +391,7 @@ namespace Rentals_API_NET6.Controllers
         /// Vypíše všechny výpůjčky (nepoviný parametr id uživatele)
         /// </summary>
         [HttpGet("All")]
-        public async Task<ActionResult<IEnumerable<Renting>>> GetAllRentings(string id = null)
+        public async Task<ActionResult<IEnumerable<Renting>>> GetAllRentings(int page = 0, string id = null)
         {
             if (id != null)
             {
@@ -400,7 +400,7 @@ namespace Rentals_API_NET6.Controllers
                 User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
                 if (user != null && (userId == user.OauthId || isEmployee.Succeeded))
                 {
-                    IEnumerable<Renting> rentings = _context.Rentings.Include(x => x.Items).Where(y => y.OwnerId == user.Id).OrderBy(x => x.Start).AsEnumerable();
+                    IEnumerable<Renting> rentings = _context.Rentings.Include(x => x.Items).Where(y => y.OwnerId == user.Id).OrderByDescending(x => x.End).Skip(page * 15).Take(15).AsEnumerable();
                     return Ok(rentings);
                 }
                 else
@@ -410,7 +410,7 @@ namespace Rentals_API_NET6.Controllers
             }
             else
             {
-                IEnumerable<Renting> rentings = _context.Rentings.Include(o => o.Owner).Include(x => x.Items).OrderBy(x => x.Start).AsEnumerable();
+                IEnumerable<Renting> rentings = _context.Rentings.Include(o => o.Owner).Include(x => x.Items).OrderByDescending(x => x.End).Skip(page * 15).Take(15).AsEnumerable();
                 return Ok(rentings);
             }
         }
@@ -458,6 +458,7 @@ namespace Rentals_API_NET6.Controllers
             {
                 renting.ApproverId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id;
                 renting.State = RentingState.InProgress;
+                renting.Start = DateTime.Now;
                 _context.Entry(renting).State = EntityState.Modified;
 
                 //Vypůjčení itemů
