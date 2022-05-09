@@ -47,16 +47,6 @@ namespace Rentals_API_NET6.Controllers
                 return BadRequest("Špatně zadaná data (od kdy do kdy) výpůjčky");
             }
 
-            foreach (var item in renting.Items)
-            {
-                var rentingsWhereItemIs = _context.RentingItems.Include(x => x.Renting).Where(x => x.ItemId == item).Select(x => x.Renting);
-                var rentingsWithStates = rentingsWhereItemIs.Where(x => x.State == RentingState.WillStart || x.State == RentingState.InProgress);
-                if (rentingsWithStates.Any(x => x.Start < renting.End && renting.Start < x.End))
-                {
-                    return BadRequest($"Předmět {_context.Items.SingleOrDefault(x => x.Id == item).Name} není v této době dostupný");
-                }
-            }
-
             if (owner != null)
             {
                 Renting newRenting = new Renting
@@ -73,8 +63,18 @@ namespace Rentals_API_NET6.Controllers
                 //Přidání itemů
                 foreach (var item in renting.Items)
                 {
-                    if (_context.Items.Any(x => x.Id == item) && _context.Items.Find(item).State == ItemState.Available && _context.Items.Find(item).IsDeleted == false)
+                    var tempItem = _context.Items.SingleOrDefault(x => x.Id == item);
+                    if (tempItem != null && tempItem.IsDeleted == false)
                     {
+                        var rentingsWhereItemIs = _context.RentingItems.Include(x => x.Renting).Where(x => x.ItemId == item).Select(x => x.Renting);
+                        var rentingsWithStates = rentingsWhereItemIs.Where(x => x.State == RentingState.WillStart || x.State == RentingState.InProgress);
+                        if (rentingsWithStates.Any(x => x.Start < renting.End && renting.Start < x.End))
+                        {
+                            _context.Remove(newRenting);
+                            await _context.SaveChangesAsync();
+                            return BadRequest($"Předmět {_context.Items.SingleOrDefault(x => x.Id == item).Name} není v této době dostupný");
+                        }
+
                         var rentingItem = new RentingItem { ItemId = item, RentingId = newRenting.Id };
                         _context.RentingItems.Add(rentingItem);
                     }
