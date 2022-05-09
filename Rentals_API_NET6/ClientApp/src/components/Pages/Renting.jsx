@@ -110,7 +110,7 @@ const Renting = (props) => {
                 })
               }
             ></BoldName>
-            <Link to={"/return/" + id}>Upravit předměty</Link>
+            <Link to={"/return/" + id}>Vrátit předměty</Link>
           </AdminListItem>
           <AdminListItem>
             <BoldName name={"Akce"}></BoldName>

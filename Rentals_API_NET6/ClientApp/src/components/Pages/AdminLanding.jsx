@@ -366,8 +366,10 @@ const AdminLanding = (props) => {
                     key={index}
                     kid={i.items}
                     detail
-                    edit={i.state === 0 ? true : false}
+                    edit={i.state}
                     setId={i.id}
+                    from={i.start}
+                    to={i.end}
                   >
                     <AdminListItemName
                       id={i.id}
@@ -413,7 +415,13 @@ const AdminLanding = (props) => {
                   </AdminListItem>
                 );
               })}
-            {current === 4 && filteredFiles.length === 10 ? (
+            {current === 4 &&
+            filteredFiles.filter(
+              (obj) =>
+                obj.owner?.fullName
+                  .toLowerCase()
+                  .indexOf(inputText.toLowerCase()) >= 0
+            ).length === 10 ? (
               <AdminListItem>
                 <p
                   onClick={() => setPage(page + 1)}

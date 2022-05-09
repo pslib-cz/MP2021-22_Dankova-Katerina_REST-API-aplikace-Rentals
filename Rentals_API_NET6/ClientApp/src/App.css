@@ -464,8 +464,3 @@ div.opener {
   padding: 0 1rem !important;
 }
 
-textarea,
-input {
-  outline: none;
-  border: none;
-}

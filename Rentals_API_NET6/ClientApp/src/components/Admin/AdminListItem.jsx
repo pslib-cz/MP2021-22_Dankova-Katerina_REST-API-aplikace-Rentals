@@ -8,6 +8,7 @@ import BagText from "../BagCard/BagText";
 import useLongPress from "../helpers/UseLongPress";
 import { Badge } from "proomkatest";
 import { StyledSearchBox, StyledSearchBoxWithin } from "../Content/ContentMenu";
+import moment from "moment";
 
 const StyledAdminListItem = styled.div`
   min-height: 2rem;
@@ -65,6 +66,12 @@ const StyledAdminListItem = styled.div`
     transform: ${(props) => (!props.open ? "rotate(180deg)" : "rotate(0deg)")};
     transition: 250ms;
   }
+
+  textarea,
+  input {
+    outline: none;
+    border: none;
+  }
 `;
 
 const SelectDiv = (props) => {
@@ -87,6 +94,15 @@ const AdminListItem = (props) => {
   const [edit, setEdit] = useState(false);
   const [add, setAdd] = useState(false); // eslint-disable-next-line
   const [currentId, setCurrentId] = useState(props.setId);
+  const [start, setStart] = useState(props.from);
+  const [end, setEnd] = useState(props.to);
+
+  function handleChange(event) {
+    setStart(event.target.value);
+  }
+  function handleChange2(event) {
+    setEnd(event.target.value);
+  }
 
   const config = {
     headers: {
@@ -200,6 +216,8 @@ const AdminListItem = (props) => {
           items: items.map((item) => {
             return item.id;
           }),
+          start: start,
+          end: end,
         },
         {
           headers: {
@@ -219,6 +237,8 @@ const AdminListItem = (props) => {
           items: items.map((item) => {
             return item.id;
           }),
+          start: start,
+          end: end,
         },
         {
           headers: {
@@ -294,7 +314,7 @@ const AdminListItem = (props) => {
                     description="Popisek produktu"
                   ></BagText>
                 </BagCard>
-                {props.edit && edit ? (
+                {props.edit === 0 && edit ? (
                   <div
                     className="trashdiv"
                     onClick={() => EditSelectedCategories(item)}
@@ -306,12 +326,31 @@ const AdminListItem = (props) => {
                 ) : null}
               </div>
             ))}
-            {props.edit && !edit ? (
+            {props.edit === 0 && !edit ? (
               <div>
                 <Button />
               </div>
-            ) : (
+            ) : props.edit === 0 && edit ? (
               <>
+                <span>
+                  <br />
+                  Od:
+                  <input
+                    type="datetime-local"
+                    id="meeting-time"
+                    name="meeting-time"
+                    onChange={handleChange}
+                    min={moment().format("YYYY-MM-DDThh:mm")}
+                  />
+                  <br /> Do:{" "}
+                  <input
+                    type="datetime-local"
+                    id="meeting-time"
+                    name="meeting-time"
+                    onChange={handleChange2}
+                    min={moment().format("YYYY-MM-DDThh:mm")}
+                  />
+                </span>
                 {add ? (
                   <div>
                     <StyledSearchBox
@@ -366,7 +405,7 @@ const AdminListItem = (props) => {
                   <Button3 />
                 </div>
               </>
-            )}
+            ) : null}
           </div>
         ) : null}
       </StyledAdminListItem>

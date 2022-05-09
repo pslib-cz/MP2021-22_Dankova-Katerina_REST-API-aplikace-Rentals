@@ -84,14 +84,14 @@ namespace Rentals_API_NET6.Controllers
                     }
                 }
 
-                //Smazání košíku
-                foreach (var item in _context.CartItems.Where(x => x.User.OauthId == userId))
-                {
-                    _context.Remove(item);
-                }
-
                 if (error == 0)
                 {
+                    //Smazání košíku
+                    foreach (var item in _context.CartItems.Where(x => x.User.OauthId == userId))
+                    {
+                        _context.Remove(item);
+                    }
+
                     RentingHistoryLog log = new RentingHistoryLog
                     {
                         RentingId = newRenting.Id,
