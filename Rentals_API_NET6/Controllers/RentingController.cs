@@ -567,8 +567,8 @@ namespace Rentals_API_NET6.Controllers
         [HttpGet("History")]
         public async Task<ActionResult<List<RentingHistoryLog>>> GetHistory(int id)
         {
-            Item item = _context.Items.SingleOrDefault(x => x.Id == id);
-            List<RentingHistoryLog> history = _context.RentingHistoryLogs.Include(x => x.ReturnedItems).Include(x => x.User).Where(x => x.RentingId == item.Id).ToList();
+            Renting renting = _context.Rentings.SingleOrDefault(x => x.Id == id);
+            List<RentingHistoryLog> history = _context.RentingHistoryLogs.Include(x => x.ReturnedItems).Include(x => x.User).Where(x => x.RentingId == renting.Id).ToList();
             return Ok(history);
         }
 
