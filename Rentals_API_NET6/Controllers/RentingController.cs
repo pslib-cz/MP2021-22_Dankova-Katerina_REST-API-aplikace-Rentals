@@ -461,8 +461,10 @@ namespace Rentals_API_NET6.Controllers
                 renting.Start = DateTime.Now;
                 _context.Entry(renting).State = EntityState.Modified;
 
+                var RItems = _context.RentingItems.Where(x => x.RentingId == id).Select(y => y.Item);
+
                 //Vypůjčení itemů
-                foreach (var item in _context.RentingItems.Where(x => x.RentingId == id).Select(y => y.Item))
+                foreach (var item in RItems)
                 {
                     if (_context.Items.Any(x => x.Id == item.Id) && _context.Items.Find(item.Id).State == ItemState.Available && _context.Items.Find(item.Id).IsDeleted == false)
                     {
