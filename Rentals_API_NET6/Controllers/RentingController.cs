@@ -486,12 +486,13 @@ namespace Rentals_API_NET6.Controllers
                 if (error == 0)
                 {
                     await _context.SaveChangesAsync();
+                    var userid = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id;
                     foreach (var item in _context.RentingItems.Where(x => x.RentingId == id).Select(y => y.Item))
                     {
                         ItemHistoryLog Itemlog = new ItemHistoryLog
                         {
                             ItemId = item.Id,
-                            UserId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id,
+                            UserId = userid,
                             UserInventoryId = null,
                             ChangedTime = DateTime.Now,
                             Action = ItemAction.AddedToInventory
@@ -504,7 +505,7 @@ namespace Rentals_API_NET6.Controllers
                     RentingHistoryLog log = new RentingHistoryLog
                     {
                         RentingId = renting.Id,
-                        UserId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id,
+                        UserId = userid,
                         ChangedTime = DateTime.Now,
                         Action = Action.Activated
                     };
