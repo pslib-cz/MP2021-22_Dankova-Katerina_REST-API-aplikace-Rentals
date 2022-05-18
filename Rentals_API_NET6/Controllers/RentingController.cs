@@ -230,7 +230,7 @@ namespace Rentals_API_NET6.Controllers
                         UserId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id,
                         ChangedTime = DateTime.Now,
                         Action = Action.Changed,
-                        ReturnedItems = new List<Item>()
+                        ReturnedItems = new List<RentingItem>()
                     };
 
                     _context.RentingHistoryLogs.Add(log);
@@ -246,7 +246,7 @@ namespace Rentals_API_NET6.Controllers
                             Action = ItemAction.DeletedFromInventory
                         };
                         _context.ItemHistoryLogs.Add(Itemlog);
-                        log.ReturnedItems.Add(_context.Items.SingleOrDefault(x => x.Id == item));
+                        log.ReturnedItems.Add(_context.RentingItems.SingleOrDefault(x => x.ItemId == item && x.RentingId == request.Id));
                     }
                     await _context.SaveChangesAsync();
 
@@ -451,45 +451,38 @@ namespace Rentals_API_NET6.Controllers
             Renting renting = _context.Rentings.SingleOrDefault(x => x.Id == id);
             if (renting != null && renting.State == RentingState.WillStart)
             {
-                var RItems = _context.RentingItems.Where(x => x.RentingId == id).Select(y => y.Item);
+                renting.ApproverId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id;
+                renting.State = RentingState.InProgress;
+                renting.Start = DateTime.Now;
+                _logger.LogWarning($"Rentings {renting.Id} Start changed...");
+
+                var RItems = _context.RentingItems.Where(x => x.RentingId == id).AsNoTracking().Select(y => y.Item).AsEnumerable();
+
                 //Vypůjčení itemů
                 foreach (var item in RItems)
                 {
-                    var rentedItem = _context.Items.Find(item.Id);
+                    _logger.LogWarning($"Item {item.Name}");
+                    var rentedItem = _context.Items.SingleOrDefault(x => x.Id == item.Id);
                     if (rentedItem != null && rentedItem.State == ItemState.Available && rentedItem.IsDeleted == false)
                     {
                         //Nastavení stavu itemu na půjčený
                         rentedItem.State = ItemState.Rented;
-                        _context.Entry(rentedItem).State = EntityState.Modified;
                     }
                     else
                     {
                         error++;
                     }
+
                 }
 
-                if (error == 0)
+                if (error > 0)
                 {
-                    renting.ApproverId = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id;
-                    renting.State = RentingState.InProgress;
-                    renting.Start = DateTime.Now;
-                    _context.Entry(renting).State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
-
-                    var userid = _context.Users.SingleOrDefault(x => x.OauthId == userId).Id;
-                    foreach (var item in _context.RentingItems.Where(x => x.RentingId == id).Select(y => y.Item))
-                    {
-                        ItemHistoryLog Itemlog = new ItemHistoryLog
-                        {
-                            ItemId = item.Id,
-                            UserId = userid,
-                            ChangedTime = DateTime.Now,
-                            Action = ItemAction.AddedToInventory
-                        };
-                        _context.ItemHistoryLogs.Add(Itemlog);
-                    }
-
-                    await _context.SaveChangesAsync();
+                    _logger.LogError($"{error} RItems errors");
+                    return BadRequest();
+                }
+                else
+                {
+                    var userid = _context.Users.AsNoTracking().SingleOrDefault(x => x.OauthId == userId).Id;
                     RentingHistoryLog log = new RentingHistoryLog
                     {
                         RentingId = renting.Id,
@@ -499,17 +492,30 @@ namespace Rentals_API_NET6.Controllers
                     };
                     _context.RentingHistoryLogs.Add(log);
 
+                    foreach (var item in _context.RentingItems
+                        .Where(x => x.RentingId == id)
+                        .AsNoTracking()
+                        .Select(y => y.Item)
+                        .AsEnumerable())
+                    {
+                        ItemHistoryLog Itemlog = new ItemHistoryLog
+                        {
+                            ItemId = item.Id,
+                            UserId = userid,
+                            ChangedTime = DateTime.Now,
+                            Action = ItemAction.AddedToInventory
+                        };
+                    }
+
                     await _context.SaveChangesAsync();
+
                     return Ok(renting);
-                }
-                else
-                {
-                    return BadRequest();
                 }
             }
             else
             {
-                return NotFound();
+                if (renting != null) return NotFound($"Renting State={renting.State.ToString()}");
+                return NotFound($"Renting Id={id} not found");
             }
         }
 
@@ -559,7 +565,18 @@ namespace Rentals_API_NET6.Controllers
         public async Task<ActionResult<List<RentingHistoryLog>>> GetHistory(int id)
         {
             Renting renting = _context.Rentings.SingleOrDefault(x => x.Id == id);
-            List<RentingHistoryLog> history = _context.RentingHistoryLogs.Include(x => x.ReturnedItems).Include(x => x.User).Where(x => x.RentingId == renting.Id).ToList();
+            var logs = _context.RentingHistoryLogs.Include(x => x.ReturnedItems).Include(x => x.User).Where(x => x.RentingId == renting.Id).ToList();
+            List<RentingHistory> history = logs.Select(x => new RentingHistory
+            {
+                Id = x.Id,
+                Action = x.Action,
+                ChangedTime = x.ChangedTime,
+                Renting = x.Renting,
+                RentingId = x.RentingId,
+                ReturnedItems = _context.RentingItems.Where(y => y.RentingHistoryLogId == x.Id).Select(z => z.Item).ToList(),
+                User = x.User,
+                UserId = x.UserId
+            }).ToList();
             return Ok(history);
         }
 

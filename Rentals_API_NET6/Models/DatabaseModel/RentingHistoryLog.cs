@@ -15,7 +15,7 @@ namespace Rentals_API_NET6.Models.DatabaseModel
         public int? UserId { get; set; }
         public DateTime ChangedTime { get; set; }
         public Action Action { get; set; }
-        public List<Item> ReturnedItems { get; set; }
+        public List<RentingItem> ReturnedItems { get; set; }
     }
 
     public enum Action

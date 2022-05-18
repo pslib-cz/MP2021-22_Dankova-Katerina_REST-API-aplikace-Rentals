@@ -758,9 +758,6 @@ namespace Rentals_API_NET6.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("RentingHistoryLogId")
-                        .HasColumnType("int");
-
                     b.Property<int>("State")
                         .HasColumnType("int");
 
@@ -769,8 +766,6 @@ namespace Rentals_API_NET6.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("Img");
-
-                    b.HasIndex("RentingHistoryLogId");
 
                     b.ToTable("Items");
 
@@ -1808,10 +1803,15 @@ namespace Rentals_API_NET6.Migrations
                     b.Property<int>("RentingId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("RentingHistoryLogId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("Returned")
                         .HasColumnType("bit");
 
                     b.HasKey("ItemId", "RentingId");
+
+                    b.HasIndex("RentingHistoryLogId");
 
                     b.HasIndex("RentingId");
 
@@ -2262,10 +2262,6 @@ namespace Rentals_API_NET6.Migrations
                         .WithMany("Items")
                         .HasForeignKey("Img");
 
-                    b.HasOne("Rentals_API_NET6.Models.DatabaseModel.RentingHistoryLog", null)
-                        .WithMany("ReturnedItems")
-                        .HasForeignKey("RentingHistoryLogId");
-
                     b.Navigation("Category");
 
                     b.Navigation("ImgFile");
@@ -2382,6 +2378,10 @@ namespace Rentals_API_NET6.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Rentals_API_NET6.Models.DatabaseModel.RentingHistoryLog", "RentingHistoryLog")
+                        .WithMany("ReturnedItems")
+                        .HasForeignKey("RentingHistoryLogId");
+
                     b.HasOne("Rentals_API_NET6.Models.DatabaseModel.Renting", "Renting")
                         .WithMany("Items")
                         .HasForeignKey("RentingId")
@@ -2391,6 +2391,8 @@ namespace Rentals_API_NET6.Migrations
                     b.Navigation("Item");
 
                     b.Navigation("Renting");
+
+                    b.Navigation("RentingHistoryLog");
                 });
 
             modelBuilder.Entity("Rentals_API_NET6.Models.DatabaseModel.Category", b =>

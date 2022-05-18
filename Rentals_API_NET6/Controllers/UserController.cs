@@ -244,6 +244,27 @@ namespace Rentals_API_NET6.Controllers
             return Ok(users);
         }
 
+        /// <summary>
+        /// Vypíše inventář předmětů uživatele
+        /// </summary>
+        [Authorize(Policy = "Employee")]
+        [HttpGet("Inventory/{id}")]
+        public async Task<ActionResult<IEnumerable<Item>>> GetInventoryByUser(string id)
+        {
+            User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
+            var isEmployee = await _authorizationService.AuthorizeAsync(User, "Employee");
+            var userId = UserId();
+            if (user != null || isEmployee.Succeeded)
+            {
+                IEnumerable<Item> items = _context.RentingItems.Where(x => x.Returned == false && x.Renting.OwnerId == user.Id && x.Renting.State == RentingState.InProgress).Select(x => x.Item);
+                return Ok(items);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         private string UserId()
         {
             return User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
