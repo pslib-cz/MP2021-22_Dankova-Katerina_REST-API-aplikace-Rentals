@@ -244,27 +244,6 @@ namespace Rentals_API_NET6.Controllers
             return Ok(users);
         }
 
-        /// <summary>
-        /// Vypíše inventář předmětů uživatele
-        /// </summary>
-        [Authorize(Policy = "Employee")]
-        [HttpGet("Inventory/{id}")]
-        public async Task<ActionResult<IEnumerable<Item>>> GetInventoryByUser(string id)
-        {
-            User user = _context.Users.SingleOrDefault(x => x.OauthId == id);
-            var isEmployee = await _authorizationService.AuthorizeAsync(User, "Employee");
-            var userId = UserId();
-            if (user != null || isEmployee.Succeeded)
-            {
-                IEnumerable<Item> items = _context.InventoryItems.Where(x => x.UserId == user.Id && x.Item.IsDeleted == false).Select(y => y.Item).AsEnumerable();
-                return Ok(items);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
         private string UserId()
         {
             return User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;

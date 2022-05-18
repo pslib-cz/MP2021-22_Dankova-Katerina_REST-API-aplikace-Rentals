@@ -12,7 +12,6 @@ namespace Rentals_API_NET6.Models.DatabaseModel
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string FullName { get { return $"{FirstName} {LastName}"; } }
-        public ICollection<InventoryItem> Inventory { get; set; }
         public ICollection<FavouriteItem> Favourite { get; set; }
         public ICollection<CartItem> Cart { get; set; }
         public ICollection<Renting> Rentings { get; set; }

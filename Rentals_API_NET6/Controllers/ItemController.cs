@@ -76,15 +76,13 @@ namespace Rentals_API_NET6.Controllers
             if (item != null && !item.IsDeleted)
             {
                 var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-                var userInvId = _context.InventoryItems.SingleOrDefault(x => x.ItemId == item.Id)?.UserId;
                 User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
                 ItemHistoryLog log = new ItemHistoryLog
                 {
                     ItemId = item.Id,
                     UserId = user.Id,
                     ChangedTime = DateTime.Now,
-                    Action = ItemAction.Changed,
-                    UserInventoryId = userInvId
+                    Action = ItemAction.Changed
                 };
 
                 _context.ItemHistoryLogs.Add(log);
@@ -171,15 +169,13 @@ namespace Rentals_API_NET6.Controllers
                 _context.Entry(item).State = EntityState.Modified;
 
                 var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-                var userInvId = _context.InventoryItems.SingleOrDefault(x => x.ItemId == item.Id)?.UserId;
                 User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
                 ItemHistoryLog log = new ItemHistoryLog
                 {
                     ItemId = item.Id,
                     UserId = user.Id,
                     ChangedTime = DateTime.Now,
-                    Action = ItemAction.Deleted,
-                    UserInventoryId = userInvId
+                    Action = ItemAction.Deleted
                 };
 
                 _context.ItemHistoryLogs.Add(log);
@@ -217,15 +213,13 @@ namespace Rentals_API_NET6.Controllers
                 _context.Entry(item).State = EntityState.Modified;
 
                 var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-                var userInvId = _context.InventoryItems.SingleOrDefault(x => x.ItemId == item.Id)?.UserId;
                 User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
                 ItemHistoryLog log = new ItemHistoryLog
                 {
                     ItemId = item.Id,
                     UserId = user.Id,
                     ChangedTime = DateTime.Now,
-                    Action = ItemAction.Restored,
-                    UserInventoryId = userInvId
+                    Action = ItemAction.Restored
                 };
 
                 _context.ItemHistoryLogs.Add(log);
@@ -359,15 +353,13 @@ namespace Rentals_API_NET6.Controllers
                 if (errors == 0)
                 {
                     var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-                    var userInvId = _context.InventoryItems.SingleOrDefault(x => x.ItemId == itemForAccesory.Id)?.UserId;
                     User user = _context.Users.SingleOrDefault(x => x.OauthId == userId);
                     ItemHistoryLog log = new ItemHistoryLog
                     {
                         ItemId = itemForAccesory.Id,
                         UserId = user.Id,
                         ChangedTime = DateTime.Now,
-                        Action = ItemAction.ChangedAccessories,
-                        UserInventoryId = userInvId
+                        Action = ItemAction.ChangedAccessories
                     };
 
                     _context.ItemHistoryLogs.Add(log);
@@ -541,7 +533,7 @@ namespace Rentals_API_NET6.Controllers
         public async Task<ActionResult<List<ItemHistory>>> GetHistory(int id)
         {
             Item item = _context.Items.SingleOrDefault(x => x.Id == id);
-            List<ItemHistoryLog> list = _context.ItemHistoryLogs.Include(x => x.User).Include(x => x.UserInventory).Include(x => x.ItemChanges).Where(x => x.ItemId == item.Id).ToList();
+            List<ItemHistoryLog> list = _context.ItemHistoryLogs.Include(x => x.User).Include(x => x.ItemChanges).Where(x => x.ItemId == item.Id).ToList();
             List<ItemHistory> result = new List<ItemHistory>();
             foreach (var i in list)
             {

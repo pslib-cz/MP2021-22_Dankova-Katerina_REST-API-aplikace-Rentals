@@ -19,7 +19,6 @@ namespace Rentals_API_NET6.Models.DatabaseModel
         [ForeignKey("Category")]
         public int? CategoryId { get; set; }
         public Category Category { get; set; }
-        public ICollection<InventoryItem> Inventories { get; set; }
         public ICollection<FavouriteItem> Favourites { get; set; }
         public ICollection<AccessoryItem> Accessories { get; set; }
         public ICollection<CartItem> Carts { get; set; }

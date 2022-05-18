@@ -13,7 +13,6 @@ namespace Rentals_API_NET6.Context
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<FavouriteItem> FavouriteItems { get; set; }
-        public DbSet<InventoryItem> InventoryItems { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<Renting> Rentings { get; set; }
         public DbSet<RentingItem> RentingItems { get; set; }
@@ -57,16 +56,6 @@ namespace Rentals_API_NET6.Context
                 .WithMany(x => x.Accessories)
                 .HasForeignKey(x => x.ItemId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<InventoryItem>().HasKey(sc => new { sc.ItemId, sc.UserId });
-            modelBuilder.Entity<InventoryItem>()
-                .HasOne(x => x.Item)
-                .WithMany(x => x.Inventories)
-                .HasForeignKey(x => x.ItemId);
-            modelBuilder.Entity<InventoryItem>()
-                .HasOne(x => x.User)
-                .WithMany(x => x.Inventory)
-                .HasForeignKey(x => x.UserId);
 
             modelBuilder.Entity<FavouriteItem>().HasKey(sc => new { sc.ItemId, sc.UserId });
             modelBuilder.Entity<FavouriteItem>()
@@ -118,7 +107,6 @@ namespace Rentals_API_NET6.Context
             modelBuilder.Entity<ItemHistoryLog>()
                 .HasOne(x => x.Item)
                 .WithMany(x => x.Logs)
-                .HasForeignKey(x => x.UserInventoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ItemHistoryLog>()
