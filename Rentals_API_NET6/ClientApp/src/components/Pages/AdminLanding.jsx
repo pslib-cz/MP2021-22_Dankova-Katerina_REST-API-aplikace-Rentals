@@ -129,7 +129,9 @@ const AdminLanding = (props) => {
       })
         .then(function (response) {
           console.log(response);
-          window.location.reload(false);
+          setTimeout(() => {
+            window.location.reload(false);
+          }, 2500);
         })
         .catch(function (error) {
           console.log(error);
@@ -147,7 +149,9 @@ const AdminLanding = (props) => {
       })
         .then(function (response) {
           console.log(response);
-          window.location.reload(false);
+          setTimeout(() => {
+            window.location.reload(false);
+          }, 2500);
         })
         .catch(function (error) {
           console.log(error);
@@ -182,7 +186,9 @@ const AdminLanding = (props) => {
       })
         .then(function (response) {
           console.log(response);
-          window.location.reload(false);
+          setTimeout(() => {
+            window.location.reload(false);
+          }, 2500);
         })
         .catch(function (error) {
           console.log(error);
@@ -214,7 +220,9 @@ const AdminLanding = (props) => {
       })
         .then(function (response) {
           console.log(response);
-          window.location.reload(false);
+          setTimeout(() => {
+            window.location.reload(false);
+          }, 2500);
         })
         .catch(function (error) {
           console.log(error);

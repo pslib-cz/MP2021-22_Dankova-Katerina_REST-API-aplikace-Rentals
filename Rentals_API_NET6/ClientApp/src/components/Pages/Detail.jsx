@@ -301,7 +301,14 @@ const Detail = (props) => {
                     method: "post",
                     url: "/api/User/Cart/" + id,
                     headers: { Authorization: "Bearer " + accessToken },
-                  }) && history.push("/bag")
+                  })
+                    .then(function (response) {
+                      console.log(response);
+                      history.push("/bag");
+                    })
+                    .catch(function (error) {
+                      console.log(error);
+                    })
                 }
               >
                 Přidat do košíku <i className="fas fa-shopping-bag"></i>

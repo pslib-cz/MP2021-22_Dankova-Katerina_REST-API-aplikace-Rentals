@@ -282,7 +282,7 @@ export const StyledcategoryWrapper = styled.div`
 export const StyledIntroImage = styled.div`
   width: 98%;
   margin: 0 1%;
-  aspect-ratio: 5/1;
+  aspect-ratio: 6/1;
   background-color: white;
   border-radius: 1.5rem;
   background: url(${(props) => props.bgImage});

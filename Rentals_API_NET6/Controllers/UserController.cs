@@ -113,7 +113,7 @@ namespace Rentals_API_NET6.Controllers
                 }
                 else
                 {
-                    return BadRequest();
+                    return Ok("Tento předmět už máš v košíku");
                 }
             }
             else

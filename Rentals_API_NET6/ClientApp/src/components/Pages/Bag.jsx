@@ -9,13 +9,12 @@ import { useEffect, useState } from "react";
 import Axios from "axios";
 import { useAppContext } from "../../providers/ApplicationProvider";
 import ReactDOM from "react-dom";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 import moment from "moment";
 
 const Bag = () => {
   const [{ accessToken }] = useAppContext();
   const [storedFiles, setStoredFiles] = useState([]);
-  const queryClient = useQueryClient();
 
   const config = {
     headers: {
@@ -53,7 +52,6 @@ const Bag = () => {
       headers: { Authorization: "Bearer " + accessToken },
     })
       .then(
-        queryClient.resetQueries("bag"),
         setStoredFiles(
           storedFiles.filter(function (v, index) {
             return index !== i;
@@ -157,13 +155,79 @@ const Bag = () => {
                 })
                   .catch((res) =>
                     res?.response?.status === 400
-                      ? alert(JSON.stringify(res.response.data))
+                      ? (ReactDOM.unmountComponentAtNode(
+                          document.getElementById("ok") // eslint-disable-next-line
+                        ),
+                        ReactDOM.render(
+                          <Alert
+                            textColor="white"
+                            width="32rem"
+                            height="4rem"
+                            color="#d05555"
+                            delay="2000"
+                          >
+                            <i className="fas fa-exclamation icon" />
+                            {"  "}
+                            {JSON.stringify(res.response.data)}
+                          </Alert>,
+                          document.getElementById("ok")
+                        ))
                       : res?.response?.status === 200
-                      ? alert("Rezervace proběhla úspěšně")
-                      : alert("Rezervace proběhla úspěšně")
+                      ? (ReactDOM.unmountComponentAtNode(
+                          document.getElementById("ok") // eslint-disable-next-line
+                        ),
+                        ReactDOM.render(
+                          <Alert
+                            textColor="white"
+                            width="26rem"
+                            height="4rem"
+                            color="#00ae7c"
+                            delay="2000"
+                          >
+                            <i className="far fa-check-circle icon" />
+                            Rezervace proběhla úspěšně
+                          </Alert>,
+                          document.getElementById("ok")
+                        ))
+                      : (ReactDOM.unmountComponentAtNode(
+                          document.getElementById("ok")
+                        ),
+                        ReactDOM.render(
+                          <Alert
+                            textColor="white"
+                            width="26rem"
+                            height="4rem"
+                            color="#00ae7c"
+                            delay="2000"
+                          >
+                            <i className="far fa-check-circle icon" />
+                            Rezervace proběhla úspěšně
+                          </Alert>,
+                          document.getElementById("ok")
+                        ))
                   )
-                  .then(window.location.reload(false))
-              : alert("Některá data nejsou správně vyplněna");
+                  .then(
+                    setTimeout(() => {
+                      window.location.reload(false);
+                    }, 2500)
+                  )
+              : ReactDOM.unmountComponentAtNode(
+                  document.getElementById("ok")
+                ).then(
+                  ReactDOM.render(
+                    <Alert
+                      textColor="white"
+                      width="26rem"
+                      height="4rem"
+                      color="#d05555"
+                      delay="2000"
+                    >
+                      <i className="fas fa-exclamation icon" />
+                      {"  "}Některá data nejsou správně vyplněna
+                    </Alert>,
+                    document.getElementById("ok")
+                  )
+                );
           }}
         ></Button>
       </div>
