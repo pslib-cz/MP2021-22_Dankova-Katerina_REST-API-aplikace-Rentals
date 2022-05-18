@@ -464,3 +464,15 @@ div.opener {
   padding: 0 1rem !important;
 }
 
+@media (orientation: landscape) {
+  .local-choice {
+    max-height: calc(100vh - 96px);
+    overflow: scroll;
+  }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .csfNiD .local-choice .navigation-item {
+  font-size: 1.25rem !important;
+  }
+}

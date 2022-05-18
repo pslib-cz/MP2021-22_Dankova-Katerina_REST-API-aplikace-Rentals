@@ -234,7 +234,6 @@ namespace Rentals_API_NET6.Controllers
                     };
 
                     _context.RentingHistoryLogs.Add(log);
-                    await _context.SaveChangesAsync();
 
                     foreach (var item in request.ReturnedItems)
                     {
@@ -472,7 +471,6 @@ namespace Rentals_API_NET6.Controllers
                     {
                         error++;
                     }
-
                 }
 
                 if (error > 0)
@@ -505,10 +503,10 @@ namespace Rentals_API_NET6.Controllers
                             ChangedTime = DateTime.Now,
                             Action = ItemAction.AddedToInventory
                         };
+                        _context.ItemHistoryLogs.Add(Itemlog);
                     }
 
                     await _context.SaveChangesAsync();
-
                     return Ok(renting);
                 }
             }

@@ -110,7 +110,11 @@ const Renting = (props) => {
                 })
               }
             ></BoldName>
-            <Link to={"/return/" + id}>Vrátit předměty</Link>
+            <Link to={"/return/" + id}>
+              <button className="upgrade">
+                <p>Vrátit předměty</p>
+              </button>
+            </Link>
           </AdminListItem>
           <AdminListItem>
             <BoldName name={"Akce"}></BoldName>

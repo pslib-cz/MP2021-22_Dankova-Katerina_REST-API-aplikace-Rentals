@@ -120,14 +120,21 @@ const AdminLanding = (props) => {
   }, [page]);
 
   const Button = (props) => {
-    let history = useHistory();
     const onLongPress = () => {
       navigator.vibrate(65);
       Axios({
         method: "put",
         url: "api/Renting/Activate/" + props.setId,
         headers: { Authorization: "Bearer " + accessToken },
-      }).then(history.push("/admin/renting/" + props.setId));
+      })
+        .then(function (response) {
+          console.log(response);
+          window.location.reload(false);
+        })
+        .catch(function (error) {
+          console.log(error);
+          alert(error);
+        });
       props.Update(updater + 1);
     };
 
@@ -137,7 +144,15 @@ const AdminLanding = (props) => {
         method: "put",
         url: "api/Renting/Activate/" + props.setId,
         headers: { Authorization: "Bearer " + accessToken },
-      }).then(history.push("/admin/renting/" + props.setId));
+      })
+        .then(function (response) {
+          console.log(response);
+          window.location.reload(false);
+        })
+        .catch(function (error) {
+          console.log(error);
+          alert(error);
+        });
       props.Update(updater + 1);
     };
 
@@ -158,14 +173,21 @@ const AdminLanding = (props) => {
   };
 
   const Button2 = (props) => {
-    let history = useHistory();
     const onLongPress = () => {
       navigator.vibrate(65);
       Axios({
         method: "delete",
         url: "api/Renting/" + props.setId,
         headers: { Authorization: "Bearer " + accessToken },
-      }).then(history.push("/admin/renting/" + props.setId));
+      })
+        .then(function (response) {
+          console.log(response);
+          window.location.reload(false);
+        })
+        .catch(function (error) {
+          console.log(error);
+          alert(error);
+        });
       props.Update(updater + 1);
 
       ReactDOM.render(
@@ -189,7 +211,15 @@ const AdminLanding = (props) => {
         method: "delete",
         url: "api/Renting/" + props.setId,
         headers: { Authorization: "Bearer " + accessToken },
-      }).then(history.push("/admin/renting/" + props.setId));
+      })
+        .then(function (response) {
+          console.log(response);
+          window.location.reload(false);
+        })
+        .catch(function (error) {
+          console.log(error);
+          alert(error);
+        });
       props.Update(updater + 1);
 
       ReactDOM.render(
